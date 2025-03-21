@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true">
+  <!-- 
+      The <testsuites> section defines two test suites:
+        - Unit tests: located in the tests/Unit directory.
+        - Feature tests: located in the tests/Feature directory.
+    -->
+  <testsuites>
+    <testsuite name="Feature">
+            <directory suffix=".php">tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory suffix=".php">tests/Unit</directory>
+        </testsuite>
+
+
+
+
+        <!-- <testsuite name="Integration">
+            <directory suffix=".php">tests/Integration</directory>
+        </testsuite> -->
+        <testsuite name="Internal">
+            <directory suffix=".php">tests/Integration/Internal/Migrations</directory>
+        </testsuite>
+        <testsuite name="Internal">
+            <directory suffix=".php">tests/Integration/Internal/Models</directory>
+        </testsuite>
+                <testsuite name="Internal">
+            <directory suffix=".php">tests/Integration/Internal/Factories</directory>
+        </testsuite>
+                <testsuite name="Internal">
+            <directory suffix=".php">tests/Integration/Internal/Seeders</directory>
+        </testsuite>
+                <testsuite name="Internal">
+            <directory suffix=".php">tests/Integration/Internal/Repositories</directory>
+        </testsuite>
+
+
+
+        <testsuite name="Browser">
+            <directory suffix=".php">tests/Browser</directory>
+        </testsuite>
+  </testsuites>
+  <!-- 
+      The <source> section specifies which parts of your application code
+      are included when generating code coverage reports.
+    -->
+  <source>
+    <include>
+      <directory>app</directory>
+    </include>
+  </source>
+  <!--
+      The <coverage> element now combines filtering and reporting settings.
+      In this example, we include all PHP files in the "app" directory and
+      generate an HTML report in the "coverage-report" directory.
+    -->
+  <coverage pathCoverage="false" ignoreDeprecatedCodeUnits="true" disableCodeCoverageIgnore="true">
+    <!--
+          The <report> element defines the output format and location of the coverage reports.
+          Multiple report formats are configured below:
+        -->
+    <report>
+      <!-- Clover XML report -->
+      <clover outputFile="build/logs/clover.xml"/>
+      <!-- Cobertura XML report -->
+      <cobertura outputFile="build/logs/cobertura.xml"/>
+      <!-- Crap4J XML report with a threshold of 50 -->
+      <crap4j outputFile="build/logs/crap4j.xml" threshold="50"/>
+      <!-- HTML report: Generated in the "coverage-report" directory.
+                 lowUpperBound and highLowerBound determine the color thresholds for coverage metrics. -->
+      <html outputDirectory="tests/coverage-report" lowUpperBound="35" highLowerBound="70"/>
+      <!-- PHP report -->
+      <php outputFile="build/logs/coverage.php"/>
+      <!-- Text report: Output written to a file, with options to show uncovered files and summary only. -->
+      <text outputFile="build/logs/coverage.txt" showUncoveredFiles="false" showOnlySummary="true"/>
+      <!-- PHPUnit XML report -->
+      <xml outputDirectory="build/logs/coverage-xml"/>
+    </report>
+  </coverage>
+  <!-- 
+      The <php> section sets environment variables for the testing environment.
+      These settings override those in your .env file when tests are run.
+    -->
+  <php>
+    <!-- Sets the application environment to 'testing'. -->
+    <env name="APP_ENV" value="testing"/>
+    <!-- 
+          Specifies the maintenance driver to use when the application is in maintenance mode.
+          In testing, this might be set to 'file' to simplify behavior.
+        -->
+    <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+    <!-- 
+          Reduces the number of bcrypt rounds to speed up tests. 
+          (Default bcrypt rounds in production are higher for security.)
+        -->
+    <env name="BCRYPT_ROUNDS" value="4"/>
+    <!-- 
+          Sets the cache driver to 'array'. This ensures that caching is done in memory
+          and not persisted, which keeps tests isolated and fast.
+        -->
+    <env name="CACHE_STORE" value="array"/>
+    <!-- 
+          The following two lines are commented out:
+          They are often used to configure an in-memory SQLite database for fast, isolated tests.
+          Uncomment them if you want to use an in-memory SQLite database.
+        -->
+    <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
+    <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+    <!-- MySQL Database settings for testing -->
+    <env name="DB_CONNECTION" value="mysql"/>
+    <env name="DB_HOST" value="127.0.0.1"/>
+    <env name="DB_PORT" value="3306"/>
+    <env name="DB_DATABASE" value="roquia_gallary_db_test"/>
+    <env name="DB_USERNAME" value="root"/>
+    <env name="DB_PASSWORD" value=""/>
+    <!-- 
+          Configures the mailer to use the 'array' driver.
+          This driver does not actually send emails; it simply stores them in an array for inspection.
+        -->
+    <env name="MAIL_MAILER" value="array"/>
+    <!-- 
+          Disables any custom functionality tied to "pulse". This is likely application-specific.
+        -->
+    <env name="PULSE_ENABLED" value="false"/>
+    <!-- 
+          Sets the queue connection to 'sync', ensuring that queued jobs run immediately during tests.
+        -->
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <!-- 
+          Sets the session driver to 'array', meaning sessions are stored in memory and not persisted.
+        -->
+    <env name="SESSION_DRIVER" value="array"/>
+    <!-- 
+          Disables Laravel Telescope, a debugging assistant, during testing.
+          Telescope can slow down tests and expose sensitive data, so it's often turned off.
+        -->
+    <env name="TELESCOPE_ENABLED" value="false"/>
+  </php>
+</phpunit>

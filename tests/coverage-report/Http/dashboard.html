@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for C:\xampp\htdocs\E-Commerce-App\app\Http</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css?v=11.0.9" rel="stylesheet" type="text/css">
+  <link href="../_css/nv.d3.min.css?v=11.0.9" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css?v=11.0.9" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">C:\xampp\htdocs\E-Commerce-App\app</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Http</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/LaravelEmailVerificationController.php.html#8">App\Http\Controllers\Api\Auth\LaravelEmailVerificationController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#12">App\Http\Controllers\Api\PermissionController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#12">App\Http\Controllers\Api\RoleController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#12">App\Http\Controllers\Api\StatusController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#13">App\Http\Controllers\Api\UserController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/LoginController.php.html#9">App\Http\Controllers\LoginController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/RoleController.php.html#9">App\Http\Controllers\RoleController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/StatusController.php.html#9">App\Http\Controllers\StatusController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#16">App\Http\Controllers\UserController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/ApiEmailVerificationRequest.php.html#7">App\Http\Requests\ApiEmailVerificationRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#13">App\Http\Requests\StorePermissionRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#13">App\Http\Requests\StoreRoleRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#13">App\Http\Requests\StoreStatusRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#15">App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController</a></td><td class="text-right">29%</td></tr>
+       <tr><td><a href="Middleware/CustomAuthenticationHandler.php.html#9">App\Http\Middleware\CustomAuthenticationHandler</a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#7">App\Http\Responses\ApiResponse</a></td><td class="text-right">42%</td></tr>
+       <tr><td><a href="Middleware/ForceHttpsMiddleware.php.html#9">App\Http\Middleware\ForceHttpsMiddleware</a></td><td class="text-right">66%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Controllers/Api/UserController.php.html#13">App\Http\Controllers\Api\UserController</a></td><td class="text-right">272</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#12">App\Http\Controllers\Api\PermissionController</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#12">App\Http\Controllers\Api\RoleController</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#12">App\Http\Controllers\Api\StatusController</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#13">App\Http\Requests\StorePermissionRequest</a></td><td class="text-right">132</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#13">App\Http\Requests\StoreStatusRequest</a></td><td class="text-right">132</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#15">App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController</a></td><td class="text-right">129</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#13">App\Http\Requests\StoreRoleRequest</a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#7">App\Http\Responses\ApiResponse</a></td><td class="text-right">16</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/LaravelEmailVerificationController.php.html#8">App\Http\Controllers\Api\Auth\LaravelEmailVerificationController</a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Controllers/LoginController.php.html#9">App\Http\Controllers\LoginController</a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/ApiEmailVerificationRequest.php.html#7">App\Http\Requests\ApiEmailVerificationRequest</a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Middleware/ForceHttpsMiddleware.php.html#9">App\Http\Middleware\ForceHttpsMiddleware</a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="Middleware/CustomAuthenticationHandler.php.html#9">App\Http\Middleware\CustomAuthenticationHandler</a></td><td class="text-right">3</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#17"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::sendCode">sendCode</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#60"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::sendSms">sendSms</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#135"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::checkEmailIsVerified">checkEmailIsVerified</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#142"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::changeEmail">changeEmail</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/LaravelEmailVerificationController.php.html#11"><abbr title="App\Http\Controllers\Api\Auth\LaravelEmailVerificationController::verify">verify</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/LaravelEmailVerificationController.php.html#19"><abbr title="App\Http\Controllers\Api\Auth\LaravelEmailVerificationController::resend">resend</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#16"><abbr title="App\Http\Controllers\Api\PermissionController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#21"><abbr title="App\Http\Controllers\Api\PermissionController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#28"><abbr title="App\Http\Controllers\Api\PermissionController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#34"><abbr title="App\Http\Controllers\Api\PermissionController::store">store</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#41"><abbr title="App\Http\Controllers\Api\PermissionController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#46"><abbr title="App\Http\Controllers\Api\PermissionController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#52"><abbr title="App\Http\Controllers\Api\PermissionController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#16"><abbr title="App\Http\Controllers\Api\RoleController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#21"><abbr title="App\Http\Controllers\Api\RoleController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#28"><abbr title="App\Http\Controllers\Api\RoleController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#34"><abbr title="App\Http\Controllers\Api\RoleController::store">store</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#41"><abbr title="App\Http\Controllers\Api\RoleController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#46"><abbr title="App\Http\Controllers\Api\RoleController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#52"><abbr title="App\Http\Controllers\Api\RoleController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#16"><abbr title="App\Http\Controllers\Api\StatusController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#21"><abbr title="App\Http\Controllers\Api\StatusController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#28"><abbr title="App\Http\Controllers\Api\StatusController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#34"><abbr title="App\Http\Controllers\Api\StatusController::store">store</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#41"><abbr title="App\Http\Controllers\Api\StatusController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#46"><abbr title="App\Http\Controllers\Api\StatusController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#52"><abbr title="App\Http\Controllers\Api\StatusController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#17"><abbr title="App\Http\Controllers\Api\UserController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#22"><abbr title="App\Http\Controllers\Api\UserController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#29"><abbr title="App\Http\Controllers\Api\UserController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#35"><abbr title="App\Http\Controllers\Api\UserController::store">store</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#42"><abbr title="App\Http\Controllers\Api\UserController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#47"><abbr title="App\Http\Controllers\Api\UserController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#53"><abbr title="App\Http\Controllers\Api\UserController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#62"><abbr title="App\Http\Controllers\Api\UserController::restore">restore</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#73"><abbr title="App\Http\Controllers\Api\UserController::destroy">destroy</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/LoginController.php.html#11"><abbr title="App\Http\Controllers\LoginController::login">login</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/RoleController.php.html#11"><abbr title="App\Http\Controllers\RoleController::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/RoleController.php.html#15"><abbr title="App\Http\Controllers\RoleController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/RoleController.php.html#19"><abbr title="App\Http\Controllers\RoleController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/RoleController.php.html#23"><abbr title="App\Http\Controllers\RoleController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/StatusController.php.html#11"><abbr title="App\Http\Controllers\StatusController::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/StatusController.php.html#20"><abbr title="App\Http\Controllers\StatusController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/StatusController.php.html#24"><abbr title="App\Http\Controllers\StatusController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/StatusController.php.html#28"><abbr title="App\Http\Controllers\StatusController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#20"><abbr title="App\Http\Controllers\UserController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#24"><abbr title="App\Http\Controllers\UserController::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#50"><abbr title="App\Http\Controllers\UserController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#73"><abbr title="App\Http\Controllers\UserController::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controllers/web/UserController.php.html#78"><abbr title="App\Http\Controllers\UserController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/ApiEmailVerificationRequest.php.html#10"><abbr title="App\Http\Requests\ApiEmailVerificationRequest::fulfill">fulfill</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#39"><abbr title="App\Http\Requests\StorePermissionRequest::authorize">authorize</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#51"><abbr title="App\Http\Requests\StorePermissionRequest::prepareForValidation">prepareForValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#63"><abbr title="App\Http\Requests\StorePermissionRequest::rules">rules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#74"><abbr title="App\Http\Requests\StorePermissionRequest::failedValidation">failedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#88"><abbr title="App\Http\Requests\StorePermissionRequest::messages">messages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#99"><abbr title="App\Http\Requests\StorePermissionRequest::attributes">attributes</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#109"><abbr title="App\Http\Requests\StorePermissionRequest::after">after</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#126"><abbr title="App\Http\Requests\StorePermissionRequest::someAdditionalValidationFails">someAdditionalValidationFails</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#134"><abbr title="App\Http\Requests\StorePermissionRequest::passedValidation">passedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#39"><abbr title="App\Http\Requests\StoreRoleRequest::authorize">authorize</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#51"><abbr title="App\Http\Requests\StoreRoleRequest::prepareForValidation">prepareForValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#63"><abbr title="App\Http\Requests\StoreRoleRequest::rules">rules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#74"><abbr title="App\Http\Requests\StoreRoleRequest::failedValidation">failedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#88"><abbr title="App\Http\Requests\StoreRoleRequest::messages">messages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#99"><abbr title="App\Http\Requests\StoreRoleRequest::attributes">attributes</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#109"><abbr title="App\Http\Requests\StoreRoleRequest::after">after</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#126"><abbr title="App\Http\Requests\StoreRoleRequest::someAdditionalValidationFails">someAdditionalValidationFails</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#134"><abbr title="App\Http\Requests\StoreRoleRequest::passedValidation">passedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#39"><abbr title="App\Http\Requests\StoreStatusRequest::authorize">authorize</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#51"><abbr title="App\Http\Requests\StoreStatusRequest::prepareForValidation">prepareForValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#63"><abbr title="App\Http\Requests\StoreStatusRequest::rules">rules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#74"><abbr title="App\Http\Requests\StoreStatusRequest::failedValidation">failedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#88"><abbr title="App\Http\Requests\StoreStatusRequest::messages">messages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#99"><abbr title="App\Http\Requests\StoreStatusRequest::attributes">attributes</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#109"><abbr title="App\Http\Requests\StoreStatusRequest::after">after</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#126"><abbr title="App\Http\Requests\StoreStatusRequest::someAdditionalValidationFails">someAdditionalValidationFails</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#134"><abbr title="App\Http\Requests\StoreStatusRequest::passedValidation">passedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Requests/StoreUserRequest.php.html#101"><abbr title="App\Http\Requests\StoreUserRequest::failedValidation">failedValidation</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#46"><abbr title="App\Http\Responses\ApiResponse::error">error</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#71"><abbr title="App\Http\Responses\ApiResponse::unauthenticated">unauthenticated</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#83"><abbr title="App\Http\Responses\ApiResponse::forbidden">forbidden</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#95"><abbr title="App\Http\Responses\ApiResponse::notFound">notFound</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Middleware/CustomAuthenticationHandler.php.html#11"><abbr title="App\Http\Middleware\CustomAuthenticationHandler::handle">handle</abbr></a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#69"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::submitCode">submitCode</abbr></a></td><td class="text-right">53%</td></tr>
+       <tr><td><a href="Requests/StoreUserRequest.php.html#142"><abbr title="App\Http\Requests\StoreUserRequest::after">after</abbr></a></td><td class="text-right">55%</td></tr>
+       <tr><td><a href="Middleware/ForceHttpsMiddleware.php.html#18"><abbr title="App\Http\Middleware\ForceHttpsMiddleware::handle">handle</abbr></a></td><td class="text-right">66%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#17"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::sendCode">sendCode</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#142"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::changeEmail">changeEmail</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#69"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::submitCode">submitCode</abbr></a></td><td class="text-right">9</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/CustomEmailVerificationController.php.html#135"><abbr title="App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationController::checkEmailIsVerified">checkEmailIsVerified</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/Auth/EmailVerification/LaravelEmailVerificationController.php.html#19"><abbr title="App\Http\Controllers\Api\Auth\LaravelEmailVerificationController::resend">resend</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#28"><abbr title="App\Http\Controllers\Api\PermissionController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#34"><abbr title="App\Http\Controllers\Api\PermissionController::store">store</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#41"><abbr title="App\Http\Controllers\Api\PermissionController::update">update</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#46"><abbr title="App\Http\Controllers\Api\PermissionController::edit">edit</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/PermissionController.php.html#52"><abbr title="App\Http\Controllers\Api\PermissionController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#28"><abbr title="App\Http\Controllers\Api\RoleController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#34"><abbr title="App\Http\Controllers\Api\RoleController::store">store</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#41"><abbr title="App\Http\Controllers\Api\RoleController::update">update</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#46"><abbr title="App\Http\Controllers\Api\RoleController::edit">edit</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/RoleController.php.html#52"><abbr title="App\Http\Controllers\Api\RoleController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#28"><abbr title="App\Http\Controllers\Api\StatusController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#34"><abbr title="App\Http\Controllers\Api\StatusController::store">store</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#41"><abbr title="App\Http\Controllers\Api\StatusController::update">update</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#46"><abbr title="App\Http\Controllers\Api\StatusController::edit">edit</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/StatusController.php.html#52"><abbr title="App\Http\Controllers\Api\StatusController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#29"><abbr title="App\Http\Controllers\Api\UserController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#35"><abbr title="App\Http\Controllers\Api\UserController::store">store</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#42"><abbr title="App\Http\Controllers\Api\UserController::update">update</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#47"><abbr title="App\Http\Controllers\Api\UserController::edit">edit</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#53"><abbr title="App\Http\Controllers\Api\UserController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#62"><abbr title="App\Http\Controllers\Api\UserController::restore">restore</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/Api/UserController.php.html#73"><abbr title="App\Http\Controllers\Api\UserController::destroy">destroy</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controllers/LoginController.php.html#11"><abbr title="App\Http\Controllers\LoginController::login">login</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/ApiEmailVerificationRequest.php.html#10"><abbr title="App\Http\Requests\ApiEmailVerificationRequest::fulfill">fulfill</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#51"><abbr title="App\Http\Requests\StorePermissionRequest::prepareForValidation">prepareForValidation</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/StorePermissionRequest.php.html#109"><abbr title="App\Http\Requests\StorePermissionRequest::after">after</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/StoreRoleRequest.php.html#109"><abbr title="App\Http\Requests\StoreRoleRequest::after">after</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#51"><abbr title="App\Http\Requests\StoreStatusRequest::prepareForValidation">prepareForValidation</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Requests/StoreStatusRequest.php.html#109"><abbr title="App\Http\Requests\StoreStatusRequest::after">after</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Responses/ApiResponse.php.html#46"><abbr title="App\Http\Responses\ApiResponse::error">error</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Middleware/ForceHttpsMiddleware.php.html#18"><abbr title="App\Http\Middleware\ForceHttpsMiddleware::handle">handle</abbr></a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="Middleware/CustomAuthenticationHandler.php.html#11"><abbr title="App\Http\Middleware\CustomAuthenticationHandler::handle">handle</abbr></a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="Requests/StoreUserRequest.php.html#142"><abbr title="App\Http\Requests\StoreUserRequest::after">after</abbr></a></td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 11.0.9</a> using <a href="https://www.php.net/" target="_top">PHP 8.2.12</a> and <a href="https://phpunit.de/">PHPUnit 11.5.10</a> at Wed Mar 12 14:38:22 UTC 2025.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/jquery.min.js?v=11.0.9" type="text/javascript"></script>
+  <script src="../_js/d3.min.js?v=11.0.9" type="text/javascript"></script>
+  <script src="../_js/nv.d3.min.js?v=11.0.9" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([13,0,0,1,1,1,0,1,0,1,1,3], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([83,0,0,0,1,0,2,1,0,0,1,10], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[100,0,"<a href=\"Controllers\/Api\/Auth\/AuthController.php.html#7\">App\\Http\\Controllers\\AuthController<\/a>"],[29.87012987012987,18,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#15\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController<\/a>"],[0,3,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/LaravelEmailVerificationController.php.html#8\">App\\Http\\Controllers\\Api\\Auth\\LaravelEmailVerificationController<\/a>"],[91.66666666666666,4,"<a href=\"Controllers\/Api\/Auth\/RegistrationController.php.html#13\">App\\Http\\Controllers\\Api\\Auth\\RegistrationController<\/a>"],[0,12,"<a href=\"Controllers\/Api\/PermissionController.php.html#12\">App\\Http\\Controllers\\Api\\PermissionController<\/a>"],[0,12,"<a href=\"Controllers\/Api\/RoleController.php.html#12\">App\\Http\\Controllers\\Api\\RoleController<\/a>"],[0,12,"<a href=\"Controllers\/Api\/StatusController.php.html#12\">App\\Http\\Controllers\\Api\\StatusController<\/a>"],[0,16,"<a href=\"Controllers\/Api\/UserController.php.html#13\">App\\Http\\Controllers\\Api\\UserController<\/a>"],[100,0,"<a href=\"Controllers\/Controller.php.html#5\">App\\Http\\Controllers\\Controller<\/a>"],[0,2,"<a href=\"Controllers\/LoginController.php.html#9\">App\\Http\\Controllers\\LoginController<\/a>"],[0,4,"<a href=\"Controllers\/web\/RoleController.php.html#9\">App\\Http\\Controllers\\RoleController<\/a>"],[0,4,"<a href=\"Controllers\/web\/StatusController.php.html#9\">App\\Http\\Controllers\\StatusController<\/a>"],[0,5,"<a href=\"Controllers\/web\/UserController.php.html#16\">App\\Http\\Controllers\\UserController<\/a>"],[33.33333333333333,2,"<a href=\"Middleware\/CustomAuthenticationHandler.php.html#9\">App\\Http\\Middleware\\CustomAuthenticationHandler<\/a>"],[66.66666666666666,3,"<a href=\"Middleware\/ForceHttpsMiddleware.php.html#9\">App\\Http\\Middleware\\ForceHttpsMiddleware<\/a>"],[100,0,"<a href=\"Middleware\/PreventVerifyCsrfTokenMiddlewareForApi.php.html#7\">App\\Http\\Middleware\\VerifyCsrfToken<\/a>"],[0,2,"<a href=\"Requests\/ApiEmailVerificationRequest.php.html#7\">App\\Http\\Requests\\ApiEmailVerificationRequest<\/a>"],[0,11,"<a href=\"Requests\/StorePermissionRequest.php.html#13\">App\\Http\\Requests\\StorePermissionRequest<\/a>"],[0,10,"<a href=\"Requests\/StoreRoleRequest.php.html#13\">App\\Http\\Requests\\StoreRoleRequest<\/a>"],[0,11,"<a href=\"Requests\/StoreStatusRequest.php.html#13\">App\\Http\\Requests\\StoreStatusRequest<\/a>"],[86.48648648648648,10,"<a href=\"Requests\/StoreUserRequest.php.html#14\">App\\Http\\Requests\\StoreUserRequest<\/a>"],[42.857142857142854,7,"<a href=\"Responses\/ApiResponse.php.html#7\">App\\Http\\Responses\\ApiResponse<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,4,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#17\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::sendCode<\/a>"],[0,1,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#60\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::sendSms<\/a>"],[53.333333333333336,6,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#69\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::submitCode<\/a>"],[100,1,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#122\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::resendEmail<\/a>"],[0,2,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#135\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::checkEmailIsVerified<\/a>"],[0,4,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/CustomEmailVerificationController.php.html#142\">App\\Http\\Controllers\\Api\\Auth\\EmailVerification\\CustomEmailVerificationController::changeEmail<\/a>"],[0,1,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/LaravelEmailVerificationController.php.html#11\">App\\Http\\Controllers\\Api\\Auth\\LaravelEmailVerificationController::verify<\/a>"],[0,2,"<a href=\"Controllers\/Api\/Auth\/EmailVerification\/LaravelEmailVerificationController.php.html#19\">App\\Http\\Controllers\\Api\\Auth\\LaravelEmailVerificationController::resend<\/a>"],[100,1,"<a href=\"Controllers\/Api\/Auth\/RegistrationController.php.html#20\">App\\Http\\Controllers\\Api\\Auth\\RegistrationController::__construct<\/a>"],[90.9090909090909,3,"<a href=\"Controllers\/Api\/Auth\/RegistrationController.php.html#28\">App\\Http\\Controllers\\Api\\Auth\\RegistrationController::register<\/a>"],[0,1,"<a href=\"Controllers\/Api\/PermissionController.php.html#16\">App\\Http\\Controllers\\Api\\PermissionController::__construct<\/a>"],[0,1,"<a href=\"Controllers\/Api\/PermissionController.php.html#21\">App\\Http\\Controllers\\Api\\PermissionController::index<\/a>"],[0,2,"<a href=\"Controllers\/Api\/PermissionController.php.html#28\">App\\Http\\Controllers\\Api\\PermissionController::show<\/a>"],[0,2,"<a href=\"Controllers\/Api\/PermissionController.php.html#34\">App\\Http\\Controllers\\Api\\PermissionController::store<\/a>"],[0,2,"<a href=\"Controllers\/Api\/PermissionController.php.html#41\">App\\Http\\Controllers\\Api\\PermissionController::update<\/a>"],[0,2,"<a href=\"Controllers\/Api\/PermissionController.php.html#46\">App\\Http\\Controllers\\Api\\PermissionController::edit<\/a>"],[0,2,"<a href=\"Controllers\/Api\/PermissionController.php.html#52\">App\\Http\\Controllers\\Api\\PermissionController::delete<\/a>"],[0,1,"<a href=\"Controllers\/Api\/RoleController.php.html#16\">App\\Http\\Controllers\\Api\\RoleController::__construct<\/a>"],[0,1,"<a href=\"Controllers\/Api\/RoleController.php.html#21\">App\\Http\\Controllers\\Api\\RoleController::index<\/a>"],[0,2,"<a href=\"Controllers\/Api\/RoleController.php.html#28\">App\\Http\\Controllers\\Api\\RoleController::show<\/a>"],[0,2,"<a href=\"Controllers\/Api\/RoleController.php.html#34\">App\\Http\\Controllers\\Api\\RoleController::store<\/a>"],[0,2,"<a href=\"Controllers\/Api\/RoleController.php.html#41\">App\\Http\\Controllers\\Api\\RoleController::update<\/a>"],[0,2,"<a href=\"Controllers\/Api\/RoleController.php.html#46\">App\\Http\\Controllers\\Api\\RoleController::edit<\/a>"],[0,2,"<a href=\"Controllers\/Api\/RoleController.php.html#52\">App\\Http\\Controllers\\Api\\RoleController::delete<\/a>"],[0,1,"<a href=\"Controllers\/Api\/StatusController.php.html#16\">App\\Http\\Controllers\\Api\\StatusController::__construct<\/a>"],[0,1,"<a href=\"Controllers\/Api\/StatusController.php.html#21\">App\\Http\\Controllers\\Api\\StatusController::index<\/a>"],[0,2,"<a href=\"Controllers\/Api\/StatusController.php.html#28\">App\\Http\\Controllers\\Api\\StatusController::show<\/a>"],[0,2,"<a href=\"Controllers\/Api\/StatusController.php.html#34\">App\\Http\\Controllers\\Api\\StatusController::store<\/a>"],[0,2,"<a href=\"Controllers\/Api\/StatusController.php.html#41\">App\\Http\\Controllers\\Api\\StatusController::update<\/a>"],[0,2,"<a href=\"Controllers\/Api\/StatusController.php.html#46\">App\\Http\\Controllers\\Api\\StatusController::edit<\/a>"],[0,2,"<a href=\"Controllers\/Api\/StatusController.php.html#52\">App\\Http\\Controllers\\Api\\StatusController::delete<\/a>"],[0,1,"<a href=\"Controllers\/Api\/UserController.php.html#17\">App\\Http\\Controllers\\Api\\UserController::__construct<\/a>"],[0,1,"<a href=\"Controllers\/Api\/UserController.php.html#22\">App\\Http\\Controllers\\Api\\UserController::index<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#29\">App\\Http\\Controllers\\Api\\UserController::show<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#35\">App\\Http\\Controllers\\Api\\UserController::store<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#42\">App\\Http\\Controllers\\Api\\UserController::update<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#47\">App\\Http\\Controllers\\Api\\UserController::edit<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#53\">App\\Http\\Controllers\\Api\\UserController::delete<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#62\">App\\Http\\Controllers\\Api\\UserController::restore<\/a>"],[0,2,"<a href=\"Controllers\/Api\/UserController.php.html#73\">App\\Http\\Controllers\\Api\\UserController::destroy<\/a>"],[0,2,"<a href=\"Controllers\/LoginController.php.html#11\">App\\Http\\Controllers\\LoginController::login<\/a>"],[0,1,"<a href=\"Controllers\/web\/RoleController.php.html#11\">App\\Http\\Controllers\\RoleController::create<\/a>"],[0,1,"<a href=\"Controllers\/web\/RoleController.php.html#15\">App\\Http\\Controllers\\RoleController::show<\/a>"],[0,1,"<a href=\"Controllers\/web\/RoleController.php.html#19\">App\\Http\\Controllers\\RoleController::update<\/a>"],[0,1,"<a href=\"Controllers\/web\/RoleController.php.html#23\">App\\Http\\Controllers\\RoleController::delete<\/a>"],[0,1,"<a href=\"Controllers\/web\/StatusController.php.html#11\">App\\Http\\Controllers\\StatusController::create<\/a>"],[0,1,"<a href=\"Controllers\/web\/StatusController.php.html#20\">App\\Http\\Controllers\\StatusController::show<\/a>"],[0,1,"<a href=\"Controllers\/web\/StatusController.php.html#24\">App\\Http\\Controllers\\StatusController::update<\/a>"],[0,1,"<a href=\"Controllers\/web\/StatusController.php.html#28\">App\\Http\\Controllers\\StatusController::delete<\/a>"],[0,1,"<a href=\"Controllers\/web\/UserController.php.html#20\">App\\Http\\Controllers\\UserController::__construct<\/a>"],[0,1,"<a href=\"Controllers\/web\/UserController.php.html#24\">App\\Http\\Controllers\\UserController::create<\/a>"],[0,1,"<a href=\"Controllers\/web\/UserController.php.html#50\">App\\Http\\Controllers\\UserController::show<\/a>"],[0,1,"<a href=\"Controllers\/web\/UserController.php.html#73\">App\\Http\\Controllers\\UserController::update<\/a>"],[0,1,"<a href=\"Controllers\/web\/UserController.php.html#78\">App\\Http\\Controllers\\UserController::delete<\/a>"],[33.33333333333333,2,"<a href=\"Middleware\/CustomAuthenticationHandler.php.html#11\">App\\Http\\Middleware\\CustomAuthenticationHandler::handle<\/a>"],[66.66666666666666,3,"<a href=\"Middleware\/ForceHttpsMiddleware.php.html#18\">App\\Http\\Middleware\\ForceHttpsMiddleware::handle<\/a>"],[0,2,"<a href=\"Requests\/ApiEmailVerificationRequest.php.html#10\">App\\Http\\Requests\\ApiEmailVerificationRequest::fulfill<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#39\">App\\Http\\Requests\\StorePermissionRequest::authorize<\/a>"],[0,2,"<a href=\"Requests\/StorePermissionRequest.php.html#51\">App\\Http\\Requests\\StorePermissionRequest::prepareForValidation<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#63\">App\\Http\\Requests\\StorePermissionRequest::rules<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#74\">App\\Http\\Requests\\StorePermissionRequest::failedValidation<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#88\">App\\Http\\Requests\\StorePermissionRequest::messages<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#99\">App\\Http\\Requests\\StorePermissionRequest::attributes<\/a>"],[0,2,"<a href=\"Requests\/StorePermissionRequest.php.html#109\">App\\Http\\Requests\\StorePermissionRequest::after<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#126\">App\\Http\\Requests\\StorePermissionRequest::someAdditionalValidationFails<\/a>"],[0,1,"<a href=\"Requests\/StorePermissionRequest.php.html#134\">App\\Http\\Requests\\StorePermissionRequest::passedValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#39\">App\\Http\\Requests\\StoreRoleRequest::authorize<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#51\">App\\Http\\Requests\\StoreRoleRequest::prepareForValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#63\">App\\Http\\Requests\\StoreRoleRequest::rules<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#74\">App\\Http\\Requests\\StoreRoleRequest::failedValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#88\">App\\Http\\Requests\\StoreRoleRequest::messages<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#99\">App\\Http\\Requests\\StoreRoleRequest::attributes<\/a>"],[0,2,"<a href=\"Requests\/StoreRoleRequest.php.html#109\">App\\Http\\Requests\\StoreRoleRequest::after<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#126\">App\\Http\\Requests\\StoreRoleRequest::someAdditionalValidationFails<\/a>"],[0,1,"<a href=\"Requests\/StoreRoleRequest.php.html#134\">App\\Http\\Requests\\StoreRoleRequest::passedValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#39\">App\\Http\\Requests\\StoreStatusRequest::authorize<\/a>"],[0,2,"<a href=\"Requests\/StoreStatusRequest.php.html#51\">App\\Http\\Requests\\StoreStatusRequest::prepareForValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#63\">App\\Http\\Requests\\StoreStatusRequest::rules<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#74\">App\\Http\\Requests\\StoreStatusRequest::failedValidation<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#88\">App\\Http\\Requests\\StoreStatusRequest::messages<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#99\">App\\Http\\Requests\\StoreStatusRequest::attributes<\/a>"],[0,2,"<a href=\"Requests\/StoreStatusRequest.php.html#109\">App\\Http\\Requests\\StoreStatusRequest::after<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#126\">App\\Http\\Requests\\StoreStatusRequest::someAdditionalValidationFails<\/a>"],[0,1,"<a href=\"Requests\/StoreStatusRequest.php.html#134\">App\\Http\\Requests\\StoreStatusRequest::passedValidation<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#40\">App\\Http\\Requests\\StoreUserRequest::authorize<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#52\">App\\Http\\Requests\\StoreUserRequest::prepareForValidation<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#86\">App\\Http\\Requests\\StoreUserRequest::rules<\/a>"],[0,1,"<a href=\"Requests\/StoreUserRequest.php.html#101\">App\\Http\\Requests\\StoreUserRequest::failedValidation<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#116\">App\\Http\\Requests\\StoreUserRequest::messages<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#132\">App\\Http\\Requests\\StoreUserRequest::attributes<\/a>"],[55.55555555555556,2,"<a href=\"Requests\/StoreUserRequest.php.html#142\">App\\Http\\Requests\\StoreUserRequest::after<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#159\">App\\Http\\Requests\\StoreUserRequest::someAdditionalValidationFails<\/a>"],[100,1,"<a href=\"Requests\/StoreUserRequest.php.html#167\">App\\Http\\Requests\\StoreUserRequest::passedValidation<\/a>"],[100,2,"<a href=\"Responses\/ApiResponse.php.html#18\">App\\Http\\Responses\\ApiResponse::success<\/a>"],[0,2,"<a href=\"Responses\/ApiResponse.php.html#46\">App\\Http\\Responses\\ApiResponse::error<\/a>"],[0,1,"<a href=\"Responses\/ApiResponse.php.html#71\">App\\Http\\Responses\\ApiResponse::unauthenticated<\/a>"],[0,1,"<a href=\"Responses\/ApiResponse.php.html#83\">App\\Http\\Responses\\ApiResponse::forbidden<\/a>"],[0,1,"<a href=\"Responses\/ApiResponse.php.html#95\">App\\Http\\Responses\\ApiResponse::notFound<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

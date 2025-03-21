@@ -1,0 +1,109 @@
+_____________________________________________________________________________________________________________________________________________
+                                                
+                                                🔑 OAuth2 API Endpoints
+
+These endpoints allow authentication using third-party providers (Google, Facebook, GitHub, etc.) in Laravel.
+
+ ___________________________________________________________________________________________________________________________________________
+| Method - Endpoint                              |                               Description  
+|------------------------------------------------|------------------------------------------------------------------------------------------
+| GET    /api/auth/{provider}/redirect           | Redirects the user to the OAuth provider (Google, Facebook, etc.).  
+| GET    /api/auth/{provider}/callback           | Handles OAuth provider response, authenticates the user, and issues a Sanctum token.  
+| GET    /api/auth/{provider}/user               | Retrieves the authenticated user's details.  
+| POST   /api/auth/logout                        | Logs out the user and revokes the access token.  
+|------------------------------------------------|------------------------------------------------------------------------------------------
+| POST   /api/auth/{provider}/token-login        | Logs in the user using an OAuth access token from the provider (for mobile apps). 
+| POST   /api/auth/token/refresh                 | Refreshes the OAuth2 access token (if supported by the provider). 
+|________________________________________________|__________________________________________________________________________________________
+
+
+
+_____________________________________________________________________________________________________________________________________________
+
+                                        📌 Explanation of Each Endpoint
+
+-----------------------------------------------------------------------------------------------------------
+1️⃣ OAuth Redirect
+http
+GET /api/auth/{provider}/redirect
+
+- Redirects the user to the OAuth provider login page.
+- {provider} can be google, facebook, github, etc.
+-----------------------------------------------------------------------------------------------------------
+2️⃣ OAuth Callback
+http
+GET /api/auth/{provider}/callback
+
+- The provider redirects back to this endpoint with an authorization code.
+- Laravel authenticates the user and returns an API token.
+-----------------------------------------------------------------------------------------------------------
+3️⃣ Login with OAuth Access Token (for mobile apps)
+http
+POST /api/auth/{provider}/token-login
+
+- Used when the frontend/mobile app already has an OAuth access token from Google/Facebook.
+- Laravel verifies the token & logs in the user.
+
+ 📌 Request Example
+json
+{
+    "access_token": "GOOGLE_ACCESS_TOKEN"
+}
+
+
+ 📌 Response
+json
+{
+    "user": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "johndoe@gmail.com",
+        "avatar": "https://lh3.googleusercontent.com/a/image.jpg"
+    },
+    "token": "SANCTUM_API_TOKEN"
+}
+
+-----------------------------------------------------------------------------------------------------------
+4️⃣ Get Authenticated User Details
+http
+GET /api/auth/{provider}/user
+
+- Returns the logged-in user’s details.
+
+ 📌 Response
+json
+{
+    "id": 1,
+    "name": "John Doe",
+    "email": "johndoe@gmail.com",
+    "provider": "google"
+}
+
+-----------------------------------------------------------------------------------------------------------
+5️⃣ Logout
+http
+POST /api/auth/logout
+
+- Revokes the user's API token.
+
+ 📌 Response
+json
+{
+    "message": "Successfully logged out"
+}
+
+-----------------------------------------------------------------------------------------------------------
+6️⃣ Refresh Token
+http
+POST /api/auth/token/refresh
+
+- Some OAuth providers allow token refresh.
+- This endpoint requests a new OAuth access token using the refresh token.
+
+-----------------------------------------------------------------------------------------------------------
+🔧 OAuth2 Configuration in Laravel
+📌 To use these endpoints, follow the OAuth2 setup guide:  
+👉 [Implement Google OAuth2 with Laravel Sanctum]()
+-----------------------------------------------------------------------------------------------------------
+
+_____________________________________________________________________________________________________________________________________________

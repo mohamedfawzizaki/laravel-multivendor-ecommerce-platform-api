@@ -1,0 +1,97 @@
+____________________________________________________________________________________________________________________________________________
+                                
+                                1. Registration & Account Activation via Phone
+                                
+ __________________________________________________________________________________________________________________________________________
+| POST   /api/auth/register                     | Registers a new user.
+| POST 	 /api/auth/register/phone	            | Registers a user with a phone number (instead of email).
+|_______________________________________________|__________________________________________________________________________________________
+| POST 	 /api/auth/send-phone-otp	            | Sends a One-Time Password (OTP) to the user’s phone.
+| POST 	 /api/auth/resend-phone-otp	         | Resends the OTP if the user didn't receive it.
+|-----------------------------------------------|------------------------------------------------------------------------------------------
+| POST 	 /api/auth/verify-phone-otp	         | Verifies the OTP and marks the phone number as verified.
+| POST 	 /api/auth/change-phone	               | Allows a user to update their phone number and request new OTP verification.
+| GET	 /api/auth/check-phone-verification	      | Checks if the user's phone number is verified or not.
+|_______________________________________________|__________________________________________________________________________________________
+
+
+
+
+_____________________________________________________________________________________________________________________________________________
+                        Registration & Account Activation (With Phone Verification) Workflow  
+
+This workflow outlines the process for user registration and phone number verification using OTP (One-Time Password).  
+
+-----------------------------------------------------------------------------------------------------------
+1️⃣ User Registration  
+Used When: A new user signs up.  
+
+Flow:  
+1. User submits request → POST /api/auth/register with:  
+   - name  
+   - email  
+   - password  
+   - phone_number  
+2. System creates the account with:  
+   - email_verified_at = null  
+   - phone_verified_at = null  
+3. System sends an OTP to the phone → POST /api/auth/send-phone-otp.  
+
+✅ User account is created but needs verification.  
+
+-----------------------------------------------------------------------------------------------------------
+2️⃣ Phone OTP Verification  
+Used When: A user verifies their phone number.  
+
+Flow:  
+1. User enters the OTP → POST /api/auth/verify-phone-otp with phone_number and OTP.  
+2. System verifies the OTP and updates phone_verified_at = now().  
+3. Success: The phone number is now verified.  
+
+✅ User’s phone number is fully verified.  
+
+-----------------------------------------------------------------------------------------------------------
+3️⃣ Resend OTP  
+Used When: The user didn’t receive the OTP or it expired.  
+
+Flow:  
+1. User submits request → POST /api/auth/resend-phone-otp with phone_number.  
+2. System generates a new OTP and sends it via SMS.  
+3. User enters the new OTP to verify.  
+
+✅ Ensures users can verify even if OTP was not received the first time.  
+
+-----------------------------------------------------------------------------------------------------------
+4️⃣ Change Phone Number & Request New OTP  
+Used When: A user wants to update their phone number.  
+
+Flow:  
+1. User submits request → POST /api/auth/change-phone with new_phone_number.  
+2. System updates the phone number and marks it as unverified (phone_verified_at = null).  
+3. System sends a new OTP → POST /api/auth/send-phone-otp.  
+4. User enters OTP → POST /api/auth/verify-phone-otp to verify the new phone number.  
+
+✅ User successfully updates and verifies a new phone number.  
+
+-----------------------------------------------------------------------------------------------------------
+5️⃣ Check Phone Verification Status  
+Used When: The system or frontend needs to check if a user’s phone number is verified.  
+
+Flow:  
+1. User submits request → GET /api/auth/check-phone-verification.  
+2. System checks phone_verified_at field and responds:  
+   - ✅ Verified → User can proceed.  
+   - ❌ Not Verified → User must complete phone verification.  
+
+✅ Ensures only verified users access certain features.  
+
+-----------------------------------------------------------------------------------------------------------
+ Security Enhancements
+✅ OTP Expiry: OTPs should expire within 5–10 minutes.  
+✅ Rate Limiting: Limit OTP resends to prevent abuse.  
+✅ Restrict Features for Unverified Phones: Only allow access to key features after phone verification.  
+✅ Notify on Phone Change: Send a notification to the old number when the phone is changed.  
+✅ Prevent Reuse of OTPs: Generate a new OTP each time to prevent security risks.  
+
+-----------------------------------------------------------------------------------------------------------
+_____________________________________________________________________________________________________________________________________________

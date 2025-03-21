@@ -1,0 +1,65 @@
+____________________________________________________________________________________________________________________________________________
+                                             
+                                             4. Account Status
+                                             
+ __________________________________________________________________________________________________________________________________________
+| POST	 /api/auth/deactivate-account	        | Allows a user to deactivate their account temporarily. This usually means the account is disabled but not deleted.
+| POST	 /api/auth/reactivate-account	        | Reactivates a previously deactivated account, restoring access.
+| DELETE  /api/auth/delete-account	           | Permanently deletes a user account along with its data (if applicable). This action is irreversible.
+|______________________________________________|______________________________________________________________________________________________
+
+
+____________________________________________________________________________________________________________________________________________
+
+                                    Account Status Management Workflow  
+
+This workflow outlines how users can manage their account status, including deactivation, reactivation, and permanent deletion.  
+
+-----------------------------------------------------------------------------------------------------------
+1️⃣ Deactivate Account  
+Used When: A user wants to temporarily disable their account.  
+
+Flow:  
+1. User submits request → POST /api/auth/deactivate-account.  
+2. System updates account status to "deactivated" (e.g., is_active = false).  
+3. User loses access until reactivation.  
+4. Certain data may still be retained (e.g., order history, messages).  
+
+✅ Account is deactivated but can be restored later.  
+
+-----------------------------------------------------------------------------------------------------------
+2️⃣ Reactivate Account  
+Used When: A user wants to restore access to a previously deactivated account.  
+
+Flow:  
+1. User submits request → POST /api/auth/reactivate-account.  
+2. System updates account status to "active" (is_active = true).  
+3. User regains access to their account and services.  
+
+✅ Account is fully restored with all previous data.  
+
+-----------------------------------------------------------------------------------------------------------
+3️⃣ Delete Account (Permanent)  
+Used When: A user wants to permanently remove their account and all associated data.  
+
+Flow:  
+1. User submits request → DELETE /api/auth/delete-account.  
+2. System asks for confirmation (optional, via email or phone OTP).  
+3. System permanently deletes user data:
+   - ❌ User credentials  
+   - ❌ Profile information  
+   - ❌ Associated records (if applicable, based on data retention policies)  
+4. User can no longer recover the account.  
+
+✅ Account is permanently deleted.  
+
+-----------------------------------------------------------------------------------------------------------
+Security & Best Practices  
+✅ Prevent Accidental Deletion: Require re-authentication (password/OTP) before allowing deletion.  
+✅ Data Retention Policy: Allow soft delete (temporary retention before permanent deletion).  
+✅ Notify Users: Send confirmation emails for deactivation, reactivation, or deletion requests.  
+✅ Restrict Access to Deleted Accounts: Ensure deleted users cannot re-register using the same email.  
+
+-----------------------------------------------------------------------------------------------------------
+
+_____________________________________________________________________________________________________________________________________________

@@ -1,0 +1,23 @@
+
+
+2️⃣ User Management (CRUD)
+Endpoints to manage user details, including admin functionality.
+
+ _________________________________________________________________________________________________
+| Method |         Endpoint                   |      Description       | Auth Required             
+|________|____________________________________|________________________|__________________________
+| GET	 |   /api/users	                      |  Get all users	       |  ✅	Admin                |
+| GET    |   /api/users/{id}	              |  Get a specific user   |  ✅	Admin/User           |
+| POST	 |   /api/users	                      |  Create a new user	   |  ✅	Admin                |
+| PUT	 |   /api/users/{id}	              |  Update a user	       |  ✅	Admin/User (self)    |
+| DELETE |	 /api/users/{id}	              |  Delete a user	       |  ✅	Admin                |        
+| POST   |   /api/users/{id}/restore          |  Restore deleted user  |  ✅  Admin/User (self)   | 
+|________|____________________________________|________________________|__________________________
+| GET    |   /api/users/{id}/statuses         |  Get user roles        |  ✅                      |
+| POST   |   /api/users/{id}/statuses         |  Assign roles to user  |  ✅                      |
+| DELETE |   /api/users/{id}/statuses/{status_id} |  Remove user role  |  ✅                      |
+|________|____________________________________|________________________|__________________________
+| GET    |   /api/users/{id}/roles            |  Get user roles        |  ✅                      |
+| POST   |   /api/users/{id}/roles            |  Assign roles to user  |  ✅                      |
+| DELETE |   /api/users/{id}/roles/{role_id}` |  Remove user role      |  ✅                      |
+|________|____________________________________|________________________|__________________________

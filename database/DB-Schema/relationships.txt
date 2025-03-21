@@ -1,0 +1,36 @@
+_____________________________________________________________________________________________________________________________________
+
+                                                 # Users & Authentication
+     _______________________________________________________________________________________________________________________________
+    |      Table 1     |       Table 2             |        Relationship             |                                              |
+    |__________________|___________________________|_________________________________|______________________________________________|
+    |      users	   |    roles	               |         Many-to-One	         |   users.role_id → roles.id                   |
+    |      users       |    statuses               |         Many-to-One	         |   users.status_id → statuses.id              |                                
+    |      users       |    user_phone_numbers     |         One-to-Many             |   user_phone_numbers.user_id → users.id      |
+    |      users       |    user_addresses         |         One-to-Many             |   user_addresses.user_id → users.id          |
+    |      users       |    password_reset_tokens  |         One-to-Many             |   password_reset_tokens.user_id → users.id   |
+    |      users       |    auth_tokens            |         One-to-Many             |   auth_tokens.user_id → users.id             |
+    |      users       |    sessions               |         One-to-Many             |   sessions.user_id → users.id                |
+    |      users       |    two_factor_auth        |         One-to-One              |   two_factor_auth.user_id → users.id         |
+    |      users       |    user_activity_logs     |         One-to-Many             |   user_activity_logs.user_id → users.id      |
+    |      users       |    login_attempts         |         One-to-Many             |   login_attempts.user_id → users.id          |
+    |------------------|---------------------------|---------------------------------|----------------------------------------------|
+    |      addresses   |    user_addresses         |         One-to-Many             |   user_addresses.address_id → addresses.id   |
+    |------------------|---------------------------|---------------------------------|----------------------------------------------|
+    |      devices     |    auth_tokens            |         One-to-Many             |   auth_tokens.device_id → devices.id         |
+    |      devices     |    sessions               |         One-to-Many             |   sessions.device_id → devices.id            |
+    |      devices     |    two_factor_auth        |         One-to-Many             |   two_factor_auth.device_id → devices.id     |
+    |      devices     |    user_activity_logs     |         One-to-Many             |   user_activity_logs.device_id → devices.id  |
+    |      devices     |    login_attempts         |         One-to-Many             |   login_attempts.device_id → devices.id      |
+    |__________________|___________________________|_________________________________|______________________________________________|
+
+_____________________________________________________________________________________________________________________________________
+
+                                                        # Products
+
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________

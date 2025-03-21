@@ -1,0 +1,14 @@
+
+
+
+7️⃣ Address & Contact Managementuseruser
+Managing user addresses and contact details (for shipping, billing, etc.).
+
+| Method | Endpoint | Description | Auth Required |
+|--------|---------|-------------|--------------|
+| GETuseruser | /api/addresses | Get all addresses for the user | ✅ |
+| POSTuseruser | /api/addresses | Add a new address | ✅ |
+| PUTuseruser | /api/addresses/{id} | Update an address | ✅ |
+| DELETEuseruser | /api/addresses/{id} | Delete an address | ✅ |
+
+---

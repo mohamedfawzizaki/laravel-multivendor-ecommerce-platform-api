@@ -1,0 +1,103 @@
+# users:
+php artisan make:migration create_roles_table
+php artisan make:migration create_statuses_table
+php artisan make:migration create_users_table
+php artisan make:migration create_user_phone_numbers_table
+php artisan make:migration create_user_profiles_table
+php artisan make:migration create_addresses_table
+php artisan make:migration create_user_addresses_table
+
+# auth:
+php artisan make:migration create_password_reset_tokens_table
+php artisan make:migration create_devices_table
+php artisan make:migration create_auth_tokens_table
+php artisan make:migration create_sessions_table
+php artisan make:migration create_two_factor_auth_table
+php artisan make:migration create_two_factor_auth_backup_codes_table
+php artisan make:migration create_user_activity_logs_table
+php artisan make:migration create_login_attempts_table
+
+
+# products:
+php artisan make:migration create_categories_table
+php artisan make:migration create_category_hierarchy_table
+php artisan make:migration create_brands_table
+php artisan make:migration create_products_table
+php artisan make:migration create_product_details_table
+php artisan make:migration create_product_variants_table
+php artisan make:migration create_product_images_table
+php artisan make:migration create_product_statuses_table
+php artisan make:migration create_product_discounts_table
+php artisan make:migration create_product_reviews_table
+
+# warehouses:
+php artisan make:migration create_warehouses_table
+php artisan make:migration create_locations_table
+php artisan make:migration create_warehouse_inventory_movements_table
+php artisan make:migration create_product_inventory_table
+php artisan make:migration create_inventory_change_types_table
+php artisan make:migration create_inventory_transactions_table
+php artisan make:migration create_product_inventory_logs_table
+
+
+# carts & wishlists:
+php artisan make:migration create_carts_table
+php artisan make:migration create_wishlists_table
+
+# orders:
+php artisan make:migration create_order_statuses_table
+php artisan make:migration create_orders_table
+php artisan make:migration create_order_items_table
+php artisan make:migration create_order_payments_table
+
+# payments:
+php artisan make:migration create_payments_table
+php artisan make:migration create_payment_transactions_table
+php artisan make:migration create_failed_payments_table
+php artisan make:migration create_payment_gateway_responses_table
+
+
+# shipping:
+php artisan make:migration create_shipping_carriers_table
+php artisan make:migration create_shipping_addresses_table
+php artisan make:migration create_shipments_table
+php artisan make:migration create_shipment_items_table
+php artisan make:migration create_shipment_tracking_logs_table
+
+# discounts:
+php artisan make:migration create_coupons_table
+php artisan make:migration create_coupon_conditions_table
+php artisan make:migration create_coupon_applicable_products_table
+php artisan make:migration create_coupon_applicable_categories_table
+php artisan make:migration create_coupon_redemptions_table
+
+# referrals:
+php artisan make:migration create_referral_programs_table
+php artisan make:migration create_user_referrals_table
+php artisan make:migration create_referral_rewards_table
+
+# social_media_platforms:
+php artisan make:migration create_social_media_platforms_table
+php artisan make:migration create_social_media_credentials_table
+php artisan make:migration create_user_social_media_links_table
+
+
+
+php artisan make:migration create__table
+php artisan make:migration create__table
+php artisan make:migration create__table
+php artisan make:migration create__table
+php artisan make:migration create__table
+
+
+
+
+Method	Description
+$table->cascadeOnUpdate();	Updates should cascade.
+$table->restrictOnUpdate();	Updates should be restricted.
+$table->nullOnUpdate();	    Updates should set the foreign key value to null.
+$table->noActionOnUpdate();	No action on updates.
+$table->cascadeOnDelete();	Deletes should cascade.
+$table->restrictOnDelete();	Deletes should be restricted.
+$table->nullOnDelete();	    Deletes should set the foreign key value to null.
+$table->noActionOnDelete();	Prevents deletes if child records exist.

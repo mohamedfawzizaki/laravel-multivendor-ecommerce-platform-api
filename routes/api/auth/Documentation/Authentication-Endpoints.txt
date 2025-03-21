@@ -1,0 +1,100 @@
+________________________________________________________________________________________________________________________________________________
+                                                Authentication Endpoints
+
+In an authentication system, you typically have several API endpoints to handle user registration,
+ login, token management, and password recovery. Below is a list of essential authentication endpoints:
+
+                            
+                            ---------------------------------------------------------------
+                            
+                                    1. Registration & Account Activation
+ _______________________________________________________________________________________________________________________________________________
+| POST   /api/auth/register                      | Registers a new user.
+| POST   /api/auth/register/email                | Registers a new user and sends a verification email.
+| POST 	 /api/auth/register/phone	         | Registers a user with a phone number (instead of email).
+|________________________________________________|______________________________________________________________________________________________
+| POST   /api/auth/send-verification-email       | Sends a verification email after registration contains a verification code.
+| POST   /api/auth/resend-verification-email     | Resend the email verification link.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| GET    /api/auth/verify-email/{id}/{hash}      | Activates the user account using a verification code sent via email.
+| GET    /api/auth/check-email-verification      | Checks whether the user's email is verified.
+| POST	 /api/auth/change-email	                 | Allows a user to change their email and request verification again.
+|________________________________________________|______________________________________________________________________________________________
+| POST 	 /api/auth/send-phone-otp	         | Sends a One-Time Password (OTP) to the user’s phone.
+| POST 	 /api/auth/resend-phone-otp	         | Resends the OTP if the user didn't receive it.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| POST 	 /api/auth/verify-phone-otp	         | Verifies the OTP and marks the phone number as verified.
+| POST 	 /api/auth/change-phone	                 | Allows a user to update their phone number and request new OTP verification.
+| GET	 /api/auth/check-phone-verification	 | Checks if the user's phone number is verified or not.
+|________________________________________________|______________________________________________________________________________________________
+| POST	 /api/auth/deactivate-account	         | Allows a user to deactivate their account temporarily. This usually means the account is disabled but not deleted.
+| POST	 /api/auth/reactivate-account	         | Reactivates a previously deactivated account, restoring access.
+| DELETE /api/auth/delete-account	         | Permanently deletes a user account along with its data (if applicable). This action is irreversible.
+|________________________________________________|______________________________________________________________________________________________
+
+                                    
+                                        2. Login & Logout
+ _______________________________________________________________________________________________________________________________________________
+| POST   /api/auth/login                         | Authenticate a user and return an access token.
+| POST   /api/auth/token/validate                | Validate the current access token.
+| POST   /api/auth/token/refresh                 | Refresh the access token using a refresh token.
+| POST   /api/auth/token/re-authenticate         | Require Reauthentication for Sensitive Actions (e.g., updating email, deleting account).
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| POST   /api/auth/logout                        | Logs out the user and revokes the access token.
+|                                                | Logs out only the current session (revokes the token sent in the request).
+| POST   /api/auth/logout/all                    | Logs out the user from all active sessions (all devices) by revoking all tokens.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| POST   /api/auth/token/revoke/refresh          | Revokes a specific refresh token, preventing it from being used for obtaining new access tokens.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+|                                                | Useful when a user logs out from one device/session but wants to stay logged in on others.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| POST   /api/auth/token/blacklist               | Blacklist a token (admin|only).
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| GET    /api/auth/tokens                        | Retrieves all active tokens associated with the user account.
+| GET    /api/auth/token/details                 | Returns metadata about the current access token (useful for debugging or monitoring).
+| GET    /api/auth/me                            | Get authenticated user info      
+|________________________________________________|______________________________________________________________________________________________
+
+                                
+                                        3. Password Management
+ _______________________________________________________________________________________________________________________________________________
+| POST	 /api/auth/change-password	             | Allows an authenticated user to change their password.
+|------------------------------------------------|----------------------------------------------------------------------------------------------
+| POST	 /api/auth/forgot-password	             | Sends a password reset link or OTP to the user's email or phone.
+| POST	 /api/auth/reset-password	             | Resets the password using a token (from email) or OTP (from SMS).
+| POST	 /api/auth/resend-password-reset	     | Resends the password reset email or SMS OTP.
+| POST	 /api/auth/validate-password-reset	     | Validates if a password reset token/OTP is still valid.
+|________________________________________________|______________________________________________________________________________________________
+
+
+                                    5. Two|Factor Authentication (2FA)
+ _______________________________________________________________________________________________________________________________________________
+|                                           Setup & Enable 2FA                       
+| POST   /api/auth/2fa/setup                     | Generates a QR code or secret key for setting up 2FA.  
+| POST   /api/auth/2fa/enable                    | Activates 2FA after verifying the user’s TOTP (Google Authenticator, Authy).  
+| POST   /api/auth/2fa/generate-backup-codes     | Generates backup codes for login recovery.  
+|________________________________________________|______________________________________________________________________________________________
+|________________________________________________|______________________________________________________________________________________________
+|                                     2FA Verification During Login                 
+| POST   /api/auth/2fa/verify                    | Verifies the TOTP (or backup code) during login.  
+|________________________________________________|______________________________________________________________________________________________
+|________________________________________________|______________________________________________________________________________________________
+|                                            Disabling 2FA                           
+| POST   /api/auth/2fa/disable                   | Disables 2FA after verifying user password.  
+|________________________________________________|______________________________________________________________________________________________
+|________________________________________________|______________________________________________________________________________________________
+|                                       Recovery & Backup Options               
+| POST   /api/auth/2fa/recover                   | Logs in using a backup code instead of TOTP. 
+| GET    /api/auth/2fa/backup-codes              | Retrieves remaining backup codes (must verify password).  
+| POST   /api/auth/2fa/resend-otp                | Resends a new OTP via email or SMS (for fallback verification).  
+|________________________________________________|______________________________________________________________________________________________
+
+
+
+
+
+
+
+________________________________________________________________________________________________________________________________________________

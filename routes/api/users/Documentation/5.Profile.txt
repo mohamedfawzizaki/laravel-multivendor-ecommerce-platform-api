@@ -1,0 +1,12 @@
+
+
+3️⃣ User Profile Managementuseruser
+Users can update their personal information, passwords, and preferences.
+
+| Method | Endpoint | Description | Auth Required |
+|--------|---------|-------------|--------------|
+| useruserGETuseruser | /api/profile | Get current user profile | ✅ |
+| useruserPUTuseruser | /api/profile/update | Update user profile | ✅ |
+| useruserPUTuseruser | /api/profile/password | Change password | ✅ |
+| useruserPUTuseruser | /api/profile/avatar | Upload/change profile picture | ✅ |
+| useruserDELETEuseruser | /api/profile/avatar | Remove profile picture | ✅ |

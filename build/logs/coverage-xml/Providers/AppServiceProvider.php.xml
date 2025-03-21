@@ -1,0 +1,914 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <file name="AppServiceProvider.php" path="\Providers">
+    <totals>
+      <lines total="137" comments="75" code="62" executable="15" executed="13" percent="86.67"/>
+      <methods count="2" tested="1" percent="50.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="0" percent="0.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="App\Providers\AppServiceProvider" start="23" executable="15" executed="13" crap="2.01">
+      <namespace name="App\Providers"/>
+      <method name="register" signature="register(): void" start="28" end="39" crap="1" executable="1" executed="1" coverage="100"/>
+      <method name="boot" signature="boot(): void" start="44" end="136" crap="1.00" executable="14" executed="12" coverage="85.714285714286"/>
+    </class>
+    <coverage>
+      <line nr="39">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="50">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="51">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="77">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="91">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="94">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="98">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="101">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="117">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="120">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="123">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="126">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+      <line nr="135">
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_mailable_content"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_verifivcation_email"/>
+        <covered by="Tests\Feature\Emails\EmailVerificationTest::test_email_verification_service_sends_activation_email"/>
+        <covered by="Tests\Feature\ExampleTest::test_the_application_returns_a_successful_response"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_users_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_roles_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\MigrationTest::test_statuses_table_has_expected_columns"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_database_seeder_populates_users"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_user_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_role_seeder_populates_roles"/>
+        <covered by="Tests\Integration\Internal\SeederTest::test_status_seeder_populates_statuses"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_all_users"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_retrieves_a_user_by_id"/>
+        <covered by="Tests\Integration\Internal\UserRepositoryTest::test_it_returns_null_for_non_existing_user"/>
+      </line>
+    </coverage>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Providers</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Models\User</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">StripePaymentGateway</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="7">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Http\Request</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="8">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">PHPUnit\Framework\TestCase</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="9">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Services\PaymentService</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="10">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Contracts\PaymentGateway</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="11">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Repositories\BaseRepository</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="12">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Database\Eloquent\Model</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="13">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Support\Facades\Artisan</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="14">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Support\ServiceProvider</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="15">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Repositories\RepositoryInterface</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="16">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Auth\AuthenticationException</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="17">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">App\Repositories\Eloquent\UserRepository</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="18">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Support\Facades\ParallelTesting</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="19">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Support\Facades\Response</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="20">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Illuminate\Auth\Middleware\Authenticate</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="21">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_NAME_QUALIFIED">Symfony\Component\HttpFoundation\Response</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_AS">as</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">SymfonyResponse</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="22"/>
+      <line no="23">
+        <token name="T_CLASS">class</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">AppServiceProvider</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_EXTENDS">extends</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">ServiceProvider</token>
+      </line>
+      <line no="24">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="25">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="26">
+        <token name="T_DOC_COMMENT">     * Register any application services.</token>
+      </line>
+      <line no="27">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="28">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">register</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">void</token>
+      </line>
+      <line no="29">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="30">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//</token>
+      </line>
+      <line no="31">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// $this-&gt;app-&gt;bind(RepositoryInterface::class, BaseRepository::class);</token>
+      </line>
+      <line no="32">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// $this-&gt;app-&gt;bind(UserRepository::class, function ($app) {</token>
+      </line>
+      <line no="33">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     return new UserRepository(new User());</token>
+      </line>
+      <line no="34">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// });</token>
+      </line>
+      <line no="35">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// $this-&gt;app-&gt;bind(UserService::class, function ($app) {</token>
+      </line>
+      <line no="36">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     return new UserService(new UserRepository(new User()));</token>
+      </line>
+      <line no="37">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// });</token>
+      </line>
+      <line no="38">
+        <token name="T_WHITESPACE">        </token>
+      </line>
+      <line no="39">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="40"/>
+      <line no="41">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="42">
+        <token name="T_DOC_COMMENT">     * Bootstrap any application services.</token>
+      </line>
+      <line no="43">
+        <token name="T_DOC_COMMENT">     */</token>
+      </line>
+      <line no="44">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">boot</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_COLON">:</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">void</token>
+      </line>
+      <line no="45">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="46">
+        <token name="T_WHITESPACE">        </token>
+      </line>
+      <line no="47">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="48">
+        <token name="T_DOC_COMMENT">         * for models -----------------------------------------------------------------------</token>
+      </line>
+      <line no="49">
+        <token name="T_DOC_COMMENT">         */</token>
+      </line>
+      <line no="50">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">Model</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">preventSilentlyDiscardingAttributes</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$this</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">app</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">isProduction</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="51">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">Model</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">preventLazyLoading</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_EXCLAMATION_MARK">!</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$this</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">app</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">isProduction</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="52">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Model::handleLazyLoadingViolationUsing(function (Model $model, string $relation) {</token>
+      </line>
+      <line no="53">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     $class = $model::class;</token>
+      </line>
+      <line no="54">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     info("Attempted to lazy load [{$relation}] on model [{$class}].");</token>
+      </line>
+      <line no="55">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// });</token>
+      </line>
+      <line no="56"/>
+      <line no="57"/>
+      <line no="58">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// $this-&gt;app-&gt;bind(</token>
+      </line>
+      <line no="59">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     \Illuminate\Contracts\Debug\ExceptionHandler::class,</token>
+      </line>
+      <line no="60">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     function ($app) {</token>
+      </line>
+      <line no="61">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//         return new class($app) extends \Illuminate\Foundation\Exceptions\Handler {</token>
+      </line>
+      <line no="62">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//             protected function unauthenticated($request, AuthenticationException $exception)</token>
+      </line>
+      <line no="63">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//             {</token>
+      </line>
+      <line no="64">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//                 return Response::json(['message' =&gt; 'Unauthenticated.'], 401);</token>
+      </line>
+      <line no="65">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//             }</token>
+      </line>
+      <line no="66">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//         };</token>
+      </line>
+      <line no="67">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//     }</token>
+      </line>
+      <line no="68">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// );</token>
+      </line>
+      <line no="69"/>
+      <line no="70"/>
+      <line no="71"/>
+      <line no="72"/>
+      <line no="73">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_DOC_COMMENT">/**</token>
+      </line>
+      <line no="74">
+        <token name="T_DOC_COMMENT">         * for testing -----------------------------------------------------------------------</token>
+      </line>
+      <line no="75">
+        <token name="T_DOC_COMMENT">         */</token>
+      </line>
+      <line no="76">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Hook: Runs once for each parallel test process as soon as it starts.</token>
+      </line>
+      <line no="77">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">ParallelTesting</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">setUpProcess</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="78">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// In an eCommerce app, you might want to create a temporary storage directory</token>
+      </line>
+      <line no="79">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// for product images specific to each test process.</token>
+      </line>
+      <line no="80">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// $tempStoragePath = storage_path("app/test_images_{$token}");</token>
+      </line>
+      <line no="81">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// if (!is_dir($tempStoragePath)) {</token>
+      </line>
+      <line no="82">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">//     mkdir($tempStoragePath, 0777, true);</token>
+      </line>
+      <line no="83">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// }</token>
+      </line>
+      <line no="84"/>
+      <line no="85">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// // Optionally, update the filesystem configuration so that your tests</token>
+      </line>
+      <line no="86">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// // use this process-specific directory.</token>
+      </line>
+      <line no="87">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// config(['filesystems.disks.test_images.root' =&gt; $tempStoragePath]);</token>
+      </line>
+      <line no="88"/>
+      <line no="89">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// // Log the process startup for debugging purposes.</token>
+      </line>
+      <line no="90">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// logger()-&gt;info("Parallel test process {$token} started. Using temporary storage: {$tempStoragePath}");</token>
+      </line>
+      <line no="91">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="92"/>
+      <line no="93">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Hook: Runs before each test case in a parallel process.</token>
+      </line>
+      <line no="94">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">ParallelTesting</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">setUpTestCase</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">TestCase</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$testCase</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="95">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// For each test case, you could clear caches, reset mocks, or perform other per-test setups.</token>
+      </line>
+      <line no="96">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// This is helpful if your tests depend on some global state.</token>
+      </line>
+      <line no="97">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_STRING">logger</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">info</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_DOUBLE_QUOTES">"</token>
+        <token name="T_ENCAPSED_AND_WHITESPACE">Setting up test case in process </token>
+        <token name="T_CURLY_OPEN">{</token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_ENCAPSED_AND_WHITESPACE">.</token>
+        <token name="T_DOUBLE_QUOTES">"</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="98">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="99"/>
+      <line no="100">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Hook: Runs when a test database is created for a parallel process.</token>
+      </line>
+      <line no="101">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">ParallelTesting</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">setUpTestDatabase</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">string</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$database</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="102">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// For an eCommerce app, you'll likely need to seed your database with</token>
+      </line>
+      <line no="103">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// categories, products, orders, and other related data.</token>
+      </line>
+      <line no="104">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// First, ensure the test database is fresh.</token>
+      </line>
+      <line no="105">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Artisan::call('migrate:fresh');</token>
+      </line>
+      <line no="106"/>
+      <line no="107">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Then, seed the test database using a custom seeder.</token>
+      </line>
+      <line no="108">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Here, we assume you have an EcommerceTestSeeder that seeds:</token>
+      </line>
+      <line no="109">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// - Categories</token>
+      </line>
+      <line no="110">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// - Products (with associated images and stock)</token>
+      </line>
+      <line no="111">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// - Orders and order items</token>
+      </line>
+      <line no="112">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// - Customers, etc.</token>
+      </line>
+      <line no="113">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Artisan::call('db:seed', ['--class' =&gt; 'UserSeeder']);</token>
+      </line>
+      <line no="114"/>
+      <line no="115">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Log that the database has been seeded for this process.</token>
+      </line>
+      <line no="116">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// logger()-&gt;info("Test database '{$database}' seeded for process {$token}.");</token>
+      </line>
+      <line no="117">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="118"/>
+      <line no="119">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Hook: Runs after each test case in a parallel process.</token>
+      </line>
+      <line no="120">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">ParallelTesting</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">tearDownTestCase</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_COMMA">,</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">TestCase</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$testCase</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="121">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// After each test case, you might clear any temporary data or reset state.</token>
+      </line>
+      <line no="122">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_STRING">logger</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">info</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_DOUBLE_QUOTES">"</token>
+        <token name="T_ENCAPSED_AND_WHITESPACE">Tearing down test case in process </token>
+        <token name="T_CURLY_OPEN">{</token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_ENCAPSED_AND_WHITESPACE">.</token>
+        <token name="T_DOUBLE_QUOTES">"</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="123">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="124"/>
+      <line no="125">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">// Hook: Runs once when the parallel test process is ending.</token>
+      </line>
+      <line no="126">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">ParallelTesting</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">tearDownProcess</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">int</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$token</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="127">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// Perform final cleanup, such as removing temporary directories.</token>
+      </line>
+      <line no="128">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// $tempStoragePath = storage_path("app/test_images_{$token}");</token>
+      </line>
+      <line no="129">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// if (is_dir($tempStoragePath)) {</token>
+      </line>
+      <line no="130">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">//     // For example, you might remove the directory after testing:</token>
+      </line>
+      <line no="131">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">//     // (Be cautious with recursive deletes in production code.)</token>
+      </line>
+      <line no="132">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">//     // @unlinkDirectory($tempStoragePath); // Pseudo-code; use a proper method.</token>
+      </line>
+      <line no="133">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">//     logger()-&gt;info("Parallel test process {$token} ending. Cleanup recommended for temporary storage: {$tempStoragePath}");</token>
+      </line>
+      <line no="134">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_COMMENT">// }</token>
+      </line>
+      <line no="135">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_CURLY">}</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="136">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="137">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+    </source>
+  </file>
+</phpunit>

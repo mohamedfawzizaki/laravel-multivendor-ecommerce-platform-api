@@ -1,0 +1,90 @@
+_____________________________________________________________________________________________________________________________________________
+
+                                       5. Two|Factor Authentication (2FA)
+                                       
+ ___________________________________________________________________________________________________________________________________________
+|                                           Setup & Enable 2FA                       
+| POST   /api/auth/2fa/setup                     | Generates a QR code or secret key for setting up 2FA.  
+| POST   /api/auth/2fa/enable                    | Activates 2FA after verifying the user’s TOTP (Google Authenticator, Authy).  
+| POST   /api/auth/2fa/generate-backup-codes     | Generates backup codes for login recovery.  
+|________________________________________________|__________________________________________________________________________________________
+|________________________________________________|__________________________________________________________________________________________
+|                                     2FA Verification During Login                 
+| POST   /api/auth/2fa/verify                    | Verifies the TOTP (or backup code) during login.  
+|________________________________________________|__________________________________________________________________________________________
+|________________________________________________|__________________________________________________________________________________________
+|                                            Disabling 2FA                           
+| POST   /api/auth/2fa/disable                   | Disables 2FA after verifying user password.  
+|________________________________________________|__________________________________________________________________________________________
+|________________________________________________|__________________________________________________________________________________________
+|                                       Recovery & Backup Options               
+| POST   /api/auth/2fa/recover                   | Logs in using a backup code instead of TOTP. 
+| GET    /api/auth/2fa/backup-codes              | Retrieves remaining backup codes (must verify password).  
+| POST   /api/auth/2fa/resend-otp                | Resends a new OTP via email or SMS (for fallback verification).  
+|________________________________________________|__________________________________________________________________________________________
+
+
+
+_____________________________________________________________________________________________________________________________________________
+
+                              workflow for Two-Factor Authentication (2FA) API:  
+
+-----------------------------------------------------------------------------------------------------------
+📌 5. Two-Factor Authentication (2FA) – Detailed Workflow  
+
+ 🛠 Setup & Enable 2FA  
+1. User requests to set up 2FA  
+   - Request: POST /api/auth/2fa/setup  
+   - Response: Returns a QR code (or secret key) for setting up a TOTP-based authenticator.  
+
+2. User enables 2FA by verifying the OTP  
+   - Request: POST /api/auth/2fa/enable  
+   - Body: { "otp": "123456" }  
+   - Response: 2FA is activated if OTP is correct.  
+
+3. Generate backup codes (for account recovery)  
+   - Request: POST /api/auth/2fa/generate-backup-codes  
+   - Response: Returns a list of backup codes (one-time use for login without OTP).  
+
+-----------------------------------------------------------------------------------------------------------
+🔑 2FA Verification During Login  
+1. User logs in with email & password, then prompted for 2FA  
+   - Request: POST /api/auth/login  
+   - Response: Requires 2FA verification if enabled.  
+
+2. User submits OTP (or backup code) to complete login  
+   - Request: POST /api/auth/2fa/verify  
+   - Body: { "otp": "123456" }  
+   - Response: Returns access token upon successful verification.  
+
+-----------------------------------------------------------------------------------------------------------
+🚫 Disabling 2FA  
+1. User requests to disable 2FA (must verify password)  
+   - Request: POST /api/auth/2fa/disable  
+   - Body: { "password": "user_password" }  
+   - Response: 2FA is disabled, allowing login without OTP.  
+
+-----------------------------------------------------------------------------------------------------------
+🔄 Recovery & Backup Options  
+1. User logs in using a backup code (instead of OTP)  
+   - Request: POST /api/auth/2fa/recover  
+   - Body: { "backup_code": "ABCD-1234-EFGH-5678" }  
+   - Response: Returns access token if valid.  
+
+2. User retrieves remaining backup codes  
+   - Request: GET /api/auth/2fa/backup-codes  
+   - Response: Shows unused backup codes (requires password verification).  
+
+3. User resends OTP via email/SMS (fallback method)  
+   - Request: POST /api/auth/2fa/resend-otp  
+   - Response: Sends a new OTP via email or SMS.  
+
+-----------------------------------------------------------------------------------------------------------
+✅ Final Notes
+- TOTP (Time-based One-Time Passwords) are generated using apps like Google Authenticator, Authy, Microsoft Authenticator.  
+- Backup codes allow login without an OTP in case the user loses access to the authenticator app.  
+- 2FA can be enabled for specific actions, such as updating passwords or deleting an account.  
+
+-----------------------------------------------------------------------------------------------------------
+_____________________________________________________________________________________________________________________________________________
+

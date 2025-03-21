@@ -1,0 +1,11 @@
+
+
+9️⃣ Subscription & Membership (Optional)useruser
+For users who subscribe to premium services.
+
+| Method | Endpoint | Description | Auth Required |
+|--------|---------|-------------|--------------|
+| GETuseruser | /api/subscriptions | Get user subscriptions | ✅ |
+| POSTuseruser | /api/subscriptions | Subscribe to a plan | ✅ |
+| PUTuseruser | /api/subscriptions/{id} | Update subscription | ✅ |
+| DELETEuseruser | /api/subscriptions/{id} | Cancel subscription | ✅ |

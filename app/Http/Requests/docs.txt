@@ -1,0 +1,251 @@
+==================================================================================================================================================================================================================================================================
+                                                                Boolean Validation Rules
+
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `accepted`                    | The field must be `"yes"`, `"on"`, `1`, or `true`.                | `'terms' => 'accepted'` <br> ✅ `['terms' => 'yes']` <br> ❌ `['terms' => 'no']`                                                                          |
+| `accepted_if:another,value`   | The field must be accepted if another field has a specific value. | `'consent' => 'accepted_if:role,admin'` <br> ✅ `['role' => 'admin', 'consent' => 'yes']` <br> ❌ `['role' => 'admin', 'consent' => 'no']`                |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `boolean`                     | The field must be `true` or `false`.                              | `'is_active' => 'boolean'` <br> ✅ `['is_active' => true]` <br> ❌ `['is_active' => "yes"]`                                                               |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `declined`                    | The field must be `"no"`, `"off"`, `0`, or `false`.               | `'opt_out' => 'declined'` <br> ✅ `['opt_out' => 'no']` <br> ❌ `['opt_out' => 'yes']`                                                                    |
+| `declined_if:another,value`   | The field must be declined if another field has a specific value. | `'newsletter' => 'declined_if:age,under_18'` <br> ✅ `['age' => 'under_18', 'newsletter' => 'no']` <br> ❌ `['age' => 'under_18', 'newsletter' => 'yes']` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+==================================================================================================================================================================================================================================================================
+                                                                String Validation Rules
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `url`                         | The field must be a valid URL.                                    | `'website' => 'url'` <br> ✅ `['website' => 'https://example.com']` <br> ❌ `['website' => 'example']` |
+| `active_url`                  | The field must be a valid, reachable URL.                         | `'website' => 'active_url'` <br> ✅ `['website' => 'https://google.com']` <br> ❌ `['website' => 'invalid-url']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `alpha`                       | The field must contain only letters.                              | `'name' => 'alpha'` <br> ✅ `['name' => 'John']` <br> ❌ `['name' => 'John123']` |
+| `alpha_dash`                  | The field may contain letters, numbers, dashes, and underscores.  | `'username' => 'alpha_dash'` <br> ✅ `['username' => 'john_doe-123']` <br> ❌ `['username' => 'john@doe']` |
+| `alpha_num`                   | The field may only contain letters and numbers.                   | `'code' => 'alpha_num'` <br> ✅ `['code' => 'A1B2C3']` <br> ❌ `['code' => 'A1-B2_C3']` |
+| `ascii`                       | The field must contain only ASCII characters.                     | `'text' => 'ascii'` <br> ✅ `['text' => 'Hello!']` <br> ❌ `['text' => 'こんにちは']` |
+| `string`                      | The field must be a string.                                       | `'message' => 'string'` <br> ✅ `['message' => 'Hello']` <br> ❌ `['message' => 123]` |
+| `lowercase`                   | The field must be entirely lowercase.                             | `'username' => 'lowercase'` <br> ✅ `['username' => 'john']` <br> ❌ `['username' => 'John']` |
+| `uppercase`                   | The field must be entirely uppercase.                             | `'code' => 'uppercase'` <br> ✅ `['code' => 'ABC123']` <br> ❌ `['code' => 'abc123']` |
+| `uuid`                        | The field must be a valid UUID.                                   | `'identifier' => 'uuid'` |
+| `ulid`                        | The field must be a valid ULID.                                   | `'identifier' => 'ulid'` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `email`                       | The field must be a valid email address.                          | `'email' => 'email'` <br> ✅ `['email' => 'test@example.com']` <br> ❌ `['email' => 'test@com']` |
+| `confirmed`                   | The field must have a matching `<field>_confirmation` field.      | `'password' => 'confirmed'` <br> ✅ `['password' => 'secret', 'password_confirmation' => 'secret']` <br> ❌ `['password' => 'secret', 'password_confirmation' => 'wrong']` |
+| `current_password`            | The field must match the logged-in user's password.               | `'password' => 'current_password'` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `same:field`                  | The field must match another field exactly.                       | `'password' => 'same:password_confirmation'` |
+| `different:field`             | The field must be different from another field.                   | `'new_password' => 'different:old_password'` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `starts_with:value`           | The field must start with a specific value.                       | `'email' => 'starts_with:test'` <br> ✅ `['email' => 'test@example.com']` <br> ❌ `['email' => 'user@example.com']` |
+| `doesnt_start_with:value`     | The field must not start with a specific value.                   | `'username' => 'doesnt_start_with:admin'` <br> ✅ `['username' => 'user123']` <br> ❌ `['username' => 'admin123']` |
+| `doesnt_end_with:value`       | The field must not end with a specific value.                     | `'username' => 'doesnt_end_with:_test'` <br> ✅ `['username' => 'user123']` <br> ❌ `['username' => 'user_test']` |
+| `ends_with:value`             | The field must end with a specific value.                         | `'email' => 'ends_with:.com'` <br> ✅ `['email' => 'test@gmail.com']` <br> ❌ `['email' => 'test@gmail.org']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ip`                          | The field must be a valid IP address.                             | `'ip_address' => 'ip'` <br> ✅ `['ip_address' => '192.168.1.1']` <br> ❌ `['ip_address' => 'invalid-ip']` |
+| ipv4	                        | The field must be a valid IPv4 address.                           |
+| ipv6	                        | The field must be a valid IPv6 address.                           |
+| `mac_address`                 | The field must be a valid MAC address.                            | `'mac' => 'mac_address'` <br> ✅ `['mac' => '00:1B:44:11:3A:B7']` <br> ❌ `['mac' => 'invalid-mac']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enum:EnumClass`              | The field must be a valid enum value from the given Enum class.   | `'status' => 'enum:OrderStatus'` |
+| `hex_color`                   | The field must be a valid hex color.                              | `'color' => 'hex_color'` <br> ✅ `['color' => '#ff5733']` <br> ❌ `['color' => 'red']` |
+| `json`                        | The field must be a valid JSON string.                            | `'settings' => 'json'` <br> ✅ `['settings' => '{"dark_mode": true}']` <br> ❌ `['settings' => 'not_json']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `max:value`                   | The field must not exceed the given length.                       | `'username' => 'max:10'` <br> ✅ `['username' => 'short']` <br> ❌ `['username' => 'verylongusername']` |
+| `min:value`                   | The field must be at least the given length.                      | `'password' => 'min:8'` <br> ✅ `['password' => '12345678']` <br> ❌ `['password' => '123']` |
+| `size:value`                  | The field must be exactly a given length.                         | `'code' => 'size:6'` <br> ✅ `['code' => '123456']` <br> ❌ `['code' => '1234']` |
+| `in:value1,value2,...`        | The field must be one of the given values.                        | `'role' => 'in:admin,user,editor'` <br> ✅ `['role' => 'admin']` <br> ❌ `['role' => 'guest']` |
+| `not_in:value1,value2,...`    | The field must not be one of the given values.                    | `'role' => 'not_in:admin,superadmin'` <br> ✅ `['role' => 'user']` <br> ❌ `['role' => 'admin']` |
+| `regex:/pattern/`             | The field must match a given regex pattern.                       | `'username' => 'regex:/^[a-zA-Z0-9_]+$/'` <br> ✅ `['username' => 'user_123']` <br> ❌ `['username' => 'user@123']` |
+| `not_regex:/pattern/`         | The field must not match a given regex pattern.                   | `'password' => 'not_regex:/1234/'` <br> ✅ `['password' => 'securepass']` <br> ❌ `['password' => '1234password']` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+
+
+
+==================================================================================================================================================================================================================================================================
+                                                                   Number Validation Rules
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `numeric`                     | The field must be a number.                                       | `'amount' => 'numeric'` <br> ✅ `['amount' => 10.5]` <br> ❌ `['amount' => 'ten']` |
+| `integer`                     | The field must be an integer.                                     | `'quantity' => 'integer'` <br> ✅ `['quantity' => 5]` <br> ❌ `['quantity' => 5.5]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `gt:field`                    | The field must be greater than the value of another field.        | `'price' => 'gt:discount'` <br> ✅ `['price' => 50, 'discount' => 20]` <br> ❌ `['price' => 20, 'discount' => 30]` |
+| `gte:field`                   | The field must be greater than or equal to another field.         | `'age' => 'gte:18'` <br> ✅ `['age' => 18]` <br> ❌ `['age' => 17]` |
+| `lt:field`                    | The field must be less than the value of another field.           | `'discount' => 'lt:price'` <br> ✅ `['discount' => 10, 'price' => 20]` <br> ❌ `['discount' => 30, 'price' => 20]` |
+| `lte:field`                   | The field must be less than or equal to another field.            | `'withdraw_amount' => 'lte:balance'` <br> ✅ `['withdraw_amount' => 50, 'balance' => 50]` <br> ❌ `['withdraw_amount' => 60, 'balance' => 50]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `max:value`                   | The field value must be at most `value`.                          | `'age' => 'max:65'` <br> ✅ `['age' => 64]` <br> ❌ `['age' => 70]` |
+| `min:value`                   | The field value must be at least `value`.                         | `'salary' => 'min:3000'` <br> ✅ `['salary' => 3500]` <br> ❌ `['salary' => 2500]` |
+| `between:min,max`             | The field value must be between the given range (inclusive).      | `'age' => 'between:18,65'` <br> ✅ `['age' => 25]` <br> ❌ `['age' => 17]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `same:field`                  | The field must have the exact same value as another field.        | `'confirmation_code' => 'same:original_code'` <br> ✅ `['confirmation_code' => 1234, 'original_code' => 1234]` <br> ❌ `['confirmation_code' => 5678, 'original_code' => 1234]` |
+| `different:field`             | The field must have a different value than the specified field.   | `'new_pin' => 'different:old_pin'` <br> ✅ `['new_pin' => 5678, 'old_pin' => 1234]` <br> ❌ `['new_pin' => 1234, 'old_pin' => 1234]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `size:value`                  | The field must be exactly `value`.                                | `'seats' => 'size:4'` <br> ✅ `['seats' => 4]` <br> ❌ `['seats' => 5]` |
+| `decimal:places`              | The field must be a decimal with up to `places` decimal places.   | `'price' => 'decimal:2'` <br> ✅ `['price' => 19.99]` <br> ❌ `['price' => 19.999]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `digits:value`                | The field must be exactly `value` digits.                         | `'phone' => 'digits:10'` <br> ✅ `['phone' => 1234567890]` <br> ❌ `['phone' => 12345]` |
+| `digits_between:min,max`      | The field must have a number of digits between `min` and `max`.   | `'zip' => 'digits_between:4,6'` <br> ✅ `['zip' => 12345]` <br> ❌ `['zip' => 123]` |
+| `max_digits:value`            | The field must have at most `value` digits.                       | `'id_number' => 'max_digits:5'` <br> ✅ `['id_number' => 12345]` <br> ❌ `['id_number' => 123456]` |
+| `min_digits:value`            | The field must have at least `value` digits.                      | `'pin' => 'min_digits:4'` <br> ✅ `['pin' => 1234]` <br> ❌ `['pin' => 12]` |
+| `multiple_of:value`           | The field must be a multiple of `value`.                          | `'price' => 'multiple_of:5'` <br> ✅ `['price' => 10]` <br> ❌ `['price' => 7]` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+
+==================================================================================================================================================================================================================================================================
+                                                                   Array Validation Rules
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `array`                       | The field must be an array.                                       | `'tags' => 'array'` <br> ✅ `['tags' => ['PHP', 'Laravel']]` <br> ❌ `['tags' => 'Laravel']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `contains:value`              | The array must contain the given value.                           | `'fruits' => 'contains:apple'` <br> ✅ `['fruits' => ['apple', 'banana']]` <br> ❌ `['fruits' => ['banana', 'orange']]` |
+| `size:value`                  | The array must contain exactly `value` items.                     | `'options' => 'size:4'` <br> ✅ `['options' => ['A', 'B', 'C', 'D']]` <br> ❌ `['options' => ['A', 'B']]` |
+| `distinct`                    | Ensures all values in the array are unique.                       | `'emails.*' => 'distinct'` <br> ✅ `['emails' => ['test@example.com', 'admin@example.com']]` <br> ❌ `['emails' => ['test@example.com', 'test@example.com']]` |
+| `in_array:another_field.*`    | The values must exist in another array field.                     | `'selected.*' => 'in_array:available.*'` <br> ✅ `['selected' => ['blue'], 'available' => ['blue', 'red']]` <br> ❌ `['selected' => ['yellow'], 'available' => ['blue', 'red']]` |
+| `list`                        | The field must be a valid list (indexed sequentially).            | `'items' => 'list'` <br> ✅ `['items' => ['one', 'two', 'three']]` <br> ❌ `['items' => ['one' => 'value', 'two' => 'value']]` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `max:value`                   | The array must have at most `value` items.                        | `'skills' => 'max:3'` <br> ✅ `['skills' => ['PHP', 'JavaScript']]` <br> ❌ `['skills' => ['PHP', 'JavaScript', 'Laravel', 'Go']]` |
+| `min:value`                   | The array must have at least `value` items.                       | `'users' => 'min:2'` <br> ✅ `['users' => ['Alice', 'Bob']]` <br> ❌ `['users' => ['Alice']]` |
+| `between:min,max`             | The array must have between `min` and `max` items.                | `'roles' => 'array|between:2,5'` <br> ✅ `['roles' => ['admin', 'editor']]` <br> ❌ `['roles' => ['admin']]` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+                                                                  
+                                                                  
+
+
+
+                                                                  
+==================================================================================================================================================================================================================================================================
+                                                                   Date Validation Rules
+
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `date`                        | The field must be a valid date format.                            | `'birthday' => 'date'` <br> ✅ `['birthday' => '2024-05-20']` <br> ❌ `['birthday' => 'invalid-date']` |
+| `date_equals:date`            | The date must exactly match the specified date.                   | `'exam_date' => 'date_equals:2024-06-15'` <br> ✅ `['exam_date' => '2024-06-15']` <br> ❌ `['exam_date' => '2024-06-14']` |
+| `date_format:format`          | The date must match the specified format.                         | `'appointment' => 'date_format:Y-m-d'` <br> ✅ `['appointment' => '2024-07-10']` <br> ❌ `['appointment' => '07-10-2024']` |
+| `timezone`                    | The field must be a valid timezone.                               | `'timezone' => 'timezone'` <br> ✅ `['timezone' => 'America/New_York']` <br> ❌ `['timezone' => 'InvalidZone']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `after:date`                  | The date must be after the specified date.                        | `'start_date' => 'after:2024-01-01'` <br> ✅ `['start_date' => '2024-02-01']` <br> ❌ `['start_date' => '2023-12-31']` |
+| `after_or_equal:date`         | The date must be after or equal to the specified date.            | `'start_date' => 'after_or_equal:2024-01-01'` <br> ✅ `['start_date' => '2024-01-01']` <br> ❌ `['start_date' => '2023-12-31']` |
+| `before:date`                 | The date must be before the specified date.                       | `'end_date' => 'before:2025-01-01'` <br> ✅ `['end_date' => '2024-12-31']` <br> ❌ `['end_date' => '2025-01-02']` |
+| `before_or_equal:date`        | The date must be before or equal to the specified date.           | `'end_date' => 'before_or_equal:2025-01-01'` <br> ✅ `['end_date' => '2025-01-01']` <br> ❌ `['end_date' => '2025-01-02']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `different:field`             | The date must be different from another field.                    | `'start_date' => 'different:end_date'` <br> ✅ `['start_date' => '2024-08-01', 'end_date' => '2024-08-02']` <br> ❌ `['start_date' => '2024-08-01', 'end_date' => '2024-08-01']` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+
+                                                                  
+==================================================================================================================================================================================================================================================================
+                                                                  File Validation Rules
+
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `file`                        | The field must be a valid file upload.                            | `'attachment' => 'file'` <br> ✅ `['attachment' => 'uploaded file']` <br> ❌ `['attachment' => 'string value']` |
+| `image`                       | The file must be an image (jpeg, png, bmp, gif, svg, webp).       | `'photo' => 'image'` <br> ✅ `['photo' => 'photo.jpg']` <br> ❌ `['photo' => 'document.pdf']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `extensions:ext1,ext2,...`    | The file must have one of the specified extensions.               | `'file' => 'extensions:pdf,docx'` <br> ✅ `['file' => 'document.pdf']` <br> ❌ `['file' => 'document.txt']` |
+| `mimes:type1,type2,...`       | The file must have a valid MIME type.                             | `'file' => 'mimes:jpeg,png,pdf'` <br> ✅ `['file' => 'image.png']` <br> ❌ `['file' => 'video.mp4']` |
+| `mimetypes:type1,type2,...`   | The file must match specific MIME types.                          | `'file' => 'mimetypes:application/pdf,image/png'` <br> ✅ `['file' => 'PDF file']` <br> ❌ `['file' => 'Word document']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dimensions`                  | The image must meet specific width/height constraints.            | `'image' => 'dimensions:min_width=100,min_height=200,max_width=1200,max_height=1200'` <br> ✅ `['image' => '800x600px']` <br> ❌ `['image' => '50x50px']` |
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `between:min,max`             | The file size must be between `min` and `max` kilobytes.          | `'file' => 'between:50,5000'` <br> ✅ `['file' => '3MB file']` <br> ❌ `['file' => '10MB file']` |
+| `max:value`                   | The file size must not exceed `value` kilobytes.                  | `'file' => 'max:2048'` <br> ✅ `['file' => '1MB file']` <br> ❌ `['file' => '5MB file']` |
+| `size:value`                  | The file size must be exactly `value` kilobytes.                  | `'file' => 'size:1024'` <br> ✅ `['file' => '1MB file']` <br> ❌ `['file' => '900KB file']` |
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+
+
+
+==================================================================================================================================================================================================================================================================
+                                                                  Database Validation Rules 
+
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                           |                               Example Usage                                                                                                                
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________
+|-------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------
+| `exists:table,column`         | Ensures the field value exists in a specified table column.       | `'email' => 'exists:users,email'` <br> ✅ `['email' => 'user@example.com']` (exists in `users` table) <br> ❌ `['email' => 'fake@example.com']` (not in `users` table) 
+| `unique:table,column,except,idColumn` | Ensures the field value is unique in a table column.      | `'username' => 'unique:users,username'` <br> ✅ `['username' => 'new_user']` (not in `users` table) <br> ❌ `['username' => 'existing_user']` (already exists in `users` table) 
+|_______________________________|___________________________________________________________________|____________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+==================================================================================================================================================================================================================================================================
+                                                                  Utility Validation Rules
+
+
+
+ ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|           Rule                |                             Description                                           |                               Example Usage                                                                                                                |
+|_______________________________|___________________________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+| `bail`                        | Stops running validation rules on first failure.                                  | `'email' => 'bail|required|email|unique:users,email'` <br> ❌ If `required` fails, `email` and `unique` won't run. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `exclude`                     | Excludes the field from validation and request data.                              | `'discount' => 'exclude'` <br> The `discount` field won't be included in request data. |
+| `exclude_if:field,value`      | Excludes the field if another field has a specific value.                         | `'promo_code' => 'exclude_if:discount,true'` <br> ✅ If `discount` is `true`, `promo_code` is ignored. |
+| `exclude_unless:field,value`  | Excludes the field unless another field has a specific value.                     | `'coupon' => 'exclude_unless:membership,premium'` <br> ✅ `coupon` is only validated if `membership` is `premium`. |
+| `exclude_with:fields`         | Excludes the field if any of the specified fields are present.                    | `'gift_card' => 'exclude_with:promo_code'` <br> ✅ If `promo_code` is present, `gift_card` is ignored. |
+| `exclude_without:fields`      | Excludes the field if none of the specified fields are present.                   | `'discount' => 'exclude_without:promo_code'` <br> ✅ `discount` is ignored if `promo_code` is missing. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `filled`                      | The field must be present and not empty.                                          | `'nickname' => 'filled'` <br> ❌ `['nickname' => '']` (fails) <br> ✅ `['nickname' => 'John']` (passes) |
+| `nullable`                    | Allows `null` values for the field.                                               | `'bio' => 'nullable|string'` <br> ✅ `['bio' => null]` is valid. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `missing`                     | The field must not be present in the request.                                     | `'admin' => 'missing'` <br> ❌ If `admin` exists, validation fails. |
+| `missing_if:field,value`      | The field must be missing if another field has a specific value.                  | `'discount' => 'missing_if:user_role,admin'` <br> ✅ `discount` must not be sent if `user_role` is `admin`. |
+| `missing_unless:field,value`  | The field must be missing unless another field has a specific value.              | `'vip_code' => 'missing_unless:membership,VIP'` <br> ✅ If `membership` is not `VIP`, `vip_code` must be absent. |
+| `missing_with:fields`         | The field must be missing if any of the specified fields are present.             | `'secret_key' => 'missing_with:api_token'` <br> ✅ If `api_token` is present, `secret_key` must be absent. |
+| `missing_with_all:fields`     | The field must be missing if all specified fields are present.                    | `'backup_code' => 'missing_with_all:email,phone'` <br> ✅ If both `email` and `phone` are present, `backup_code` must be absent. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `present`                     | The field must be present but can be empty.                                       | `'username' => 'present'` <br> ✅ `['username' => '']` (passes) |
+| `present_if:field,value`      | The field must be present if another field has a specific value.                  | `'company_name' => 'present_if:employment,employed'` <br> ✅ `company_name` is required if `employment` is `employed`. |
+| `present_unless:field,value`  | The field must be present unless another field has a specific value.              | `'referral_code' => 'present_unless:user_role,admin'` <br> ✅ `referral_code` is required unless `user_role` is `admin`. |
+| `present_with:fields`         | The field must be present if any of the specified fields are present.             | `'passport_number' => 'present_with:visa'` <br> ✅ If `visa` is present, `passport_number` must also be present. |
+| `present_with_all:fields`     | The field must be present if all specified fields are present.                    | `'secondary_email' => 'present_with_all:primary_email,phone'` <br> ✅ If `primary_email` and `phone` are present, `secondary_email` must also be present. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `prohibited`                  | The field must not be present in the request.                                     | `'age' => 'prohibited'` <br> ❌ If `age` exists, validation fails. |
+| `prohibited_if:field,value`   | The field is prohibited if another field has a specific value.                    | `'promo_code' => 'prohibited_if:discount,true'` <br> ✅ If `discount` is `true`, `promo_code` must not be present. |
+| `prohibited_unless:field,value| The field is prohibited unless another field has a specific value.                | `'extra_fees' => 'prohibited_unless:user_role,admin'` <br> ✅ `extra_fees` is allowed only if `user_role` is `admin`. |
+| `prohibits:field`             | The field prohibits another field from being present.                             | `'coupon' => 'prohibits:gift_card'` <br> ✅ If `coupon` is present, `gift_card` must not be. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `required`                    | The field is required.                                                            | `'name' => 'required'` <br> ❌ `['name' => '']` (fails) <br> ✅ `['name' => 'John']` (passes) |
+| `required_if:field,value`     | The field is required if another field has a specific value.                      | `'company' => 'required_if:employment,employed'` <br> ✅ If `employment` is `employed`, `company` is required. |
+| `required_if_accepted:field`  | The field is required if another field is accepted (`yes`, `on`, `1`, `true`).    | `'terms' => 'required_if_accepted:agreement'` <br> ✅ If `agreement` is accepted, `terms` is required. |
+| `required_if_declined:field`  | The field is required if another field is declined (`no`, `off`, `0`, `false`).   | `'reason' => 'required_if_declined:subscribe'` <br> ✅ If `subscribe` is declined, `reason` is required. |
+| `required_unless:field,value` | The field is required unless another field has a specific value.                  | `'team_name' => 'required_unless:user_role,admin'` <br> ✅ If `user_role` is not `admin`, `team_name` is required. |
+| `required_with:fields`        | The field is required if any of the specified fields are present.                 | `'state' => 'required_with:country'` <br> ✅ If `country` is present, `state` is required. |
+| `required_with_all:fields`    | The field is required if all specified fields are present.                        | `'city' => 'required_with_all:country,state'` <br> ✅ If `country` and `state` are present, `city` is required. |
+| `required_without:fields`     | The field is required if any of the specified fields are missing.                 | `'email' => 'required_without:phone'` <br> ✅ If `phone` is missing, `email` is required. |
+| `required_without_all:fields` | The field is required if all specified fields are missing.                        | `'contact' => 'required_without_all:email,phone'` <br> ✅ If both `email` and `phone` are missing, `contact` is required. |
+| `required_array_keys:keys`    | The specified array keys must be present in the request.                          | `'addresses' => 'required_array_keys:home,work'` <br> ✅ `addresses['home']` and `addresses['work']` must exist. |
+|-------------------------------|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sometimes`                   | Applies validation only if the field is present.                                  | `'nickname' => 'sometimes|string'` <br> ✅ If `nickname` exists, it must be a string. |
+|_______________________________|___________________________________________________________________________________|____________________________________________________________________________________________________________________________________________________________|
+
+
+==================================================================================================================================================================================================================================================================
