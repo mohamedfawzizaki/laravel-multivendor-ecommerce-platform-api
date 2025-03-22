@@ -25,8 +25,8 @@ Route::prefix('users')
 
         Route::delete('{id}', 'delete');
         Route::delete('delete/bulk', 'deleteBulk');
+        Route::get('delete/check/{id}', 'isSoftDeleted');
 
-        Route::get('delete/check', 'IsSoftDeleted');
         Route::post('restore/{id}/', 'restore');
         Route::post('restore/bulk/users', 'restoreBulk');
     });

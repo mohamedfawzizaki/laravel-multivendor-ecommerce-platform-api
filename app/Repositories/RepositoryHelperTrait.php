@@ -10,16 +10,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 trait RepositoryHelperTrait
 {
-    /**
-     * Filters and validates an array of column names against the allowed columns.
-     *
-     * This method ensures that only valid columns (defined in `availableColumns`) are included in the query.
-     * If no valid columns are found, it logs an error and throws an exception.
-     *
-     * @param array $columns The columns to validate.
-     * @return array The filtered array of valid columns.
-     * @throws Exception If no valid columns are found.
-     */
     public function getValidColumns(array $columns): array
     {
         // Filter the columns to include only those that are in the availableColumns list.
@@ -53,6 +43,7 @@ trait RepositoryHelperTrait
         }
         return (object) $modelData;
     }
+
     public function getSpecificColumnsFromCollection($collection, $columns)
     {
         foreach ($collection as $entity) {
@@ -65,16 +56,6 @@ trait RepositoryHelperTrait
         return collect($collectionData);
     }
 
-    /**
-     * Hides the pivot attribute from a collection or paginated result of models.
-     *
-     * This method processes a collection or paginated result and applies a callback function
-     * to hide pivot attributes for each item. It preserves the pagination structure if the input is paginated.
-     *
-     * @param Collection|LengthAwarePaginator $items The items to process.
-     * @param callable $hidePivotCallback A callback function to hide pivot attributes for a single model.
-     * @return Collection|LengthAwarePaginator The processed items with hidden pivot attributes.
-     */
     public function hidePivot(Collection|LengthAwarePaginator $items, callable $hidePivotCallback): Collection|LengthAwarePaginator
     {
         if ($items instanceof LengthAwarePaginator) {
@@ -88,16 +69,6 @@ trait RepositoryHelperTrait
         return $items;
     }
 
-    /**
-     * Hides pivot attributes from a single model's relationships.
-     *
-     * This method processes a model instance and hides the pivot attribute for specified relationships.
-     * It supports nested relationships (e.g., 'role.permissions') and skips relationships that do not exist.
-     *
-     * @param Model $model The model instance to process.
-     * @param array $relationships An array of relationships to check for pivot attributes.
-     * @return void
-     */
     public function hideModelPivot(Model $model, array $relationships): void
     {
         foreach ($relationships as $relationship) {
@@ -122,7 +93,6 @@ trait RepositoryHelperTrait
             }
         }
     }
-
 
     public function prepareDataForMassAssignment(array $fillable, array $data): array
     {
@@ -162,7 +132,6 @@ trait RepositoryHelperTrait
 
         return [$column, $operator, $value];
     }
-
     public function applyConditions($query, $conditions)
     {
         if (!empty($conditions)) {
@@ -187,5 +156,57 @@ trait RepositoryHelperTrait
                 }
             }
         }
+    }
+
+    public function prepareRetreivedCollection(Collection|LengthAwarePaginator $records, array $validColumns): Collection|LengthAwarePaginator
+    {
+        // This method is called after the collection has been retrieved from the database
+        // If no specific columns are requested, ensure relationships are loaded.
+        if ($validColumns == ['*']) {
+            // Get the relationships to load from the repository.
+            $relationships = $this->getRelationships();
+
+            // Load missing relationships for each record if they are defined.
+            if (!empty($relationships)) {
+                foreach ($records as $record) {
+                    $record->loadMissing($relationships);
+                }
+            }
+        }
+
+        // Hide pivot attributes from the retrieved records' relationships.
+        $records = $this->hidePivot($records, function ($record) {
+            $this->hideModelPivot($record, $this->getRelationships());
+        });
+
+        // If specific columns are requested, return only those columns.
+        // This avoids including relationship data in the response.
+        // Otherwise, return the full record object.
+        if (!$records->isEmpty()) {
+            return $validColumns !== ['*'] ? $this->getSpecificColumnsFromCollection($records, $validColumns) : $records;
+        }
+        // return empty collection:
+        return $records;
+    }
+    public function prepareRetreivedModel(object $record, array $validColumns): ?object
+    {
+        // This method is called after the model has been retrieved from the database
+        // If no specific columns are requested, ensure relationships are loaded.
+        if ($validColumns == ['*']) {
+            // Get the relationships to load from the repository.
+            $relationships = $this->getRelationships();
+
+            // Load missing relationships if they are defined.
+            if (!empty($relationships)) {
+                $record->loadMissing($relationships);
+            }
+        }
+
+        // Hide pivot attributes from the retrieved record's relationships.
+        $this->hideModelPivot($record, $this->getRelationships());
+
+        // If specific columns are requested, return only those columns.
+        // to avoid appearance of the relationships data, else // Return the full record object.
+        return $validColumns !== ['*'] ? $this->getSpecificColumnsFromSingleModel($record, $validColumns) : $record;
     }
 }

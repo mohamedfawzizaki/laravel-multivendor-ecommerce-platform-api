@@ -3,10 +3,7 @@
 namespace App\Repositories\Eloquent;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
-use App\Repositories\RepositoryHelperTrait;
 use App\Repositories\Eloquent\BaseRepository;
-use App\Repositories\RepositoryDeletionTrait;
 use App\Repositories\RepositoryPropertiesInterface;
 
 /**

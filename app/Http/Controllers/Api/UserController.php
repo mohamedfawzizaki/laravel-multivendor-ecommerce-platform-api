@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreUserRequest;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -25,25 +24,16 @@ class UserController extends Controller
      */
     public function __construct(protected UserService $userService) {}
 
-    /**
-     * Handles the retrieval of users, either paginated or non-paginated.
-     *
-     * This method processes the request to fetch users based on the provided
-     * pagination parameters. If pagination is not requested, it retrieves all users.
-     * 
-     * @param PaginateRequest $request The validated request containing pagination parameters.
-     * @return JsonResponse The JSON response with retrieved users or an error message.
-     */
     public function index(PaginateRequest $request): JsonResponse
     {
         try {
             // Extract validated input values with default fallbacks.
             $validated = $request->validated();
             $paginate = $validated['paginate'] ?? false;
-            $columns = $validated['columns'] ?? null;
             $withTrashed = $validated['with_trashed'] ?? false;
             $onlyTrashed = $validated['only_trashed'] ?? false;
-            $conditions = $validated['conditions'] ?? null;
+            $conditions = $validated['conditions'] ?? [];
+            $columns = $validated['columns'] ?? ['*'];
 
 
             // var_dump($conditions);
@@ -73,16 +63,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Retrieves a user by ID with optional specific columns.
-     *
-     * Validates the request parameters, retrieves the user from the service, and 
-     * returns an appropriate response. Logs warnings for validation failures.
-     *
-     * @param Request $request The HTTP request containing optional columns.
-     * @param string $id The ID of the user to retrieve.
-     * @return JsonResponse The JSON response containing the user data or an error message.
-     */
     public function show(Request $request, string $id): JsonResponse
     {
         try {
@@ -111,7 +91,7 @@ class UserController extends Controller
 
             // Extract validated data.
             $validated = $validator->validated();
-            $columns = $validated['columns'] ?? null;
+            $columns = $validated['columns'] ?? ['*'];
 
             // Retrieve the user.
             $user = $this->userService->getUserById($validated['id'], $columns);
@@ -154,7 +134,7 @@ class UserController extends Controller
             // Extract validated data.
             $validated = $validator->validated();
             $searchBy = ($validated['email'] ?? null) ? 'email' : 'name';
-            $columns = $validated['columns'] ?? null;
+            $columns = $validated['columns'] ?? ['*'];
 
             $user = $this->userService->searchBy($searchBy, $validated[$searchBy], $columns);
 
@@ -192,31 +172,48 @@ class UserController extends Controller
     {
         try {
             // Merge request data with the provided ID for validation.
-            $data = array_merge($request->all(), ['id' => $id]);
-            // Validate input parameters.
-            $validator = Validator::make($data, [
+            $idAndColumns = array_merge($request->all(), ['id' => $id]);
+            $validatorForidAndColumns = Validator::make($idAndColumns, [
                 'id' => 'required|string|uuid', // Ensures a valid UUID format.
+                'columns'  => 'sometimes|array',
+            ]);
+            // Handle validation failures.
+            if ($validatorForidAndColumns->fails()) {
+                Log::warning("User updating validation failed.", [
+                    'errors' => $validatorForidAndColumns->errors(),
+                ]);
+
+                return ApiResponse::error(
+                    'Invalid request parameters.',
+                    422,
+                    $validatorForidAndColumns->errors()
+                );
+            }
+            // Validate input parameters.
+            $validatorForDataToUpdate = Validator::make($request->all(), [
                 'name' => 'string|unique:users,name|max:255',
                 'email' => 'email|unique:users,email',
                 'password' => ['sometimes', 'confirmed',  new StrongPassword],
             ]);
 
             // Handle validation failures.
-            if ($validator->fails()) {
+            if ($validatorForDataToUpdate->fails()) {
                 Log::warning("User updating validation failed.", [
-                    'errors' => $validator->errors(),
+                    'errors' => $validatorForDataToUpdate->errors(),
                 ]);
 
                 return ApiResponse::error(
                     'Invalid request parameters.',
                     422,
-                    $validator->errors()
+                    $validatorForDataToUpdate->errors()
                 );
             }
             // Extract validated data.
-            $validated = $validator->validated();
+            $validatedData = $validatorForDataToUpdate->validated();
+            $id = $validatorForidAndColumns->validated()['id'];
+            $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
 
-            $user = $this->userService->update($id, $validated);
+            $user = $this->userService->update($id, $validatedData, $columns);
 
             // Return success response.
             return ApiResponse::success($user, 'User updated successfully.');
@@ -257,8 +254,8 @@ class UserController extends Controller
             };
             $validated = $validator->validated();
 
-            $conditions = $validated['conditions'] ?? null;
-            $columns = $validated['columns'] ?? null;
+            $conditions = $validator->validated()['conditions'] ?? [];
+            $columns = $validator->validated()['columns'] ?? ['*'];
 
             // Convert created_at & updated_at if provided
             if (!empty($validated['created_at'])) {
@@ -333,7 +330,6 @@ class UserController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-
     public function deleteBulk(Request $request)
     {
         try {
@@ -375,9 +371,107 @@ class UserController extends Controller
         }
     }
 
-    public function IsSoftDeleted() {}
+    public function isSoftDeleted(string $id)
+    {
+        try {
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|string|uuid'
+            ]);
 
-    public function restore() {}
+            // Handle validation failures.
+            if ($validator->fails()) {
+                Log::warning("User checking validation failed.", [
+                    'errors' => $validator->errors(),
+                ]);
 
-    public function restoreBulk() {}
+                return ApiResponse::error(
+                    'Invalid request parameters.',
+                    422,
+                    $validator->errors()
+                );
+            }
+
+            $id = $validator->validated()['id'];
+
+            $isDeleted = $this->userService->softDeleted($id);
+
+            return $isDeleted ?
+                ApiResponse::success($isDeleted, 'User is soft deleted') :
+                ApiResponse::success($isDeleted, 'User is not soft deleted');
+        } catch (Exception $e) {
+            // Log the exception for debugging.
+            Log::error("Error checking soft deleted user: {$e->getMessage()}", ['exception' => $e]);
+
+            // Return an error response.
+            return ApiResponse::error($e->getMessage(), 500);
+        }
+    }
+    public function restore(Request $request, string $id)
+    {
+        try {
+            // Merge request data with the provided ID for validation.
+            $data = array_merge($request->all(), ['id' => $id]);
+            $validator = Validator::make($data, [
+                'id' => 'required|string|uuid',
+                'columns'  => 'sometimes|array',
+            ]);
+
+            // Handle validation failures.
+            if ($validator->fails()) {
+                Log::warning("User restoring validation failed.", [
+                    'errors' => $validator->errors(),
+                ]);
+
+                return ApiResponse::error(
+                    'Invalid request parameters.',
+                    422,
+                    $validator->errors()
+                );
+            }
+
+            $id = $validator->validated()['id'];
+            $columns = $validator->validated()['columns'] ?? ['*'];
+
+            $user = $this->userService->restore($id, $columns);
+
+            return ApiResponse::success($user, 'User is restored');
+        } catch (Exception $e) {
+            // Log the exception for debugging.
+            Log::error("Error restoring soft deleted user: {$e->getMessage()}", ['exception' => $e]);
+
+            // Return an error response.
+            return ApiResponse::error($e->getMessage(), 500);
+        }
+    }
+    public function restoreBulk(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'conditions'  => 'sometimes|array',
+                'columns'  => 'sometimes|array',
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning("Users restoring validation failed.", [
+                    'errors' => $validator->errors(),
+                ]);
+
+                return ApiResponse::error(
+                    'Invalid request parameters.',
+                    422,
+                    $validator->errors()
+                );
+            }
+
+            $conditions = $validator->validated()['conditions'] ?? [];
+            $columns = $validator->validated()['columns'] ?? ['*'];
+
+            $users = $this->userService->restoreBulk($conditions, $columns);
+
+            return ApiResponse::success($users, 'User is restored');
+        } catch (Exception $e) {
+            Log::error("Error restoring users: {$e->getMessage()}", ['exception' => $e]);
+            return ApiResponse::error($e->getMessage(), 500);
+        }
+    }
 }
