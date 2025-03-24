@@ -74,7 +74,7 @@ class StoreUserRequest extends FormRequest
     protected function failedValidation(ValidatorContract $validator)
     {
         // Log a warning with details about the validation failure.
-        Log::warning("Validation failed for user retrieval.", [
+        Log::warning("Validation failed for user creation.", [
             'errors' => $validator->errors(), // The validation error messages.
         ]);
 

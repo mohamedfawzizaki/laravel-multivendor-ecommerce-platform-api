@@ -12,9 +12,14 @@ trait RepositoryHelperTrait
 {
     public function getValidColumns(array $columns): array
     {
-        // Filter the columns to include only those that are in the availableColumns list.
-        $filteredColumns = array_filter($columns, function ($column) {
-            return in_array($column, $this->getAvailableColumns());
+        // Get available standard columns
+        $availableColumns = $this->getAvailableColumns();
+
+        // Merge available columns with relationship aliases
+        $allAvailableColumns = array_merge($availableColumns, array_keys($this->getRelationshipMap()));
+
+        $filteredColumns = array_filter($columns, function ($column) use ($allAvailableColumns) {
+            return in_array($column, $allAvailableColumns);
         });
 
         // If no valid columns are found, log an error and throw an exception.
@@ -26,14 +31,17 @@ trait RepositoryHelperTrait
             );
         }
 
-        // // Ensure we include necessary foreign keys if relationships exist
-        // foreach ($this->relationshipKeys as $key) {
-        //     if (!in_array($key, $filteredColumns) && in_array($key, $this->getAvailableColumns())) {
-        //         $filteredColumns[] = $key; // Ensure foreign keys are included
-        //     }
-        // }
-
         return $filteredColumns;
+    }
+
+    public function mapRelationshipColumns($columns): array
+    {
+        // Fetch the relationship map once
+        $relationshipMap = $this->getRelationshipMap();
+        // Replace relationship aliases in the requested columns
+        $columns = array_map(fn($column) => $relationshipMap[$column] ?? $column, $columns);
+
+        return $columns;
     }
 
     public function getSpecificColumnsFromSingleModel($model, $columns)
@@ -115,10 +123,23 @@ trait RepositoryHelperTrait
         // Define allowed SQL operators to prevent injection
         $allowedOperators = ['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN'];
 
+        // // Validate column to prevent SQL injection
+        // if (!in_array($column, $this->getAvailableConditionColumns()) && !in_array($column, $this->getRelationshipKeysAliasis())) {
+        //     throw new \InvalidArgumentException(
+        //         "Invalid column name: $column - Valid columns are: " . implode(', ', $this->getAvailableConditionColumns())
+        //     );
+        // }
+
+        // Fetch the relationship map once
+        $relationshipMap = $this->getRelationshipMap();
+
         // Validate column to prevent SQL injection
-        if (!in_array($column, $this->getAvailableConditionColumns())) {
-            throw new \InvalidArgumentException("Invalid column name: $column - Valid columns are: " . implode(', ', $this->getAvailableConditionColumns()));
+        if (!in_array($column, $this->getAvailableConditionColumns()) && !isset($relationshipMap[$column])) {
+            throw new \InvalidArgumentException(
+                "Invalid column name: $column - Valid columns are: " . implode(', ', array_merge($this->getAvailableConditionColumns(), array_keys($relationshipMap)))
+            );
         }
+
 
         // Validate operator to prevent injection
         if (!in_array(strtoupper($operator), $allowedOperators)) {
@@ -132,27 +153,71 @@ trait RepositoryHelperTrait
 
         return [$column, $operator, $value];
     }
+    /**
+     * Applies filtering conditions dynamically, including handling relationship-based filtering.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query - The query builder instance.
+     * @param array $conditions - List of filtering conditions (e.g., ['role:admin', 'status:active']).
+     */
     public function applyConditions($query, $conditions)
     {
         if (!empty($conditions)) {
             foreach ($conditions as $condition) {
+                // Split condition (e.g., 'role:admin' => ['role', '=', 'admin'])
                 $parameters = $this->validateConditionParameter(explode(':', $condition));
-                $column = $parameters[0];
-                $operator = strtoupper($parameters[1]); // Ensure consistency
-                $value = $parameters[2];
 
-                if ($operator === 'IN') {
-                    $query->whereIn($column, explode(',', $value));
-                } elseif ($operator === 'NOT IN') {
-                    $query->whereNotIn($column, explode(',', $value));
-                } elseif ($operator === 'BETWEEN') {
-                    $query->whereBetween($column, explode(',', $value));
-                } elseif ($operator === 'NOT BETWEEN') {
-                    $query->whereNotBetween($column, explode(',', $value));
-                } elseif ($operator === 'LIKE') {
-                    $query->where($column, 'LIKE', '%' . $value . '%');
+                if (count($parameters) < 3) {
+                    continue; // Skip invalid conditions
+                }
+
+                $column = $parameters[0]; // Column name (or alias)
+                $operator = strtoupper($parameters[1]); // Standardize operator
+                $value = $parameters[2]; // Condition value
+
+                // Handle relationship keys (aliases like 'role' instead of 'role_id')
+                // if (in_array($column, $this->getRelationshipKeysAliasis())) {
+                //     $mappedIndex = array_search($column, $this->getRelationshipKeysAliasis());
+                //     if ($mappedIndex !== false) {
+                //         $actualColumn = $this->relationshipKeys[$mappedIndex]; // Map alias to actual column
+
+                //         // Apply the condition to the related table using a join
+                //         $query->whereHas(str_replace('_id', '', $actualColumn), function ($q) use ($value) {
+                //             $q->where('name', $value); // Assuming the related table has a 'name' field
+                //         });
+                //     }
+                // }
+                // replace : Check if the column is an alias in the relationship map
+                // Fetch the relationship map once
+                $relationshipMap = $this->getRelationshipMap();
+                if (isset($relationshipMap[$column])) {
+                    $actualColumn = $relationshipMap[$column]; // Get actual column name
+
+                    // Apply condition to the related table using a join
+                    $query->whereHas(str_replace('_id', '', $actualColumn), function ($q) use ($value) {
+                        $q->where('name', $value); // Assuming the related table has a 'name' field
+                    });
                 } else {
-                    $query->where($column, $operator, $value);
+                    // Handle standard conditions
+                    switch ($operator) {
+                        case 'IN':
+                            $query->whereIn($column, explode(',', $value));
+                            break;
+                        case 'NOT IN':
+                            $query->whereNotIn($column, explode(',', $value));
+                            break;
+                        case 'BETWEEN':
+                            $query->whereBetween($column, explode(',', $value));
+                            break;
+                        case 'NOT BETWEEN':
+                            $query->whereNotBetween($column, explode(',', $value));
+                            break;
+                        case 'LIKE':
+                            $query->where($column, 'LIKE', '%' . $value . '%');
+                            break;
+                        default:
+                            $query->where($column, $operator, $value);
+                            break;
+                    }
                 }
             }
         }

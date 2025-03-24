@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use Exception;
 use Carbon\Carbon;
@@ -26,6 +26,7 @@ class UserController extends Controller
 
     public function index(PaginateRequest $request): JsonResponse
     {
+
         try {
             // Extract validated input values with default fallbacks.
             $validated = $request->validated();

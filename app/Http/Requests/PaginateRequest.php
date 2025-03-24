@@ -32,6 +32,7 @@ class PaginateRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             // 'paginate' is optional and must be accepted (true, 1, "1", "true", etc.) if provided.
             'paginate' => 'sometimes|accepted',
@@ -64,7 +65,7 @@ class PaginateRequest extends FormRequest
     protected function failedValidation(ValidatorContract $validator)
     {
         // Log a warning with details about the validation failure.
-        Log::warning("Validation failed for user retrieval.", [
+        Log::warning("Validation failed for record retrieval.", [
             'errors' => $validator->errors(), // The validation error messages.
         ]);
         

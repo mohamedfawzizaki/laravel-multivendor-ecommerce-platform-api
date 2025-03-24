@@ -5,7 +5,7 @@ namespace Tests\Integration\Internal;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\Eloquent\UserRepository;
+use App\Repositories\Repos\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserRepositoryTest extends TestCase

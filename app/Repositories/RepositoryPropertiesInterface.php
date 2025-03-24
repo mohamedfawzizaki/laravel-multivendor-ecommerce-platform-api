@@ -6,7 +6,10 @@ interface RepositoryPropertiesInterface
 {
     public function getRelationships(): array;
 
-    public function getRelationshipKeys(): array;
+    // public function getRelationshipKeys(): array; // each foreign key should be in parallel with its aliasis.
+
+    // public function getRelationshipKeysAliasis(): array;
+    public function getRelationshipMap(): array;
 
     public function getFillable(): array;
 

@@ -49,4 +49,12 @@ Route::group(["prefix" => "auth"], function () {
     Route::post('password/request-reset',       [PasswordResetController::class, 'requestReset']);
     Route::get ('password/verify-reset-token',       [PasswordResetController::class, 'verifyToken']);
     Route::post('password/reset',       [PasswordResetController::class, 'resetPassword']);
+
+    # implement 2FA    Authentication
+    # implement social Authentication
+    # implement Oauth2 Authentication 
+
+
+
+
 });

@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 trait RepositoryBaseTrait
 {
-    public function getAllUsersUsingRepositoryBaseTrait(
+    public function getAllUsingRepositoryBaseTrait(
         ?int $perPage = null,
         array $columns = ['*'],
         ?string $pageName = null,
@@ -50,7 +50,7 @@ trait RepositoryBaseTrait
         // return $records;
     }
 
-    public function getUserByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): ?object
+    public function getByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): ?object
     {
         $validColumns = $columns !== ['*'] ? $this->getValidColumns($columns) : ['*'];
 
@@ -79,8 +79,9 @@ trait RepositoryBaseTrait
     public function searchByUsingRepositoryBaseTrait(string $field, mixed $value, array $columns = ['*']): ?object
     {
         $validColumns = $columns !== ['*'] ? $this->getValidColumns($columns) : ['*'];
+        $validField  = $this->getValidColumns([$field])[0];
 
-        $record = $this->findByField($field, $value, $validColumns);
+        $record = $this->findByField($validField, $value, $validColumns);
 
         return $this->prepareRetreivedModel($record, $validColumns);
     }
@@ -112,6 +113,7 @@ trait RepositoryBaseTrait
 
         $record = $this->update($id, $data);
 
+        
         return $this->prepareRetreivedModel($record, $validColumns);
     }
 

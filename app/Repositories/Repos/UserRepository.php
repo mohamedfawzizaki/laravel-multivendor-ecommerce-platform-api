@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Repositories\Eloquent;
+namespace App\Repositories\Repos;
 
 use App\Models\User;
-use App\Repositories\Eloquent\BaseRepository;
+use App\Repositories\EloquentBased\MainBaseRepository;
 use App\Repositories\RepositoryPropertiesInterface;
 
 /**
  * UserRepository extends BaseRepository and provides
  * additional user-specific database operations.
  */
-class UserRepository extends BaseRepository implements RepositoryPropertiesInterface
+class UserRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    // use RepositoryDeletionTrait, RepositoryHelperTrait;
-
     public array $relationships = ['role.permissions'];
-    public array $relationshipKeys = ['role_id', 'status_id'];
+    public array $relationshipMap = [
+        'role' => 'role_id',
+        'status' => 'status_id',
+    ];
     public array $fillable = ['name', 'email', 'password', 'role_id'];
     public array $availableColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
     public array $availableConditionColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
@@ -36,9 +37,9 @@ class UserRepository extends BaseRepository implements RepositoryPropertiesInter
         return $this->relationships;
     }
 
-    public function getRelationshipKeys(): array
+    public function getRelationshipMap(): array
     {
-        return $this->relationshipKeys;
+        return $this->relationshipMap;
     }
 
     public function getFillable(): array

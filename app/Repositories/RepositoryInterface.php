@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface RepositoryInterface
 {
     public function getAll(array $columns = ['*'], bool $withTrashed = false, bool $onlyTrashed = false, array $conditions = []): Collection;
-    
+
     public function paginate(int $perPage = 15, array $columns = ['*'], string $pageName = 'page', int $page = 1, bool $withTrashed = false, bool $onlyTrashed = false, array $conditions = []): LengthAwarePaginator;
 
     public function findById(int|string $id, array $columns = ['*']): ?Model;
@@ -34,52 +34,4 @@ interface RepositoryInterface
 
     public function count(array $conditions = []): int;
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    
-    /**
-     * Retrieves records based on a set of conditions.
-     *
-     * @param array $conditions The conditions to filter by.
-     * @param array $columns The columns to retrieve.
-     * @return Collection A collection of model instances that match the conditions.
-     */
-    // public function where(array $conditions, array $columns = ['*']): Collection;
-
-    /**
-     * Retrieves the first record that matches the given conditions.
-     *
-     * @param array $conditions The conditions to filter by.
-     * @param array $columns The columns to retrieve.
-     * @return Model|null The first model instance that matches the conditions, or null if not found.
-     */
-    // public function firstWhere(array $conditions, array $columns = ['*']): ?Model;
-
-    /**
-     * Counts the number of records that match the given conditions.
-     *
-     * @param array $conditions The conditions to filter by.
-     * @return int The number of records that match the conditions.
-     */
-    // public function countWhere(array $conditions): int;
-
-    /**
-     * Checks if a record exists based on the given conditions.
-     *
-     * @param array $conditions The conditions to filter by.
-     * @return bool True if at least one record exists that matches the conditions, false otherwise.
-     */
-    // public function existsWhere(array $conditions): bool;
 }

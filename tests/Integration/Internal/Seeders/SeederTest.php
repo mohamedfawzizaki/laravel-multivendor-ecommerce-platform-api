@@ -5,6 +5,8 @@ namespace Tests\Integration\Internal;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\UsersSeeder;
 use Illuminate\Support\Facades\DB;
 use Database\Factories\RoleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +38,7 @@ class SeederTest extends TestCase
     public function test_user_seeder_populates_roles(): void
     {
         // Run the UserSeeder
-        $this->seed(\Database\Seeders\UserSeeder::class);
+        $this->seed(UsersSeeder::class);
 
         $expectedUser = DB::table('users')->first();
         $this->assertDatabaseHas('users', ['username' => $expectedUser->username]);
@@ -49,7 +51,7 @@ class SeederTest extends TestCase
     public function test_role_seeder_populates_roles(): void
     {
         // Run the RoleSeeder
-        $this->seed(\Database\Seeders\RoleSeeder::class);
+        $this->seed(\Database\Seeders\RolesSeeder::class);
 
         // Assert that the 'roles' table has the expected columns (as verified in MigrationTest)
         $this->assertDatabaseHas('roles', ['name' => 'admin']);
@@ -66,7 +68,7 @@ class SeederTest extends TestCase
     public function test_status_seeder_populates_statuses(): void
     {
         // Run the StatusSeeder
-        $this->seed(\Database\Seeders\StatusSeeder::class);
+        $this->seed(\Database\Seeders\StatusesSeeder::class);
         // Assert that the 'statuses' table has the expected columns and data.
         // For example, we expect a status with name 'active'.
         $this->assertDatabaseHas('statuses', ['name' => 'active']);
