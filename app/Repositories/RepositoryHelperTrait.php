@@ -253,7 +253,7 @@ trait RepositoryHelperTrait
         // return empty collection:
         return $records;
     }
-    public function prepareRetreivedModel(object $record, array $validColumns): ?object
+    public function prepareRetreivedModel(object $record, array $validColumns): ?Model
     {
         // This method is called after the model has been retrieved from the database
         // If no specific columns are requested, ensure relationships are loaded.

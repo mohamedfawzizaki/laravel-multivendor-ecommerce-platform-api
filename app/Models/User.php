@@ -82,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    protected $with = ['role.permissions', 'status'];
+    // protected $with = ['role.permissions', 'status', 'phone'];
     /**
      * All of the relationships to be touched.
      *
@@ -113,5 +113,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
+    }
+    
+    public function phone(): HasMany
+    {
+        return $this->hasMany(Phone::class);
     }
 }

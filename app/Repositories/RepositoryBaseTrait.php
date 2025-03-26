@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 trait RepositoryBaseTrait
@@ -50,7 +51,7 @@ trait RepositoryBaseTrait
         // return $records;
     }
 
-    public function getByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): ?object
+    public function getByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): Model
     {
         $validColumns = $columns !== ['*'] ? $this->getValidColumns($columns) : ['*'];
 
@@ -92,13 +93,23 @@ trait RepositoryBaseTrait
         $record = $this->create($data);
 
         // Get the relationships to load from the repository.
-        $relationships = $this->getRelationships();
+        $pivotWith = $this->getPivotWith();
 
-        // Load missing relationships if they are defined.
-        if (!empty($relationships)) {
-            $record->loadMissing($relationships);
+        // Assign default entries to pivot table if applicable
+        if ($this->hasPivot()) {
+            foreach ($pivotWith as $relation) {
+                if (method_exists($record, $relation) && method_exists($record->$relation(), 'attach')) {
+                    // Attach default pivot data (Customize this as needed)
+                    $record->$relation()->syncWithoutDetaching($this->getDefualtIDsForPivot()[$relation]);
+                }
+            }
         }
 
+        $relationships = $this->getRelationships();
+        // Load missing relationships if they are defined.
+        if (!empty($relationships)) {
+            $record->load($relationships);
+        }
         // Hide pivot attributes from the retrieved record's relationships.
         $this->hideModelPivot($record, $this->getRelationships());
 
@@ -113,7 +124,7 @@ trait RepositoryBaseTrait
 
         $record = $this->update($id, $data);
 
-        
+
         return $this->prepareRetreivedModel($record, $validColumns);
     }
 
@@ -161,54 +172,4 @@ trait RepositoryBaseTrait
         return $this->prepareRetreivedCollection($records, $validColumns);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Restores a soft-deleted record by its ID.
-     *
-     * @param int|string $id The unique identifier of the model.
-     * @return bool True if the restoration was successful, false otherwise.
-     */
-    public function restore(int|string $id): bool
-    {
-        try {
-            $record = $this->model->onlyTrashed()->find($id);
-
-            if (!$record) {
-                Log::warning("Restore failed: Record not found or not trashed (ID: {$id})");
-                return false;
-            }
-
-            if (!$record->restore()) {
-                Log::warning("Restore failed: Unable to restore record (ID: {$id})");
-                return false;
-            }
-
-            Log::info("Record restored successfully (ID: {$id})");
-            return true;
-        } catch (Exception $e) {
-            Log::error("Restore error (ID: {$id}): " . $e->getMessage());
-            return false;
-        }
-    }
 }

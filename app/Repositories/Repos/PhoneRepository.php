@@ -2,33 +2,32 @@
 
 namespace App\Repositories\Repos;
 
-use App\Models\User;
+use App\Models\Phone;
 use App\Repositories\EloquentBased\MainBaseRepository;
 use App\Repositories\RepositoryPropertiesInterface;
 
-class UserRepository extends MainBaseRepository implements RepositoryPropertiesInterface
+class PhoneRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    public array $relationships = ['role.permissions', 'status', 'phone'];
+    public array $relationships = [];
     public array $relationshipMap = [
-        'role' => 'role_id',
-        'status' => 'status_id',
+        'user' => 'user_id',
     ];
     public bool $hasPivot = false;
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
-    public array $fillable = ['name', 'email', 'password', 'role_id'];
-    public array $availableColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
-    public array $availableConditionColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
-    public array $availableColumnsForMassUpdate = ['password', 'role_id', 'status_id', 'created_at'];
+    public array $fillable = ['phone', 'is_primary', 'user_id'];
+    public array $availableColumns = ['id', 'phone', 'is_primary', 'user_id', 'created_at'];
+    public array $availableConditionColumns = ['id', 'phone', 'is_primary', 'user_id', 'created_at'];
+    public array $availableColumnsForMassUpdate = ['phone', 'is_primary'];
 
     /**
-     * UserRepository constructor.
+     * PhoneRepository constructor.
      *
-     * @param User $user The User model instance.
+     * @param Phone $phone The Phone model instance.
      */
-    public function __construct(User $user)
+    public function __construct(Phone $phone)
     {
-        parent::__construct($user);
+        parent::__construct($phone);
     }
 
     public function getRelationships(): array

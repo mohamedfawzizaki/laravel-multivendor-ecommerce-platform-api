@@ -11,6 +11,9 @@ class StatusRepository extends MainBaseRepository implements RepositoryPropertie
 {
     public array $relationships = [];
     public array $relationshipMap = [];
+    public bool $hasPivot = false;
+    public array $pivotWith = [];
+    public array $defaultIDsForPivot = [];
     public array $fillable = ['name', 'description'];
     public array $availableColumns = ['id', 'name', 'description'];
     public array $availableConditionColumns = ['name', 'description'];
@@ -49,5 +52,18 @@ class StatusRepository extends MainBaseRepository implements RepositoryPropertie
     public function getAvailableColumnsForMassUpdate(): array
     {
         return $this->availableColumnsForMassUpdate;
+    }
+
+    public function hasPivot(): bool
+    {
+        return $this->hasPivot;
+    }
+    public function getPivotWith(): array
+    {
+        return $this->pivotWith;
+    }
+    public function getDefualtIDsForPivot(): array
+    {
+        return $this->defaultIDsForPivot;
     }
 }

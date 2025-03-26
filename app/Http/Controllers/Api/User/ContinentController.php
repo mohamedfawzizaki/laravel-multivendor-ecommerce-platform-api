@@ -1,30 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\User;
 
 use Exception;
 use Carbon\Carbon;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Rules\StrongPassword;
-use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
+use App\Services\ContinentService;
 use App\Http\Responses\ApiResponse;
+
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
-use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreAddressRequest;
 
-class UserController extends Controller
+class ContinentController extends Controller
 {
     /**
-     * Constructor to inject the UserService dependency.
+     * Constructor to inject the ContinentService dependency.
      *
-     * @param UserService $userService The service responsible for user-related operations.
+     * @param ContinentService $continentService The service responsible for continent-related operations.
      */
-    public function __construct(protected UserService $userService) {}
+    public function __construct(protected ContinentService $continentService) {}
 
     public function index(PaginateRequest $request): JsonResponse
     {
@@ -40,9 +38,9 @@ class UserController extends Controller
 
 
             // var_dump($conditions);
-            // Retrieve users based on pagination preference.
-            $users = $paginate
-                ? $this->userService->getAllUsers(
+            // Retrieve continents based on pagination preference.
+            $continents = $paginate
+                ? $this->continentService->getAllContinents(
                     perPage: $validated['per_page'] ?? 15, // Default to 15 if not specified.
                     columns: $columns,
                     pageName: $validated['pageName'] ?? 'page',
@@ -51,15 +49,15 @@ class UserController extends Controller
                     onlyTrashed: $onlyTrashed,
                     conditions: $conditions
                 )
-                : $this->userService->getAllUsers(
+                : $this->continentService->getAllContinents(
                     columns: $columns,
                     withTrashed: $withTrashed,
                     onlyTrashed: $onlyTrashed,
                     conditions: $conditions
                 );
 
-            // Return a success response with the retrieved users.
-            return ApiResponse::success($users, 'Users retrieved successfully.');
+            // Return a success response with the retrieved continents.
+            return ApiResponse::success($continents, 'Continents retrieved successfully.');
         } catch (Exception $e) {
             // Handle any exceptions and return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -74,13 +72,13 @@ class UserController extends Controller
 
             // Validate input parameters.
             $validator = Validator::make($data, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
+                'id' => 'required|string', 
                 'columns' => 'sometimes|array', // Optional columns parameter.
             ]);
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("User retrieval validation failed.", [
+                Log::warning("Continent retrieval validation failed.", [
                     'errors' => $validator->errors(),
                     'input' => $data, // Log the provided input for debugging.
                 ]);
@@ -96,14 +94,14 @@ class UserController extends Controller
             $validated = $validator->validated();
             $columns = $validated['columns'] ?? ['*'];
 
-            // Retrieve the user.
-            $user = $this->userService->getUserById($validated['id'], $columns);
+            // Retrieve the continent.
+            $continent = $this->continentService->getContinentById($validated['id'], $columns);
 
             // Return success response.
-            return ApiResponse::success($user, 'User retrieved successfully.');
+            return ApiResponse::success($continent, 'Continent retrieved successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error retrieving user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error retrieving continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -115,14 +113,15 @@ class UserController extends Controller
         try {
             // Validate input parameters.
             $validator = Validator::make($request->all(), [
-                'name' => 'required_without:email|string|exists:users,name',
-                'email' => 'required_without:name|email|exists:users,email',
+                'continent' => 'required|string|exists:continents,continent',
                 'columns' => 'sometimes|array', // Optional columns parameter.
+            ], [
+                'continent'=>'the selected continent is invalid or is not found'
             ]);
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("User retrieval validation failed.", [
+                Log::warning("Continent retrieval validation failed.", [
                     'errors' => $validator->errors(),
                     'input' => $request->all(), // Log the provided input for debugging.
                 ]);
@@ -136,35 +135,34 @@ class UserController extends Controller
 
             // Extract validated data.
             $validated = $validator->validated();
-            $searchBy = ($validated['email'] ?? null) ? 'email' : 'name';
             $columns = $validated['columns'] ?? ['*'];
 
-            $user = $this->userService->searchBy($searchBy, $validated[$searchBy], $columns);
+            $continent = $this->continentService->searchBy('name', $validated['name'], $columns);
 
             // Return success response.
-            return ApiResponse::success($user, 'User retrieved successfully.');
+            return ApiResponse::success($continent, 'Continent retrieved successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error retrieving user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error retrieving continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
 
-    public function store(StoreUserRequest $request): JsonResponse
+    public function store(StoreAddressRequest $request): JsonResponse
     {
         try {
             // Extract validated data.
             $validated = $request->validated();
 
-            $user = $this->userService->create($validated);
+            $continent = $this->continentService->create($validated);
 
             // Return success response.
-            return ApiResponse::success($user, 'User created successfully.');
+            return ApiResponse::success($continent, 'Continent created successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error creating user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error creating continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -177,12 +175,12 @@ class UserController extends Controller
             // Merge request data with the provided ID for validation.
             $idAndColumns = array_merge($request->all(), ['id' => $id]);
             $validatorForidAndColumns = Validator::make($idAndColumns, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
+                'id' => 'required|string',
                 'columns'  => 'sometimes|array',
             ]);
             // Handle validation failures.
             if ($validatorForidAndColumns->fails()) {
-                Log::warning("User updating validation failed.", [
+                Log::warning("Continent updating validation failed.", [
                     'errors' => $validatorForidAndColumns->errors(),
                 ]);
 
@@ -194,14 +192,13 @@ class UserController extends Controller
             }
             // Validate input parameters.
             $validatorForDataToUpdate = Validator::make($request->all(), [
-                'name' => 'string|unique:users,name|max:255',
-                'email' => 'email|unique:users,email',
-                'password' => ['sometimes', 'confirmed',  new StrongPassword],
+                'continent' => 'sometimes|string|unique:continents,continent|max:30',
+                'is_primary' => 'sometimes|boolean',
             ]);
 
             // Handle validation failures.
             if ($validatorForDataToUpdate->fails()) {
-                Log::warning("User updating validation failed.", [
+                Log::warning("Continent updating validation failed.", [
                     'errors' => $validatorForDataToUpdate->errors(),
                 ]);
 
@@ -216,13 +213,13 @@ class UserController extends Controller
             $id = $validatorForidAndColumns->validated()['id'];
             $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
 
-            $user = $this->userService->update($id, $validatedData, $columns);
+            $continent = $this->continentService->update($id, $validatedData, $columns);
 
             // Return success response.
-            return ApiResponse::success($user, 'User updated successfully.');
+            return ApiResponse::success($continent, 'Continent updated successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error updating user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error updating continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -234,7 +231,6 @@ class UserController extends Controller
         try {
             // Validate input parameters.
             $validator = Validator::make($request->all(), [
-                'password'    => ['sometimes', 'confirmed', new StrongPassword],
                 'created_at'  => 'sometimes|date',
                 'updated_at'  => 'sometimes|date',
                 'deleted_at'  => 'sometimes|date',
@@ -245,7 +241,7 @@ class UserController extends Controller
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("Users updating validation failed.", [
+                Log::warning("Continents updating validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -273,19 +269,19 @@ class UserController extends Controller
                 $validated['deleted_at'] = Carbon::parse($validated['deleted_at'])->format('Y-m-d H:i:s');
             }
 
-            // Filter only valid user fields (excluding 'columns')
+            // Filter only valid continent fields (excluding 'columns')
             $data = array_filter($validated, function ($key) {
                 return !in_array($key, ['columns', 'conditions']); // Exclude 'columns' key and conditions key
             }, ARRAY_FILTER_USE_KEY);
 
             // Call update function with or without columns
-            $users = $this->userService->updateGroup($data, $conditions, $columns);
+            $continents = $this->continentService->updateGroup($data, $conditions, $columns);
 
             // Return success response.
-            return ApiResponse::success($users, 'User updated successfully.');
+            return ApiResponse::success($continents, 'Continent updated successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error updating user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error updating continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -299,13 +295,13 @@ class UserController extends Controller
             $data = array_merge($request->all(), ['id' => $id]);
             // Validate input parameters.
             $validator = Validator::make($data, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
+                'id' => 'required|string',  
                 'force' => 'sometimes|accepted',
             ]);
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("User updating validation failed.", [
+                Log::warning("Continent updating validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -319,15 +315,15 @@ class UserController extends Controller
             $validated = $validator->validated();
             $forceDelete = $validated['force'] ?? false;
 
-            $user = $this->userService->delete($validated['id'], $forceDelete);
+            $continent = $this->continentService->delete($validated['id'], $forceDelete);
 
             // Return success response.
             return $forceDelete ?
-                ApiResponse::success($user, 'User permenantly deleted successfully.') :
-                ApiResponse::success($user, 'User soft deleted successfully.');
+                ApiResponse::success($continent, 'Continent permenantly deleted successfully.') :
+                ApiResponse::success($continent, 'Continent soft deleted successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error deleting user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error deleting continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -344,7 +340,7 @@ class UserController extends Controller
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("Users deletion validation failed.", [
+                Log::warning("Continents deletion validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -359,15 +355,15 @@ class UserController extends Controller
             $conditions = $validated['conditions'] ?? false;
             $forceDelete = $validated['force'] ?? false;
 
-            $deletedUsers = $this->userService->deleteBulk($conditions, $forceDelete);
+            $deletedContinents = $this->continentService->deleteBulk($conditions, $forceDelete);
 
             // Return success response.
             return $forceDelete ?
-                ApiResponse::success($deletedUsers, 'Users permenantly deleted successfully.') :
-                ApiResponse::success($deletedUsers, 'Users soft deleted successfully.');
+                ApiResponse::success($deletedContinents, 'Continents permenantly deleted successfully.') :
+                ApiResponse::success($deletedContinents, 'Continents soft deleted successfully.');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error deleting users: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error deleting continents: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -378,12 +374,12 @@ class UserController extends Controller
     {
         try {
             $validator = Validator::make(['id' => $id], [
-                'id' => 'required|string|uuid'
+                'id' => 'required|string'
             ]);
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("User checking validation failed.", [
+                Log::warning("Continent checking validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -396,14 +392,14 @@ class UserController extends Controller
 
             $id = $validator->validated()['id'];
 
-            $isDeleted = $this->userService->softDeleted($id);
+            $isDeleted = $this->continentService->softDeleted($id);
 
             return $isDeleted ?
-                ApiResponse::success($isDeleted, 'User is soft deleted') :
-                ApiResponse::success($isDeleted, 'User is not soft deleted');
+                ApiResponse::success($isDeleted, 'Continent is soft deleted') :
+                ApiResponse::success($isDeleted, 'Continent is not soft deleted');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error checking soft deleted user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error checking soft deleted continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -415,13 +411,13 @@ class UserController extends Controller
             // Merge request data with the provided ID for validation.
             $data = array_merge($request->all(), ['id' => $id]);
             $validator = Validator::make($data, [
-                'id' => 'required|string|uuid',
+                'id' => 'required|string',
                 'columns'  => 'sometimes|array',
             ]);
 
             // Handle validation failures.
             if ($validator->fails()) {
-                Log::warning("User restoring validation failed.", [
+                Log::warning("Continent restoring validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -435,12 +431,12 @@ class UserController extends Controller
             $id = $validator->validated()['id'];
             $columns = $validator->validated()['columns'] ?? ['*'];
 
-            $user = $this->userService->restore($id, $columns);
+            $continent = $this->continentService->restore($id, $columns);
 
-            return ApiResponse::success($user, 'User is restored');
+            return ApiResponse::success($continent, 'Continent is restored');
         } catch (Exception $e) {
             // Log the exception for debugging.
-            Log::error("Error restoring soft deleted user: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error restoring soft deleted continent: {$e->getMessage()}", ['exception' => $e]);
 
             // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
@@ -455,7 +451,7 @@ class UserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                Log::warning("Users restoring validation failed.", [
+                Log::warning("Continents restoring validation failed.", [
                     'errors' => $validator->errors(),
                 ]);
 
@@ -469,11 +465,11 @@ class UserController extends Controller
             $conditions = $validator->validated()['conditions'] ?? [];
             $columns = $validator->validated()['columns'] ?? ['*'];
 
-            $users = $this->userService->restoreBulk($conditions, $columns);
+            $continents = $this->continentService->restoreBulk($conditions, $columns);
 
-            return ApiResponse::success($users, 'User is restored');
+            return ApiResponse::success($continents, 'Continent is restored');
         } catch (Exception $e) {
-            Log::error("Error restoring users: {$e->getMessage()}", ['exception' => $e]);
+            Log::error("Error restoring continents: {$e->getMessage()}", ['exception' => $e]);
             return ApiResponse::error($e->getMessage(), 500);
         }
     }

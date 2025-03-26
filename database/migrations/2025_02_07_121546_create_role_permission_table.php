@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('role_permission', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
             $table->foreignId('permission_id')->constrained('permissions')->cascadeOnDelete();
+            // Composite primary key to prevent duplicate role-permission pairs
+            $table->primary(['role_id', 'permission_id']);
         });
     }
 

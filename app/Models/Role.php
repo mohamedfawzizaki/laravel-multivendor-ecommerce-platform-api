@@ -65,9 +65,9 @@ class Role extends Model
         return $this->belongsToMany(Permission::class, 'role_permission');
     }
 
-    public function assignPermission($roleId)
+    public function assignPermission($permission)
     {
-        
+        // Attach the permission to the role without duplicates
+        $this->permissions()->syncWithoutDetaching([$permission->id]);
     }
-
 }

@@ -2,33 +2,32 @@
 
 namespace App\Repositories\Repos;
 
-use App\Models\User;
-use App\Repositories\EloquentBased\MainBaseRepository;
+use App\Models\Continent;
 use App\Repositories\RepositoryPropertiesInterface;
+use App\Repositories\EloquentBased\MainBaseRepository;
 
-class UserRepository extends MainBaseRepository implements RepositoryPropertiesInterface
+class ContinentRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    public array $relationships = ['role.permissions', 'status', 'phone'];
+    public array $relationships = [];
     public array $relationshipMap = [
-        'role' => 'role_id',
-        'status' => 'status_id',
+        'user' => 'user_id',
     ];
     public bool $hasPivot = false;
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
-    public array $fillable = ['name', 'email', 'password', 'role_id'];
-    public array $availableColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
-    public array $availableConditionColumns = ['id', 'name', 'email', 'role_id', 'status_id', 'created_at'];
-    public array $availableColumnsForMassUpdate = ['password', 'role_id', 'status_id', 'created_at'];
+    public array $fillable = ['name', 'user_id'];
+    public array $availableColumns = ['name', 'user_id', 'created_at'];
+    public array $availableConditionColumns = ['name','user_id', 'created_at'];
+    public array $availableColumnsForMassUpdate = ['name','user_id'];
 
     /**
-     * UserRepository constructor.
+     * ContinentRepository constructor.
      *
-     * @param User $user The User model instance.
+     * @param Continent $address The Continent model instance.
      */
-    public function __construct(User $user)
+    public function __construct(Continent $address)
     {
-        parent::__construct($user);
+        parent::__construct($address);
     }
 
     public function getRelationships(): array

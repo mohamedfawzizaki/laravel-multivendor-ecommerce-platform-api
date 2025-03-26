@@ -4,19 +4,19 @@ namespace App\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Repositories\Repos\UserRepository;
+use App\Repositories\Repos\PhoneRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class UserService
+class PhoneService
 {
     /**
-     * Constructor to inject the UserRepository dependency.
+     * Constructor to inject the PhoneRepository dependency.
      *
-     * @param UserRepository $userRepository The repository responsible for user database operations.
+     * @param PhoneRepository $phoneRepository The repository responsible for phone database operations.
      */
-    public function __construct(private UserRepository $userRepository) {}
+    public function __construct(private PhoneRepository $phoneRepository) {}
 
-    public function getAllUsers(
+    public function getAllPhones(
         ?int $perPage = null,
         array $columns = ['*'],
         ?string $pageName = null,
@@ -25,7 +25,7 @@ class UserService
         bool $onlyTrashed = false,
         array $conditions = []
     ): Collection|LengthAwarePaginator {
-        return $this->userRepository->getAllUsingRepositoryBaseTrait(
+        return $this->phoneRepository->getAllUsingRepositoryBaseTrait(
             $perPage,
             $columns,
             $pageName,
@@ -36,53 +36,53 @@ class UserService
         );
     }
 
-    public function getUserById(string $id, array $columns = ['*']): ?Model
+    public function getPhoneById(string $id, array $columns = ['*']): ?Model
     {
-        return $this->userRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
+        return $this->phoneRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
     }
 
     public function searchBy(string $field, mixed $value, array $columns = ['*']): ?object
     {
-        return $this->userRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
+        return $this->phoneRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
     }
 
     public function create(array $data): ?object
     {
-        return $this->userRepository->createUsingRepositoryBaseTrait($data);
+        return $this->phoneRepository->createUsingRepositoryBaseTrait($data);
     }
 
     public function update(string $id, array $data, array $columns = ['*']): ?object
     {
-        return $this->userRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
+        return $this->phoneRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
     }
 
     public function updateGroup(array $data, array $conditions = [], array $columns = ['*']): Collection
     {
-        return $this->userRepository->updateGroupUsingRepositoryBaseTrait($data, $conditions, $columns);
+        return $this->phoneRepository->updateGroupUsingRepositoryBaseTrait($data, $conditions, $columns);
     }
 
     public function delete(string $id, bool $force = false)
     {
-        return $this->userRepository->deleteUsingRepositoryBaseTrait($id, $force);
+        return $this->phoneRepository->deleteUsingRepositoryBaseTrait($id, $force);
     }
 
     public function deleteBulk(array $conditions, bool $force = false)
     {
-        return $this->userRepository->deleteBulkUsingRepositoryBaseTrait($conditions, $force);
+        return $this->phoneRepository->deleteBulkUsingRepositoryBaseTrait($conditions, $force);
     }
 
     public function softDeleted(string $id)
     {
-        return $this->userRepository->softDeletedUsingRepositoryBaseTrait($id);
+        return $this->phoneRepository->softDeletedUsingRepositoryBaseTrait($id);
     }
 
     public function restore(string $id, array $columns = ['*'])
     {
-        return $this->userRepository->restoreUsingRepositoryBaseTrait($id, $columns);
+        return $this->phoneRepository->restoreUsingRepositoryBaseTrait($id, $columns);
     }
 
     public function restoreBulk(array $conditions = [], array $columns = ['*'])
     {
-        return $this->userRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
+        return $this->phoneRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
     }
 }
