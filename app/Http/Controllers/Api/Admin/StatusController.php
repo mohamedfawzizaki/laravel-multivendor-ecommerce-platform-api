@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreStatusRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class StatusController extends Controller
 {
@@ -56,33 +57,12 @@ class StatusController extends Controller
         }
     }
 
-    public function show(Request $request, string $id): JsonResponse
+    public function show(ValidateColumnAndConditionRequest $request, string $id): JsonResponse
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
+            $columns = $request->validated()['columns'] ?? ['*'];
 
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns' => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Status retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                    'input' => $data,
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $validated = $validator->validated();
-            $columns = $validated['columns'] ?? ['*'];
-
-            $status = $this->statusService->getStatusById($validated['id'], $columns);
+            $status = $this->statusService->getStatusById($id, $columns);
 
             return ApiResponse::success($status, 'Status retrieved successfully.');
         } catch (Exception $e) {
@@ -110,61 +90,10 @@ class StatusController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $idAndColumns = array_merge($request->all(), ['id' => $id]);
-            $validatorForidAndColumns = Validator::make($idAndColumns, [
-                'id' => 'required|string',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            if ($validatorForidAndColumns->fails()) {
-                Log::warning("Status updating validation failed.", [
-                    'errors' => $validatorForidAndColumns->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForidAndColumns->errors()
-                );
-            }
-
-            $validatorForDataToUpdate = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => 'string|unique:statuses,name|max:255',
                 'description' => 'string|unique:statuses,description|max:255',
-            ]);
-
-            if ($validatorForDataToUpdate->fails()) {
-                Log::warning("Status updating validation failed.", [
-                    'errors' => $validatorForDataToUpdate->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForDataToUpdate->errors()
-                );
-            }
-            $validatedData = $validatorForDataToUpdate->validated(); 
-            $id = $validatorForidAndColumns->validated()['id'];
-            $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
-
-            $status = $this->statusService->update($id, $validatedData, $columns);
-
-            return ApiResponse::success($status, 'Status updated successfully.');
-        } catch (Exception $e) {
-            Log::error("Error updating status: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
-    public function delete(Request $request, string $id)
-    {
-        try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'force' => 'sometimes|accepted',
+                'columns'  => 'sometimes|array',
             ]);
 
             if ($validator->fails()) {
@@ -178,10 +107,26 @@ class StatusController extends Controller
                     $validator->errors()
                 );
             }
-            $validated = $validator->validated();
-            $forceDelete = $validated['force'] ?? false;
+            // Extract validated data.
+            $validatedData = $request->except(['columns']);
+            $columns = empty($request->only(['columns'])) ? ['*'] : $request->only(['columns']);
 
-            $status = $this->statusService->delete($validated['id'], $forceDelete);
+            $status = $this->statusService->update($id, $validatedData, $columns);
+
+            return ApiResponse::success($status, 'Status updated successfully.');
+        } catch (Exception $e) {
+            Log::error("Error updating status: {$e->getMessage()}", ['exception' => $e]);
+
+            return ApiResponse::error($e->getMessage(), 500);
+        }
+    }
+
+    public function delete(ValidateColumnAndConditionRequest $request, string $id)
+    {
+        try {
+            $forceDelete = $request->validated()['force'] ?? false;
+
+            $status = $this->statusService->delete($id, $forceDelete);
 
             return $forceDelete ?
                 ApiResponse::success($status, 'Status permenantly deleted successfully.') :
@@ -225,29 +170,11 @@ class StatusController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function restore(Request $request, string $id)
+
+    public function restore(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Status restoring validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-            $columns = $validator->validated()['columns'] ?? ['*'];
+            $columns = $request->validated()['columns'] ?? ['*'];
 
             $status = $this->statusService->restore($id, $columns);
 

@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 trait BaseRepositoryForRetreivingRecordTrait
 {
     public function getAll(array $columns = ['*'], bool $withTrashed = false, bool $onlyTrashed = false, array $conditions = []): Collection
-    {
+    {   
         try {
             $query = $this->model->newQuery();
-
-
+            
+            
             try { // if the model doesnot implement softdeletetrait
                 if ($onlyTrashed) {
                     $query = $this->model->onlyTrashed();
@@ -28,12 +28,13 @@ trait BaseRepositoryForRetreivingRecordTrait
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());
             }
-
+            
             if (!empty($conditions)) {
                 $this->applyConditions($query, $conditions);
             }
-
+            
             $columns = $this->mapRelationshipColumns($columns);
+            // dd($query->get());
 
             return $query->get($columns);
         } catch (InvalidArgumentException $queryException) {
@@ -105,7 +106,7 @@ trait BaseRepositoryForRetreivingRecordTrait
         try {
             $columns = $this->mapRelationshipColumns($columns);
 
-            return $this->model->findOrFail($id, $columns);
+            return $this->model->find($id, $columns);
         } catch (ModelNotFoundException $e) {
             Log::warning("Record not found in " . get_class($this->model) . " with ID: {$id}", [
                 'model' => get_class($this->model),
@@ -136,7 +137,7 @@ trait BaseRepositoryForRetreivingRecordTrait
         try {
             $columns = $this->mapRelationshipColumns($columns);
 
-            return $this->model->where($field, $value)->first($columns);
+            return $this->model->where($field, 'like', "%$value%")->first($columns);
         } catch (ModelNotFoundException $e) {
             Log::warning("Record not found in " . get_class($this->model), [
                 'model' => get_class($this->model),

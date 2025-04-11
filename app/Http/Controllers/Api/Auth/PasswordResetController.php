@@ -89,7 +89,7 @@ class PasswordResetController extends Controller
                 $user->notify(new PasswordResetSuccessNotification());
             }
         );
-        
+
         return $status === Password::PasswordReset ?
             ApiResponse::success([], 'Password has been reset successfully.', 200, [__($status)]) :
             ApiResponse::error('Error reseting password', 422, [__($status)]);

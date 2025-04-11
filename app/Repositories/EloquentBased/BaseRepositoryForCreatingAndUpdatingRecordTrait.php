@@ -44,7 +44,7 @@ trait BaseRepositoryForCreatingAndUpdatingRecordTrait
 
             $columns = $this->mapRelationshipColumns($columns);
 
-            $record = $query->findOrFail($id, $columns);
+            $record = $query->find($id, $columns);
 
             $record->update($data); // Update the record with the new data
             $record->refresh(); // Refresh the model to reflect the latest changes
@@ -106,17 +106,6 @@ trait BaseRepositoryForCreatingAndUpdatingRecordTrait
             $updatedRecords = $this->model->newQuery()->whereIn('id', $beforeUpdateData->pluck('id'))->get($columns);
 
             return $updatedRecords;
-
-            // $query = $this->model->newQuery();
-            // // Apply conditions if provided
-            // if (!empty($conditions)) {
-            //     $this->applyConditions($query, $conditions);
-            // }
-            // // Perform a bulk update
-            // $affectedRows = $query->update($data);
-            // // Fetch updated records if needed
-            // $records = $query->get($columns);
-            // return $records;
         } catch (ModelNotFoundException $e) {
             Log::warning("Records not found in " . get_class($this->model), [
                 'model' => get_class($this->model),

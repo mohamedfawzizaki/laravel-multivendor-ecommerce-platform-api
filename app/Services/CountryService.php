@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Repos\CountryRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -12,9 +11,9 @@ class CountryService
     /**
      * Constructor to inject the CountryRepository dependency.
      *
-     * @param CountryRepository $addressRepository The repository responsible for address database operations.
+     * @param CountryRepository $countryRepository The repository responsible for country database operations.
      */
-    public function __construct(private CountryRepository $addressRepository) {}
+    public function __construct(private CountryRepository $countryRepository) {}
 
     public function getAllCountrys(
         ?int $perPage = null,
@@ -25,7 +24,7 @@ class CountryService
         bool $onlyTrashed = false,
         array $conditions = []
     ): Collection|LengthAwarePaginator {
-        return $this->addressRepository->getAllUsingRepositoryBaseTrait(
+        return $this->countryRepository->getAllUsingRepositoryBaseTrait(
             $perPage,
             $columns,
             $pageName,
@@ -36,53 +35,38 @@ class CountryService
         );
     }
 
-    public function getCountryById(string $id, array $columns = ['*']): ?Model
+    public function getCountryById(string $id, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
+        return $this->countryRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
     }
 
     public function searchBy(string $field, mixed $value, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
+        return $this->countryRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
     }
 
     public function create(array $data): ?object
     {
-        return $this->addressRepository->createUsingRepositoryBaseTrait($data);
+        return $this->countryRepository->createUsingRepositoryBaseTrait($data);
     }
 
     public function update(string $id, array $data, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
-    }
-
-    public function updateGroup(array $data, array $conditions = [], array $columns = ['*']): Collection
-    {
-        return $this->addressRepository->updateGroupUsingRepositoryBaseTrait($data, $conditions, $columns);
+        return $this->countryRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
     }
 
     public function delete(string $id, bool $force = false)
     {
-        return $this->addressRepository->deleteUsingRepositoryBaseTrait($id, $force);
-    }
-
-    public function deleteBulk(array $conditions, bool $force = false)
-    {
-        return $this->addressRepository->deleteBulkUsingRepositoryBaseTrait($conditions, $force);
+        return $this->countryRepository->deleteUsingRepositoryBaseTrait($id, $force);
     }
 
     public function softDeleted(string $id)
     {
-        return $this->addressRepository->softDeletedUsingRepositoryBaseTrait($id);
+        return $this->countryRepository->softDeletedUsingRepositoryBaseTrait($id);
     }
 
     public function restore(string $id, array $columns = ['*'])
     {
-        return $this->addressRepository->restoreUsingRepositoryBaseTrait($id, $columns);
-    }
-
-    public function restoreBulk(array $conditions = [], array $columns = ['*'])
-    {
-        return $this->addressRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
+        return $this->countryRepository->restoreUsingRepositoryBaseTrait($id, $columns);
     }
 }

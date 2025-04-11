@@ -70,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $attributes = [
-        'role_id' => 2, // Default role (e.g., User role)
+        'role_id' => 10, // Default role (e.g., User role)
         'status_id' => 1, // Default status (e.g., Active)
         'email_verified_at' => null, // Not verified by default
         'email_verification_code' => null,
@@ -82,13 +82,13 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    // protected $with = ['role.permissions', 'status', 'phone'];
+    protected $with = ['role.permissions', 'status', 'phone', 'addresses'];
     /**
      * All of the relationships to be touched.
      *
      * @var array
      */
-    protected $touches = ['role', 'status'];
+    protected $touches = ['role', 'status', 'phone', 'addresses'];
     /**
      * Get the attributes that should be cast.
      *
@@ -118,5 +118,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function phone(): HasMany
     {
         return $this->hasMany(Phone::class);
+    }
+
+    public function addresses(): BelongsToMany
+    {
+        return $this->belongsToMany(City::class, 'user_address');
     }
 }

@@ -12,13 +12,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Contracts\Encryption\EncryptException;
-
-// send emails:
 
 class AuthController extends Controller
 {
@@ -31,24 +26,10 @@ class AuthController extends Controller
      */
     public function __construct(public AuthService $authService) {}
 
-    /**
-     * Handle user login.
-     *
-     * This method authenticates a user based on their email/name and password.
-     * If successful, it generates an access token and a refresh token, and returns
-     * the user data along with the access token. The refresh token is set as an
-     * HTTP-only cookie for secure storage.
-     *
-     * @param \Illuminate\Http\Request $request The incoming HTTP request containing login credentials.
-     * @return \Illuminate\Http\JsonResponse Returns a JSON response with user data, access token, and cookie.
-     *
-     * @throws \Illuminate\Validation\ValidationException If validation fails.
-     * @throws \Illuminate\Auth\AuthenticationException If authentication fails.
-     */
     public function login(Request $request): JsonResponse
     {
         // update last_login_at
-        
+
         if (!$this->authService->validateLoginCredentials($request)) {
             // More secure: Return a generic error message to avoid leaking information
             return ApiResponse::error('Invalid login credentials', 401);
@@ -87,22 +68,12 @@ class AuthController extends Controller
             true // HTTP-only (not accessible via JavaScript)
         );
     }
+
     public function me(): JsonResponse
     {
         return ApiResponse::success(Auth::user(), 'User Login Successfully', 200);
     }
-    /**
-     * Validate the provided access token.
-     *
-     * This method checks if the access token is valid, not expired, and belongs to an existing user.
-     * If the token is invalid or expired, it returns an appropriate error response.
-     * If the token is valid, it returns the user associated with the token.
-     *
-     * @param \Illuminate\Http\Request $request The incoming HTTP request containing the bearer token.
-     * @return \Illuminate\Http\JsonResponse Returns a JSON response indicating the token's validity and the associated user.
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the token or user is not found.
-     */
+
     public function validateToken(Request $request): JsonResponse
     {
         // Retrieve the bearer token from the request headers
@@ -142,17 +113,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Refresh the access token using a valid refresh token.
-     *
-     * This method validates the refresh token, revokes the old token, and issues a new access token
-     * and refresh token. The new refresh token is set as an HTTP-only cookie for secure storage.
-     *
-     * @param \Illuminate\Http\Request $request The incoming HTTP request containing the refresh token cookie.
-     * @return \Illuminate\Http\JsonResponse Returns a JSON response with the new access token and user data.
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the refresh token or user is not found.
-     */
     public function refreshToken(Request $request): JsonResponse
     {
         // Retrieve the refresh token from the HTTP-only cookie
@@ -216,12 +176,6 @@ class AuthController extends Controller
         );
     }
 
-    /**
-     * Handles user re-authentication by verifying the password and issuing a short-lived re-authentication token.
-     *
-     * @param \Illuminate\Http\Request $request The HTTP request instance containing the password.
-     * @return \Illuminate\Http\JsonResponse A response containing the re-authentication token or an error message.
-     */
     public function reAuthenticate(Request $request): JsonResponse
     {
         // Validate the incoming request data to ensure a strong password is provided
@@ -255,17 +209,6 @@ class AuthController extends Controller
         ], 'Re-authentication successful');
     }
 
-    /**
-     * Log out the authenticated user from the current session.
-     *
-     * This method revokes the current access token, deletes the refresh token,
-     * and clears the refresh token cookie, effectively logging the user out.
-     *
-     * @param Request $request The HTTP request instance.
-     * @return JsonResponse The API response indicating success or failure.
-     *
-     * @throws \Illuminate\Auth\AuthenticationException If the user is not authenticated.
-     */
     public function logoutFromCurrentSession(Request $request): JsonResponse
     {
         // Ensure the user is authenticated

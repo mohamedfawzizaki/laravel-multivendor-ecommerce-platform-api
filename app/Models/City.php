@@ -13,8 +13,7 @@ class City extends Model
 
     protected $fillable = [
         'name',
-        'address_line',
-        'user_id'
+        'country_id'
     ];
 
     protected $hidden = [
@@ -26,15 +25,15 @@ class City extends Model
     protected $attributes = [
     ];
 
-    // protected $with = ['user'];
+    protected $with = ['country'];
     protected function casts(): array
     {
         return [
         ];
     }
     
-    public function user(): BelongsTo
+    public function country(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Country::class);
     }
 }

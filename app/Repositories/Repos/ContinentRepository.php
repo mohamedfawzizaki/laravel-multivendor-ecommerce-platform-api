@@ -9,16 +9,14 @@ use App\Repositories\EloquentBased\MainBaseRepository;
 class ContinentRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
     public array $relationships = [];
-    public array $relationshipMap = [
-        'user' => 'user_id',
-    ];
+    public array $relationshipMap = [];
     public bool $hasPivot = false;
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
-    public array $fillable = ['name', 'user_id'];
-    public array $availableColumns = ['name', 'user_id', 'created_at'];
-    public array $availableConditionColumns = ['name','user_id', 'created_at'];
-    public array $availableColumnsForMassUpdate = ['name','user_id'];
+    public array $fillable = ['name'];
+    public array $availableColumns = ['id', 'name', 'created_at'];
+    public array $availableConditionColumns = ['name', 'created_at'];
+    public array $availableColumnsForMassUpdate = ['name'];
 
     /**
      * ContinentRepository constructor.

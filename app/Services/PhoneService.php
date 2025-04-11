@@ -36,7 +36,7 @@ class PhoneService
         );
     }
 
-    public function getPhoneById(string $id, array $columns = ['*']): ?Model
+    public function getPhoneById(string $id, array $columns = ['*']): ?object
     {
         return $this->phoneRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
     }

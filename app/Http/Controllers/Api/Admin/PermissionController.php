@@ -4,14 +4,15 @@ namespace App\Http\Controllers\Api\Admin;
 
 use Exception;
 use Illuminate\Http\Request;
-use App\Services\PermissionService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Responses\ApiResponse;
+use App\Services\PermissionService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
-use App\Http\Requests\StorePermissionRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StorePermissionRequest;
+use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class PermissionController extends Controller
 {
@@ -56,33 +57,12 @@ class PermissionController extends Controller
         }
     }
 
-    public function show(Request $request, string $id): JsonResponse
+    public function show(ValidateColumnAndConditionRequest $request, string $id): JsonResponse
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
+            $columns = $request->validated()['columns'] ?? ['*'];
 
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns' => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Permission retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                    'input' => $data,
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $validated = $validator->validated();
-            $columns = $validated['columns'] ?? ['*'];
-
-            $permission = $this->permissionService->getPermissionById($validated['id'], $columns);
+            $permission = $this->permissionService->getPermissionById($id, $columns);
 
             return ApiResponse::success($permission, 'Permission retrieved successfully.');
         } catch (Exception $e) {
@@ -110,44 +90,27 @@ class PermissionController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $idAndColumns = array_merge($request->all(), ['id' => $id]);
-            $validatorForidAndColumns = Validator::make($idAndColumns, [
-                'id' => 'required|string',
+            $validator = Validator::make($request->all(), [
+                'name' => 'string|unique:permissions,name|max:255',
+                'description' => 'string|unique:permissions,description|max:255',
                 'columns'  => 'sometimes|array',
             ]);
 
-            if ($validatorForidAndColumns->fails()) {
-                Log::warning("Permission updating validation failed.", [
-                    'errors' => $validatorForidAndColumns->errors(),
+            // Handle validation failures.
+            if ($validator->fails()) {
+                Log::warning("permission updating validation failed.", [
+                    'errors' => $validator->errors(),
                 ]);
 
                 return ApiResponse::error(
                     'Invalid request parameters.',
                     422,
-                    $validatorForidAndColumns->errors()
+                    $validator->errors()
                 );
             }
-
-            $validatorForDataToUpdate = Validator::make($request->all(), [
-                'name' => 'string|unique:permissions,name|max:255',
-                'description' => 'string|unique:permissions,description|max:255',
-            ]);
-
-            if ($validatorForDataToUpdate->fails()) {
-                Log::warning("Permission updating validation failed.", [
-                    'errors' => $validatorForDataToUpdate->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForDataToUpdate->errors()
-                );
-            }
-            $validatedData = $validatorForDataToUpdate->validated();
-
-            $id = $validatorForidAndColumns->validated()['id'];
-            $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
+            // Extract validated data.
+            $validatedData = $request->except(['columns']);
+            $columns = empty($request->only(['columns'])) ? ['*'] : $request->only(['columns']);
 
             $permission = $this->permissionService->update($id, $validatedData, $columns);
 
@@ -159,30 +122,12 @@ class PermissionController extends Controller
         }
     }
 
-    public function delete(Request $request, string $id)
+    public function delete(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'force' => 'sometimes|accepted',
-            ]);
+            $forceDelete = $request->validated()['force'] ?? false;
 
-            if ($validator->fails()) {
-                Log::warning("Permission updating validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-            $validated = $validator->validated();
-            $forceDelete = $validated['force'] ?? false;
-
-            $permission = $this->permissionService->delete($validated['id'], $forceDelete);
+            $permission = $this->permissionService->delete($id, $forceDelete);
 
             return $forceDelete ?
                 ApiResponse::success($permission, 'Permission permenantly deleted successfully.') :
@@ -197,24 +142,6 @@ class PermissionController extends Controller
     public function isSoftDeleted(string $id)
     {
         try {
-            $validator = Validator::make(['id' => $id], [
-                'id' => 'required|string'
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Permission checking validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-
             $isDeleted = $this->permissionService->softDeleted($id);
 
             return $isDeleted ?
@@ -226,29 +153,11 @@ class PermissionController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function restore(Request $request, string $id)
+
+    public function restore(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Permission restoring validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-            $columns = $validator->validated()['columns'] ?? ['*'];
+            $columns = $request->validated()['columns'] ?? ['*'];
 
             $permission = $this->permissionService->restore($id, $columns);
 

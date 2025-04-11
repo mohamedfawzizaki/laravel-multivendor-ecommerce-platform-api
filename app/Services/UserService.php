@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\Repos\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
@@ -36,7 +37,7 @@ class UserService
         );
     }
 
-    public function getUserById(string $id, array $columns = ['*']): ?Model
+    public function getUserById(string $id, array $columns = ['*']): ?object
     {
         return $this->userRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
     }
@@ -84,5 +85,35 @@ class UserService
     public function restoreBulk(array $conditions = [], array $columns = ['*'])
     {
         return $this->userRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
+    }
+
+    public function assignAddressByCityName(string $cityName, string $userID): bool
+    {
+        $city = DB::table('cities')->where('name', $cityName)->first();
+
+        $result = DB::table('user_address')->insert(
+            [
+                'user_id' => $userID,
+                'city_id' => $city->id,
+                'created_at' => Carbon::now(),
+            ]
+        );
+
+        return $result;
+    }
+
+    public function assignAddressByCityID(string $cityID, string $userID): bool
+    {
+        $city = DB::table('cities')->where('id', $cityID)->first();
+
+        $result = DB::table('user_address')->insert(
+            [
+                'user_id' => $userID,
+                'city_id' => $city->id,
+                'created_at' => Carbon::now(),
+            ]
+        );
+
+        return $result;
     }
 }

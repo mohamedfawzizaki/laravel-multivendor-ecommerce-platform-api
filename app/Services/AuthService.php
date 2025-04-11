@@ -10,22 +10,12 @@ use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class AuthService
 {
-    /**
-     * Validate user login credentials.
-     *
-     * This method checks if either an email or name is provided along with a strong password.
-     * It ensures validation security by returning a generic error response without exposing specific errors.
-     *
-     * @param \Illuminate\Http\Request $request The HTTP request containing login credentials.
-     * @return bool Returns true if validation passes, otherwise false.
-     */
     public function validateLoginCredentials(Request $request): bool
     {
         // Define validation rules for login credentials

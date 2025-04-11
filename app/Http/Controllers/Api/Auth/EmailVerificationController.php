@@ -11,29 +11,17 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\QueryException;
-use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
 use App\Services\EmailVerificationService;
 
 class EmailVerificationController extends Controller
 {
-     /**
-     * Resend the email verification notification.
-     *
-     * This method triggers a new email verification process and returns the generated verification link.
-     *
-     * @param Request $request The HTTP request instance.
-     * @return JsonResponse The API response containing the verification link.
-     */
+    public function __construct(public EmailVerificationService $emailVerificationService) {}
     public function resendVerificationEmail(Request $request): JsonResponse
     {
         try {
-            // Initialize email verification service
-            $emailVerificationService = new EmailVerificationService($request);
-
             // Send verification email and retrieve the verification link
-            $verificationUrl = $emailVerificationService->sendVerificationEmail();
+            $verificationUrl = $this->emailVerificationService->sendVerificationEmail();
 
             // Log email verification resend attempt
             Log::info('Email verification resent successfully', [
@@ -54,19 +42,7 @@ class EmailVerificationController extends Controller
             return ApiResponse::error('Failed to resend verification email.', 500);
         }
     }
-    /**
-     * Send a mobile verification code via SMS.
-     *
-     * This method generates a secure one-time verification code and sends it to the user's mobile number.
-     * It ensures the user is authenticated, validates the mobile number, and prevents frequent resending of codes.
-     * The verification code is securely stored in the database and sent to the user via SMS.
-     *
-     * @param Request $request The HTTP request instance containing the user's mobile number.
-     * @return JsonResponse The API response indicating success or failure.
-     *
-     * @throws \Illuminate\Validation\ValidationException If validation fails.
-     * @throws \Exception If an unexpected error occurs during the process.
-     */
+
     public function sendVerificationCode(Request $request): JsonResponse
     {
         // Ensure the user is authenticated
@@ -74,9 +50,10 @@ class EmailVerificationController extends Controller
             return ApiResponse::error('Unauthorized', 401); // Return error if the user is not authenticated
         }
 
-        // Validate the incoming request
+        // using mobile or email:
         $validator = Validator::make($request->all(), [
-            'mobile' => 'required|string|regex:/^\+?[0-9]{10,15}$/', // Supports optional '+' and ensures 10-15 digits
+            'mobile' => 'required_without:email|string|regex:/^\+?[0-9]{10,15}$/', // Supports optional '+' and ensures 10-15 digits
+            'email' => 'required_without:mobile|email', 
         ]);
 
         // If validation fails, return an error response with validation errors
@@ -87,19 +64,18 @@ class EmailVerificationController extends Controller
         try {
             /** @var \App\Models\User $user */
             $user = Auth::user(); // Get the authenticated user
-            $mobile = $validator->validated()['mobile']; // Extract the validated mobile number
-
+            
             // Prevent resending too frequently
             if ($user->email_verification_expires_at && Carbon::parse($user->email_verification_expires_at)->gt(Carbon::now())) {
                 return ApiResponse::error('Please wait before requesting a new code.', 429); // Return error if the user requests a new code too soon
             }
-
+            
             // Generate a secure random verification code
             $verificationCode = random_int(100000, 999999); // 6-digit code for better security
-
+            
             // Set expiration time (5 minutes from now)
             $expiresAt = Carbon::now()->addMinutes(5);
-
+            
             // Save code & expiration time in the database
             $user->email_verification_code = Hash::make($verificationCode); // Hash the verification code before storing
             $user->email_verification_expires_at = $expiresAt;
@@ -108,15 +84,20 @@ class EmailVerificationController extends Controller
             // Log the verification request
             Log::info('Verification code generated', [
                 'user_id' => $user->id, // Log the user ID
-                'mobile' => $mobile, // Log the mobile number
                 'expires_at' => $expiresAt, // Log the expiration time
                 'ip' => $request->ip(), // Log the user's IP address
             ]);
+            
+            $mobile = $validator->validated()['mobile'] ?? null; // Extract the validated mobile number
+            $email  = $validator->validated()['email'] ?? null; // Extract the validated mobile number
 
             // Send verification code (Replace with actual SMS sending logic)
-            $this->sendSmsHelper($mobile, "Your verification code is: $verificationCode");
-
-            // Return a success response
+            if ($mobile) {
+                $this->sendSmsHelper($mobile, "Your verification code is: $verificationCode");
+            } else {
+                $this->emailVerificationService->sendVerificationCodeEmail($email, "Your verification code is: $verificationCode");
+            }
+            
             return ApiResponse::success([], 'Verification code sent successfully.', 200);
         } catch (Exception $e) {
             // Log the error for debugging
@@ -130,53 +111,38 @@ class EmailVerificationController extends Controller
         }
     }
 
-    /**
-     * Sends an SMS using Twilio.
-     *
-     * This function integrates with Twilio to send an SMS to the specified mobile number.
-     * If an actual SMS provider is not set up, it logs the message instead.
-     *
-     * @param string $mobile The recipient's mobile number.
-     * @param string $message The message to be sent.
-     * @return void
-     */
+
     private function sendSmsHelper(string $mobile, string $message): void
     {
         // try {
-        //     // Ensure Twilio is configured in the environment file
-        //     $sid = env('TWILIO_SID');
-        //     $token = env('TWILIO_AUTH_TOKEN');
-        //     $from = env('TWILIO_FROM');
-
-        //     if (!$sid || !$token || !$from) {
-        //         throw new Exception("Twilio credentials are missing in .env file.");
-        //     }
-
-        //     // Initialize Twilio client
-        //     $client = new \Twilio\Rest\Client($sid, $token);
-
-        //     // Send SMS
-        //     $client->messages->create(
-        //         $mobile, // Destination number
-        //         [
-        //             'from' => $from,
-        //             'body' => $message
-        //         ]
+            //     // Ensure Twilio is configured in the environment file
+            //     $sid = env('TWILIO_SID');
+            //     $token = env('TWILIO_AUTH_TOKEN');
+            //     $from = env('TWILIO_FROM');
+            
+            //     if (!$sid || !$token || !$from) {
+                //         throw new Exception("Twilio credentials are missing in .env file.");
+                //     }
+                
+                //     // Initialize Twilio client
+                //     $client = new \Twilio\Rest\Client($sid, $token);
+                
+                //     // Send SMS
+                //     $client->messages->create(
+                    //         $mobile, // Destination number
+                    //         [
+                        //             'from' => $from,
+                        //             'body' => $message
+                        //         ]
         //     );
-
+        
         Log::info("SMS successfully sent to $mobile");
         // } catch (Exception $e) {
-        //     // Log error for debugging
-        //     Log::error("Failed to send SMS to $mobile", ['error' => $e->getMessage()]);
-        // }
-    }
+            //     // Log error for debugging
+            //     Log::error("Failed to send SMS to $mobile", ['error' => $e->getMessage()]);
+            // }
+        }
 
-    /**
-     * Verify a verification code to activate a user's account.
-     *
-     * @param Request $request The HTTP request containing the verification code.
-     * @return JsonResponse The API response indicating success or failure.
-     */
     public function verifyCodeAndActivateEmail(Request $request): JsonResponse
     {
         // Validate the request input

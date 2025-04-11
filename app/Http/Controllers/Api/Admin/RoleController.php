@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreRoleRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class RoleController extends Controller
 {
@@ -56,33 +57,12 @@ class RoleController extends Controller
         }
     }
 
-    public function show(Request $request, string $id): JsonResponse
+    public function show(ValidateColumnAndConditionRequest $request, string $id): JsonResponse
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
+            $columns = $request->validated()['columns'] ?? ['*'];
 
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns' => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Role retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                    'input' => $data,
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $validated = $validator->validated();
-            $columns = $validated['columns'] ?? ['*'];
-
-            $role = $this->roleService->getRoleById($validated['id'], $columns);
+            $role = $this->roleService->getRoleById($id, $columns);
 
             return ApiResponse::success($role, 'Role retrieved successfully.');
         } catch (Exception $e) {
@@ -110,63 +90,13 @@ class RoleController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $idAndColumns = array_merge($request->all(), ['id' => $id]);
-            $validatorForidAndColumns = Validator::make($idAndColumns, [
-                'id' => 'required|string',
+            $validator = Validator::make($request->all(), [
+                'name' => 'string|unique:roles,name|max:255',
+                'description' => 'string|unique:roles,description|max:255',
                 'columns'  => 'sometimes|array',
             ]);
 
-            if ($validatorForidAndColumns->fails()) {
-                Log::warning("Role updating validation failed.", [
-                    'errors' => $validatorForidAndColumns->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForidAndColumns->errors()
-                );
-            }
-
-            $validatorForDataToUpdate = Validator::make($request->all(), [
-                'name' => 'string|unique:roles,name|max:255',
-                'description' => 'string|unique:roles,description|max:255',
-            ]);
-
-            if ($validatorForDataToUpdate->fails()) {
-                Log::warning("Role updating validation failed.", [
-                    'errors' => $validatorForDataToUpdate->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForDataToUpdate->errors()
-                );
-            }
-            $validatedData = $validatorForDataToUpdate->validated();
-            $id = $validatorForidAndColumns->validated()['id'];
-            $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
-
-            $role = $this->roleService->update($id, $validatedData, $columns);
-
-            return ApiResponse::success($role, 'Role updated successfully.');
-        } catch (Exception $e) {
-            Log::error("Error updating role: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
-    public function delete(Request $request, string $id)
-    {
-        try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'force' => 'sometimes|accepted',
-            ]);
-
+            // Handle validation failures.
             if ($validator->fails()) {
                 Log::warning("Role updating validation failed.", [
                     'errors' => $validator->errors(),
@@ -178,10 +108,26 @@ class RoleController extends Controller
                     $validator->errors()
                 );
             }
-            $validated = $validator->validated();
-            $forceDelete = $validated['force'] ?? false;
+            // Extract validated data.
+            $validatedData = $request->except(['columns']);
+            $columns = empty($request->only(['columns'])) ? ['*'] : $request->only(['columns']);
 
-            $role = $this->roleService->delete($validated['id'], $forceDelete);
+            $role = $this->roleService->update($id, $validatedData, $columns);
+
+            return ApiResponse::success($role, 'Role updated successfully.');
+        } catch (Exception $e) {
+            Log::error("Error updating role: {$e->getMessage()}", ['exception' => $e]);
+
+            return ApiResponse::error($e->getMessage(), 500);
+        }
+    }
+
+    public function delete(ValidateColumnAndConditionRequest $request, string $id)
+    {
+        try {
+            $forceDelete = $request->validated()['force'] ?? false;
+
+            $role = $this->roleService->delete($id, $forceDelete);
 
             return $forceDelete ?
                 ApiResponse::success($role, 'Role permenantly deleted successfully.') :
@@ -196,24 +142,6 @@ class RoleController extends Controller
     public function isSoftDeleted(string $id)
     {
         try {
-            $validator = Validator::make(['id' => $id], [
-                'id' => 'required|string'
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Role checking validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-
             $isDeleted = $this->roleService->softDeleted($id);
 
             return $isDeleted ?
@@ -225,29 +153,11 @@ class RoleController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function restore(Request $request, string $id)
+
+    public function restore(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Role restoring validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-            $columns = $validator->validated()['columns'] ?? ['*'];
+            $columns = $request->validated()['columns'] ?? ['*'];
 
             $role = $this->roleService->restore($id, $columns);
 
@@ -258,6 +168,4 @@ class RoleController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-
-    
 }

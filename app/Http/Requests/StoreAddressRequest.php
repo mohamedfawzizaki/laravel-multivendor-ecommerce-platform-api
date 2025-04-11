@@ -26,8 +26,8 @@ class StoreAddressRequest extends FormRequest
     {
         return [
             'name'=>'required|string|max:256',
-            'user_id'=>'required|string|uuid',
-            'address_line'=>'sometimes|string|max:256'
+            'country_id'=>'required_without:continent_id|string',
+            'continent_id'=>'required_without:country_id|string',
         ];
     }
 

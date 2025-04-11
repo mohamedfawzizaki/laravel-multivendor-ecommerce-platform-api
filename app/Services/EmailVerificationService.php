@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use App\Mail\ActivationEmail;
 use App\Mail\VerificationEmail;
-use Illuminate\Http\Request;
+use App\Mail\VerificationCodeEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -12,30 +13,8 @@ use Illuminate\Support\Facades\Validator;
 
 class EmailVerificationService
 {
-    /**
-     * The HTTP request instance.
-     *
-     * @var Request
-     */
-    public Request $request;
+    public function __construct(public Request $request) {}
 
-    /**
-     * EmailVerificationService constructor.
-     *
-     * @param Request $request The HTTP request instance.
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * Sends a verification email with a unique verification link.
-     *
-     * @param mixed|null $user The user object (optional, will use authenticated user if null).
-     * @param string|null $token The verification token (optional, will extract from the request if null).
-     * @return string|null The generated verification URL or null in case of failure.
-     */
     public function sendVerificationEmail($user = null, $token = null): ?string
     {
         try {
@@ -73,11 +52,6 @@ class EmailVerificationService
         }
     }
 
-    /**
-     * Retrieves the frontend verification link from the request.
-     *
-     * @return string|null The verification link or null if validation fails.
-     */
     private function getVerificationLinkFromFrontEnd(): ?string
     {
         $validator = Validator::make($this->request->all(), [
@@ -92,11 +66,6 @@ class EmailVerificationService
         return $this->request->input('verification_link');
     }
 
-    /**
-     * Sends an activation email to the user after successful verification.
-     *
-     * @return bool True if email was sent successfully, false otherwise.
-     */
     public function sendActivationEmail(): bool
     {
         try {
@@ -114,6 +83,15 @@ class EmailVerificationService
         } catch (\Exception $e) {
             Log::error("Error sending activation email: " . $e->getMessage());
             return false;
+        }
+    }
+
+    public function sendVerificationCodeEmail(string $email, string $message): void
+    {
+        try {
+            Mail::mailer('smtp')->to($email)->send(new VerificationCodeEmail($message));
+        } catch (\Exception $e) {
+            Log::error("Error sending activation email: " . $e->getMessage());
         }
     }
 }

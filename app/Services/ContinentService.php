@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Repos\ContinentRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -12,9 +11,9 @@ class ContinentService
     /**
      * Constructor to inject the ContinentRepository dependency.
      *
-     * @param ContinentRepository $addressRepository The repository responsible for address database operations.
+     * @param ContinentRepository $continentRepository The repository responsible for continent database operations.
      */
-    public function __construct(private ContinentRepository $addressRepository) {}
+    public function __construct(private ContinentRepository $continentRepository) {}
 
     public function getAllContinents(
         ?int $perPage = null,
@@ -25,7 +24,7 @@ class ContinentService
         bool $onlyTrashed = false,
         array $conditions = []
     ): Collection|LengthAwarePaginator {
-        return $this->addressRepository->getAllUsingRepositoryBaseTrait(
+        return $this->continentRepository->getAllUsingRepositoryBaseTrait(
             $perPage,
             $columns,
             $pageName,
@@ -36,53 +35,38 @@ class ContinentService
         );
     }
 
-    public function getContinentById(string $id, array $columns = ['*']): ?Model
+    public function getContinentById(string $id, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
+        return $this->continentRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
     }
 
     public function searchBy(string $field, mixed $value, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
+        return $this->continentRepository->searchByUsingRepositoryBaseTrait($field, $value, $columns);
     }
 
     public function create(array $data): ?object
     {
-        return $this->addressRepository->createUsingRepositoryBaseTrait($data);
+        return $this->continentRepository->createUsingRepositoryBaseTrait($data);
     }
 
     public function update(string $id, array $data, array $columns = ['*']): ?object
     {
-        return $this->addressRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
-    }
-
-    public function updateGroup(array $data, array $conditions = [], array $columns = ['*']): Collection
-    {
-        return $this->addressRepository->updateGroupUsingRepositoryBaseTrait($data, $conditions, $columns);
+        return $this->continentRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
     }
 
     public function delete(string $id, bool $force = false)
     {
-        return $this->addressRepository->deleteUsingRepositoryBaseTrait($id, $force);
-    }
-
-    public function deleteBulk(array $conditions, bool $force = false)
-    {
-        return $this->addressRepository->deleteBulkUsingRepositoryBaseTrait($conditions, $force);
+        return $this->continentRepository->deleteUsingRepositoryBaseTrait($id, $force);
     }
 
     public function softDeleted(string $id)
     {
-        return $this->addressRepository->softDeletedUsingRepositoryBaseTrait($id);
+        return $this->continentRepository->softDeletedUsingRepositoryBaseTrait($id);
     }
 
     public function restore(string $id, array $columns = ['*'])
     {
-        return $this->addressRepository->restoreUsingRepositoryBaseTrait($id, $columns);
-    }
-
-    public function restoreBulk(array $conditions = [], array $columns = ['*'])
-    {
-        return $this->addressRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
+        return $this->continentRepository->restoreUsingRepositoryBaseTrait($id, $columns);
     }
 }

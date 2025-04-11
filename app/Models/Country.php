@@ -13,7 +13,7 @@ class Country extends Model
 
     protected $fillable = [
         'name',
-        'user_id'
+        'continent_id'
     ];
 
     protected $hidden = [
@@ -25,15 +25,16 @@ class Country extends Model
     protected $attributes = [
     ];
 
-    // protected $with = ['user'];
+    protected $with = ['continent'];
+    
     protected function casts(): array
     {
         return [
         ];
     }
     
-    public function user(): BelongsTo
+    public function continent(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Continent::class);
     }
 }

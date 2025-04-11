@@ -8,7 +8,7 @@ interface RepositoryPropertiesInterface
 
     public function getRelationshipMap(): array;
 
-    public function hasPivot(): bool;
+    public function hasPivot(): bool; // 
 
     public function getPivotWith(): array;
 

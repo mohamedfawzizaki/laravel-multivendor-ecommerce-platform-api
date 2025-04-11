@@ -51,12 +51,13 @@ trait RepositoryBaseTrait
         // return $records;
     }
 
-    public function getByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): Model
+    public function getByIdUsingRepositoryBaseTrait(int|string $id, array $columns = ['*']): ?object
     {
         $validColumns = $columns !== ['*'] ? $this->getValidColumns($columns) : ['*'];
 
         $record = $this->findById($id, $validColumns);
 
+        // var_dump($this->prepareRetreivedModel($record, $validColumns));
         return $this->prepareRetreivedModel($record, $validColumns);
         // /// If no specific columns are requested, ensure relationships are loaded.
         // if ($validColumns == ['*']) {
@@ -81,6 +82,7 @@ trait RepositoryBaseTrait
     {
         $validColumns = $columns !== ['*'] ? $this->getValidColumns($columns) : ['*'];
         $validField  = $this->getValidColumns([$field])[0];
+
 
         $record = $this->findByField($validField, $value, $validColumns);
 

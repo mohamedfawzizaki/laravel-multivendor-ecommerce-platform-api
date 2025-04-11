@@ -27,7 +27,7 @@ class StorePhoneRequest extends FormRequest
         return [
             'phone' => 'required|string|unique:phones|max:30',
             'is_primary' => 'required|boolean',
-            'user_id' => 'required|string|uuid',
+            // 'user_id' => 'required|string|uuid',
         ];
     }
 

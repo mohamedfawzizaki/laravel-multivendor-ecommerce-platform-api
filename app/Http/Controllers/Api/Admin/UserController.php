@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use Exception;
 use Carbon\Carbon;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Rules\StrongPassword;
 use App\Services\UserService;
@@ -16,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class UserController extends Controller
 {
@@ -28,19 +27,16 @@ class UserController extends Controller
 
     public function index(PaginateRequest $request): JsonResponse
     {
-
         try {
             // Extract validated input values with default fallbacks.
             $validated = $request->validated();
+
             $paginate = $validated['paginate'] ?? false;
             $withTrashed = $validated['with_trashed'] ?? false;
             $onlyTrashed = $validated['only_trashed'] ?? false;
             $conditions = $validated['conditions'] ?? [];
             $columns = $validated['columns'] ?? ['*'];
 
-
-            // var_dump($conditions);
-            // Retrieve users based on pagination preference.
             $users = $paginate
                 ? $this->userService->getAllUsers(
                     perPage: $validated['per_page'] ?? 15, // Default to 15 if not specified.
@@ -58,54 +54,23 @@ class UserController extends Controller
                     conditions: $conditions
                 );
 
-            // Return a success response with the retrieved users.
             return ApiResponse::success($users, 'Users retrieved successfully.');
         } catch (Exception $e) {
-            // Handle any exceptions and return an error response.
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
 
-    public function show(Request $request, string $id): JsonResponse
+    public function show(ValidateColumnAndConditionRequest $request, string $id): JsonResponse
     {
         try {
-            // Merge request data with the provided ID for validation.
-            $data = array_merge($request->all(), ['id' => $id]);
+            $columns = $request->validated()['columns'] ?? ['*'];
 
-            // Validate input parameters.
-            $validator = Validator::make($data, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
-                'columns' => 'sometimes|array', // Optional columns parameter.
-            ]);
+            $user = $this->userService->getUserById($id, $columns);
 
-            // Handle validation failures.
-            if ($validator->fails()) {
-                Log::warning("User retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                    'input' => $data, // Log the provided input for debugging.
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            // Extract validated data.
-            $validated = $validator->validated();
-            $columns = $validated['columns'] ?? ['*'];
-
-            // Retrieve the user.
-            $user = $this->userService->getUserById($validated['id'], $columns);
-
-            // Return success response.
             return ApiResponse::success($user, 'User retrieved successfully.');
         } catch (Exception $e) {
-            // Log the exception for debugging.
             Log::error("Error retrieving user: {$e->getMessage()}", ['exception' => $e]);
 
-            // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
@@ -160,6 +125,14 @@ class UserController extends Controller
 
             $user = $this->userService->create($validated);
 
+            // assign address to a user
+            $cityID = $request->validated()['city_id'] ?? null;
+            $cityName = $request->validated()['city_name'] ?? null;
+
+            $result = $cityID ? $this->userService->assignAddressByCityID($cityID, $user->id) :
+                $this->userService->assignAddressByCityName($cityName, $user->id);
+
+            $user = $this->userService->getUserById($user->id);
             // Return success response.
             return ApiResponse::success($user, 'User created successfully.');
         } catch (Exception $e) {
@@ -173,48 +146,31 @@ class UserController extends Controller
 
     public function update(Request $request, string $id): JsonResponse
     {
+        var_dump($request->all());
         try {
-            // Merge request data with the provided ID for validation.
-            $idAndColumns = array_merge($request->all(), ['id' => $id]);
-            $validatorForidAndColumns = Validator::make($idAndColumns, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
-                'columns'  => 'sometimes|array',
-            ]);
-            // Handle validation failures.
-            if ($validatorForidAndColumns->fails()) {
-                Log::warning("User updating validation failed.", [
-                    'errors' => $validatorForidAndColumns->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validatorForidAndColumns->errors()
-                );
-            }
-            // Validate input parameters.
-            $validatorForDataToUpdate = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => 'string|unique:users,name|max:255',
                 'email' => 'email|unique:users,email',
                 'password' => ['sometimes', 'confirmed',  new StrongPassword],
+
+                'columns'  => 'sometimes|array',
             ]);
 
             // Handle validation failures.
-            if ($validatorForDataToUpdate->fails()) {
+            if ($validator->fails()) {
                 Log::warning("User updating validation failed.", [
-                    'errors' => $validatorForDataToUpdate->errors(),
+                    'errors' => $validator->errors(),
                 ]);
 
                 return ApiResponse::error(
                     'Invalid request parameters.',
                     422,
-                    $validatorForDataToUpdate->errors()
+                    $validator->errors()
                 );
             }
             // Extract validated data.
-            $validatedData = $validatorForDataToUpdate->validated();
-            $id = $validatorForidAndColumns->validated()['id'];
-            $columns = $validatorForidAndColumns->validated()['columns'] ?? ['*'];
+            $validatedData = $request->except(['columns']);
+            $columns = empty($request->only(['columns'])) ? ['*'] : $request->only(['columns']);
 
             $user = $this->userService->update($id, $validatedData, $columns);
 
@@ -292,84 +248,37 @@ class UserController extends Controller
         }
     }
 
-    public function delete(Request $request, string $id)
+    public function delete(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            // Merge request data with the provided ID for validation.
-            $data = array_merge($request->all(), ['id' => $id]);
-            // Validate input parameters.
-            $validator = Validator::make($data, [
-                'id' => 'required|string|uuid', // Ensures a valid UUID format.
-                'force' => 'sometimes|accepted',
-            ]);
+            $forceDelete = $request->validated()['force'] ?? false;
 
-            // Handle validation failures.
-            if ($validator->fails()) {
-                Log::warning("User updating validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
+            $user = $this->userService->delete($id, $forceDelete);
 
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-            // Extract validated data.
-            $validated = $validator->validated();
-            $forceDelete = $validated['force'] ?? false;
-
-            $user = $this->userService->delete($validated['id'], $forceDelete);
-
-            // Return success response.
             return $forceDelete ?
                 ApiResponse::success($user, 'User permenantly deleted successfully.') :
                 ApiResponse::success($user, 'User soft deleted successfully.');
         } catch (Exception $e) {
-            // Log the exception for debugging.
             Log::error("Error deleting user: {$e->getMessage()}", ['exception' => $e]);
 
-            // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function deleteBulk(Request $request)
+
+    public function deleteBulk(ValidateColumnAndConditionRequest $request)
     {
         try {
-            // Validate input parameters.
-            $validator = Validator::make($request->all(), [
-                'conditions'  => 'required|array',
-                'force' => 'sometimes|accepted',
-            ]);
-
-            // Handle validation failures.
-            if ($validator->fails()) {
-                Log::warning("Users deletion validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-            // Extract validated data.
-            $validated = $validator->validated();
-            $conditions = $validated['conditions'] ?? false;
-            $forceDelete = $validated['force'] ?? false;
+            $conditions = $request->validated()['conditions'] ?? [];
+            $forceDelete = $request->validated()['force'] ?? false;
 
             $deletedUsers = $this->userService->deleteBulk($conditions, $forceDelete);
 
-            // Return success response.
             return $forceDelete ?
                 ApiResponse::success($deletedUsers, 'Users permenantly deleted successfully.') :
                 ApiResponse::success($deletedUsers, 'Users soft deleted successfully.');
         } catch (Exception $e) {
-            // Log the exception for debugging.
             Log::error("Error deleting users: {$e->getMessage()}", ['exception' => $e]);
 
-            // Return an error response.
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
@@ -409,31 +318,11 @@ class UserController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function restore(Request $request, string $id)
+
+    public function restore(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
-            // Merge request data with the provided ID for validation.
-            $data = array_merge($request->all(), ['id' => $id]);
-            $validator = Validator::make($data, [
-                'id' => 'required|string|uuid',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            // Handle validation failures.
-            if ($validator->fails()) {
-                Log::warning("User restoring validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $id = $validator->validated()['id'];
-            $columns = $validator->validated()['columns'] ?? ['*'];
+            $columns = $request->validated()['columns'] ?? ['*'];
 
             $user = $this->userService->restore($id, $columns);
 
@@ -446,28 +335,12 @@ class UserController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-    public function restoreBulk(Request $request)
+
+    public function restoreBulk(ValidateColumnAndConditionRequest $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'conditions'  => 'sometimes|array',
-                'columns'  => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Users restoring validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-
-            $conditions = $validator->validated()['conditions'] ?? [];
-            $columns = $validator->validated()['columns'] ?? ['*'];
+            $conditions = $request->validated()['conditions'] ?? [];
+            $columns = $request->validated()['columns'] ?? ['*'];
 
             $users = $this->userService->restoreBulk($conditions, $columns);
 
@@ -477,6 +350,4 @@ class UserController extends Controller
             return ApiResponse::error($e->getMessage(), 500);
         }
     }
-
-
 }

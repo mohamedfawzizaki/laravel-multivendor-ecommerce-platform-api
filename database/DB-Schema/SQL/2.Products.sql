@@ -22,36 +22,28 @@ CREATE TABLE products (
     CONSTRAINT fk_products_brand FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE -- Delete product when brand is removed
 );
 ------------------------------------------------------------------------------------------------
--- Product Details Table: Stores extended product descriptions, ensuring a 1:1 relationship with products.
-------------------------------------------------------------------------------------------------
-CREATE TABLE product_details (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for product details
-    product_id BIGINT UNSIGNED NOT NULL UNIQUE, -- 1:1 relation with products (each product has one details entry)
-    description TEXT NOT NULL, -- Full description of the product
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the product details were created
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Auto-update timestamp
-
-    -- Foreign key constraint:
-    CONSTRAINT fk_product_details FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE -- Remove details when product is deleted
-);
-------------------------------------------------------------------------------------------------
 -- Product Variants Table: Stores different variations of a product (e.g., size, color, material).
 ------------------------------------------------------------------------------------------------
 CREATE TABLE product_variants (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for each product variant
     product_id BIGINT UNSIGNED NOT NULL, -- Reference to the parent product
     variant_name VARCHAR(255) NOT NULL, -- Variation details (e.g., "Red, Size M")
-    price DECIMAL(10,2) NOT NULL, -- Price of the variant
+    price DECIMAL(10,2) NOT NULL CHECK (price >= 0), -- Price must be non-negative
     stock INT UNSIGNED NOT NULL DEFAULT 0, -- Stock quantity available
-    sku VARCHAR(100) NOT NULL UNIQUE, -- Unique SKU identifier for inventory tracking
+    sku VARCHAR(100) NOT NULL, -- Unique SKU identifier for inventory tracking
+    attributes JSON NULL, -- Store additional attributes (e.g., { "color": "Red", "size": "M" })
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the variant was created
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Auto-update timestamp
+    deleted_at TIMESTAMP NULL DEFAULT NULL, -- Soft delete column for restoring variants
 
     -- Foreign key constraint:
-    CONSTRAINT fk_product_variants FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE, -- Remove variants when product is deleted
+    CONSTRAINT fk_product_variants FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
 
     -- Indexing to speed up searches based on product and variant name
-    INDEX idx_variant (product_id, variant_name)
+    INDEX idx_variant (product_id, variant_name),
+
+    -- Ensure SKU uniqueness per product (Optional: Remove if SKU should be globally unique)
+    UNIQUE KEY uq_sku_per_product (product_id, sku)
 );
 ------------------------------------------------------------------------------------------------
 -- Product Images Table: Stores images associated with products.
@@ -185,18 +177,26 @@ CREATE TABLE product_reviews (
     INDEX idx_product_reviews_rating (rating) -- Optimizes filtering by rating
 );
 ------------------------------------------------------------------------------------------------
--- Stores brand information, including name, description, and logo.
 CREATE TABLE brands (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for each brand
-    brand_name VARCHAR(255) NOT NULL UNIQUE, -- Unique brand name
-    brand_description TEXT NULL, -- Optional description of the brand
-    logo_url TEXT NULL, -- URL to the brand's logo
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the brand record was created
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Updates timestamp when brand data is modified
-
-    -- Indexing for Performance
-    INDEX idx_brand_name (brand_name) -- Optimizes queries filtering by brand name
-);
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    brand_name VARCHAR(255) NOT NULL,
+    brand_slug VARCHAR(255) NOT NULL UNIQUE, -- URL-friendly version of brand name
+    brand_description TEXT NULL,
+    logo_url VARCHAR(512) NULL, -- Changed from TEXT to VARCHAR with length limit
+    website_url VARCHAR(512) NULL, -- Added company website
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL, -- For soft deletion
+    
+    -- Constraints
+    CONSTRAINT chk_brand_name CHECK (LENGTH(TRIM(brand_name)) > 0), -- Ensures non-empty brand name
+    CONSTRAINT chk_logo_url CHECK (logo_url IS NULL OR logo_url LIKE 'http%'), -- Validates URL format
+    
+    -- Indexes
+    INDEX idx_brand_name (brand_name),
+    INDEX idx_brand_slug (brand_slug),
+    INDEX idx_brand_active (is_active) -- For filtering active/inactive brands
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ------------------------------------------------------------------------------------------------
 -- Stores product categories, ensuring unique names and slugs.
 CREATE TABLE categories (

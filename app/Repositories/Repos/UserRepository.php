@@ -8,7 +8,7 @@ use App\Repositories\RepositoryPropertiesInterface;
 
 class UserRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    public array $relationships = ['role.permissions', 'status', 'phone'];
+    public array $relationships = ['role.permissions', 'status', 'phone', 'addresses'];
     public array $relationshipMap = [
         'role' => 'role_id',
         'status' => 'status_id',

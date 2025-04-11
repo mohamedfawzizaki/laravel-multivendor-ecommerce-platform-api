@@ -8,17 +8,17 @@ use App\Repositories\EloquentBased\MainBaseRepository;
 
 class CityRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    public array $relationships = [];
+    public array $relationships = ['country'];
     public array $relationshipMap = [
-        'user' => 'user_id',
+        'country' => 'country_id',
     ];
     public bool $hasPivot = false;
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
-    public array $fillable = ['name', 'user_id'];
-    public array $availableColumns = ['name', 'user_id', 'address_line', 'created_at'];
-    public array $availableConditionColumns = ['name','user_id', 'address_line', 'created_at'];
-    public array $availableColumnsForMassUpdate = ['name', 'address_line', 'user_id'];
+    public array $fillable = ['name', 'user_id', 'country_id'];
+    public array $availableColumns = ['name', 'country_id', 'created_at'];
+    public array $availableConditionColumns = ['name','country_id', 'created_at'];
+    public array $availableColumnsForMassUpdate = ['name', 'country_id'];
 
     /**
      * CityRepository constructor.

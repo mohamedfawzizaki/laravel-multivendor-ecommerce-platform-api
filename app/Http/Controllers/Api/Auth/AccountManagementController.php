@@ -22,9 +22,6 @@ class AccountManagementController extends Controller
 {
     public function __construct(public AuthService $authService) {}
 
-
-
-
     public function changeUsername(Request $request): JsonResponse
     {
         // Ensure user is authenticated
@@ -98,19 +95,7 @@ class AccountManagementController extends Controller
             return ApiResponse::error('Failed to update name', 500, ['error' => 'An unexpected error occurred.']);
         }
     }
-    /**
-     * Change the authenticated user's email address.
-     *
-     * This method allows a user to update their email address after successful 
-     * re-authentication using a short-lived token.
-     *
-     * @param Request $request The HTTP request containing the new email and re-authentication token.
-     * 
-     * @return JsonResponse The API response containing success or error messages.
-     *
-     * @throws QueryException If a database-related error occurs.
-     * @throws Exception If an unexpected error occurs.
-     */
+
     public function changeEmail(Request $request): JsonResponse
     {
         // Ensure user is authenticated

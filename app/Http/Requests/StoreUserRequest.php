@@ -65,6 +65,8 @@ class StoreUserRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'confirmed',  new StrongPassword],
             'role_id' => 'sometimes|exists:roles,id',
+            'city_id' => 'required_without:city_name|exists:cities,id',
+            'city_name' => 'required_without:city_id|exists:cities,name',
         ];
     }
 
