@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\Image;
+use App\Models\Products\ProductMedia;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
@@ -35,11 +35,11 @@ class ImageRepository extends MainBaseRepository implements RepositoryProperties
     public array $availableColumnsForMassUpdate = [];
 
     /**
-     * ImageRepository constructor.
+     * ProductMediaRepository constructor.
      *
-     * @param Image $brand The Image model instance.
+     * @param ProductMedia $brand The ProductMedia model instance.
      */
-    public function __construct(Image $brand)
+    public function __construct(ProductMedia $brand)
     {
         parent::__construct($brand);
     }

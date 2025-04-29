@@ -9,8 +9,8 @@ use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Products\BrandService;
-use App\Http\Requests\StoreBrandRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Products\StoreBrandRequest;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 
@@ -31,16 +31,17 @@ class BrandController extends Controller
             $data = [
                 'name' => $validated['name'],
                 'description' => $validated['description'],
+                'slug' => $validated['slug'],
                 'logo_url' => $request->hasFile('logo')
-                    ? $this->brandService->storeFile(
-                        $request->file('logo'),
-                        'Brands/logos'
+                ? $this->brandService->storeFile(
+                    $request->file('logo'),
+                    'Brands/logos'
                     )
                     : null,
-                'website_url' => $validated['website_url'],
-            ];
-
-            $brand = $this->brandService->create($data);
+                    'website_url' => $validated['website_url'],
+                ];
+                
+                $brand = $this->brandService->create($data);
 
             return ApiResponse::success($brand, 'Brand created successfully.');
         } catch (Exception $e) {

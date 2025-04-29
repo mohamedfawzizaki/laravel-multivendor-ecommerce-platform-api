@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\ProductVariant;
+use App\Models\Products\ProductVariation;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
@@ -52,9 +52,9 @@ class ProductVariantRepository extends MainBaseRepository implements RepositoryP
     /**
      * ImageRepository constructor.
      *
-     * @param ProductVariant $productVariant The ProductVariant model instance.
+     * @param ProductVariation $productVariant The ProductVariation model instance.
      */
-    public function __construct(ProductVariant $productVariant)
+    public function __construct(ProductVariation $productVariant)
     {
         parent::__construct($productVariant);
     }

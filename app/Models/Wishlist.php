@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Products\Product;
+use App\Models\Products\ProductVariation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Wishlist extends Model
 {
@@ -16,7 +17,7 @@ class Wishlist extends Model
         'session_id',
         'wishlist_name',
         'product_id',
-        'variant_id',
+        'variation_id',
         'notes',
         'notify_preferences',
         'expires_at',
@@ -30,6 +31,11 @@ class Wishlist extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variation()
+    {
+        return $this->belongsTo(ProductVariation::class);
     }
 
     // Relationship with User (for authenticated users)

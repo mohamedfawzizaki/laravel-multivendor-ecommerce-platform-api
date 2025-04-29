@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\Category;
+use App\Models\Products\Category;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Products\Product;
+use App\Models\Products\ProductVariation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,11 +17,11 @@ class Cart extends Model
         'user_id',
         'session_id',
         'product_id',
-        'variant_id',
+        'variation_id',
 
         'quantity',
         'price',
-        'currency',
+        'currency_code',
         'notes',
         'expires_at',
     ];
@@ -32,7 +34,7 @@ class Cart extends Model
 
     protected $attributes = [];
 
-    // protected $with = ['user', 'product', 'variant'];
+    protected $with = ['product', 'variation'];
     protected $casts = [
         'expires_at' => 'datetime',
     ];
@@ -47,8 +49,8 @@ class Cart extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function variant(): BelongsTo
+    public function variation(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariation::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Repos\Products;
+namespace App\Repositories\Repos\Orders;
 
 use App\Models\OrderPayment;
 use App\Repositories\RepositoryPropertiesInterface;

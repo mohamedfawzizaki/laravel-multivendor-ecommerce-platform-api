@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\ProductInventory;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
@@ -25,10 +24,10 @@ class ProductInventoryRepository extends MainBaseRepository implements Repositor
      *
      * @param ProductInventory $productInventory The ProductInventory model instance.
      */
-    public function __construct(ProductInventory $productInventory)
-    {
-        parent::__construct($productInventory);
-    }
+    // public function __construct(ProductInventory $productInventory)
+    // {
+    //     parent::__construct($productInventory);
+    // }
 
     public function getRelationships(): array
     {

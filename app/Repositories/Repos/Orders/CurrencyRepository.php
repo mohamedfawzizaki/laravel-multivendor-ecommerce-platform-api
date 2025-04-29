@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repositories\Repos\Products;
+namespace App\Repositories\Repos\Orders;
 
 use App\Models\Currency;
+use InvalidArgumentException;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
@@ -15,13 +16,28 @@ class CurrencyRepository extends MainBaseRepository implements RepositoryPropert
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
     public array $fillable = [
-        'code', 'name', 'symbol', 'exchange_rate'
+        'code',
+        'name',
+        'symbol',
+        'is_active',
+        'is_base_currency',
+        'exchange_rate',
     ];
     public array $availableColumns = [
-        'id','code', 'name', 'symbol', 'exchange_rate'
+        'code',
+        'name',
+        'symbol',
+        'is_active',
+        'is_base_currency',
+        'exchange_rate',
     ];
     public array $availableConditionColumns = [
-        'id','code', 'name', 'symbol', 'exchange_rate'
+        'code',
+        'name',
+        'symbol',
+        'is_active',
+        'is_base_currency',
+        'exchange_rate',
     ];
     public array $availableColumnsForMassUpdate = [];
 
@@ -76,5 +92,26 @@ class CurrencyRepository extends MainBaseRepository implements RepositoryPropert
     public function getDefualtIDsForPivot(): array
     {
         return $this->defaultIDsForPivot;
+    }
+
+    public function getActive()
+    {
+        return $this->model->active()->get();
+    }
+
+    public function getBase()
+    {
+        return $this->model::base();
+    }
+
+    public function convertTo(Currency $targetCurrency, float $amount): float
+    {
+        $baseCurrency = $this->getBase();
+        return $this->$baseCurrency->convertTo($targetCurrency, $amount);
+    }
+
+    public function convert(string $fromCode, string $toCode, float $amount): float
+    {
+        return $this->model::convert($fromCode, $toCode, $amount);
     }
 }

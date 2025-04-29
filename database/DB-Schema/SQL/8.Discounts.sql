@@ -31,7 +31,7 @@ CREATE TABLE coupon_conditions (
 -- Table to specify applicable products for coupons
 CREATE TABLE coupon_applicable_products (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, -- Unique identifier
-    coupon_id BIGINT UNSIGNED NOT NULL, -- Foreign key referencing the coupons table
+    coupon_id BIGINT UNSIGNED NOT NULL,  -- Foreign key referencing the coupons table
     product_id BIGINT UNSIGNED NOT NULL, -- Foreign key referencing the products table
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the record is created
     CONSTRAINT fk_coupon_product FOREIGN KEY (coupon_id) REFERENCES coupons (id) ON DELETE CASCADE, -- Maintain referential integrity

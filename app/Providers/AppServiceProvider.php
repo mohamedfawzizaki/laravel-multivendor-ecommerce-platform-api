@@ -5,14 +5,17 @@ namespace App\Providers;
 use App\Models\User;
 use StripePaymentGateway;
 use Illuminate\Http\Request;
+use App\Services\UserService;
 use PHPUnit\Framework\TestCase;
 use App\Services\PaymentService;
 use App\Contracts\PaymentGateway;
 use App\Listeners\LogMessageSent;
+use App\Models\Orders\OrderPayment;
 use App\Listeners\LogMessageSending;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Event;
+use App\Observers\OrderPaymentObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
@@ -60,7 +63,7 @@ class AppServiceProvider extends ServiceProvider
         // });
 
 
-        
+        OrderPayment::observe(OrderPaymentObserver::class);
 
 
 

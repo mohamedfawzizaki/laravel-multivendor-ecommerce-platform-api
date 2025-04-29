@@ -34,7 +34,6 @@ trait BaseRepositoryForRetreivingRecordTrait
             }
             
             $columns = $this->mapRelationshipColumns($columns);
-            // dd($query->get());
 
             return $query->get($columns);
         } catch (InvalidArgumentException $queryException) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Repos\Products;
+namespace App\Repositories\Repos\Orders;
 
 use App\Models\Order;
 use App\Repositories\RepositoryPropertiesInterface;
@@ -8,7 +8,7 @@ use App\Repositories\EloquentBased\MainBaseRepository;
 
 class OrderRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
-    public array $relationships = [];
+    public array $relationships = ['items', 'payments', 'user'];
 
     public array $relationshipMap = [];
     public bool $hasPivot = false;

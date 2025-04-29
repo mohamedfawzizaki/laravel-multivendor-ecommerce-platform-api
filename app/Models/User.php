@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Cart;
+use App\Models\City;
+use App\Models\Role;
+use App\Models\Phone;
+use App\Models\Status;
+use App\Models\Shipping\Shipment;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
+use App\Models\Shipping\ShippingAddress;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -114,7 +121,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Status::class);
     }
-    
+
     public function phone(): HasMany
     {
         return $this->hasMany(Phone::class);
@@ -123,5 +130,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function addresses(): BelongsToMany
     {
         return $this->belongsToMany(City::class, 'user_address');
+    }
+
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function shippingAddresses()
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
+
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class);
     }
 }

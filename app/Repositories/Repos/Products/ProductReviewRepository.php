@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\ProductReview;
+use App\Models\Products\ProductReview;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 

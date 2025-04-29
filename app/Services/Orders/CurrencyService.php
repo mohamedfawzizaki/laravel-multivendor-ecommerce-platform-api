@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Services\Products;
+namespace App\Services\Orders;
 
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\Repos\Products\CurrencyRepository;
+use App\Repositories\Repos\Orders\CurrencyRepository;
 
 class CurrencyService
 {
     /**
      * Constructor to inject the CurrencyRepository dependency.
      *
-     * @param \App\Repositories\Repos\Products\CurrencyRepository $currencyRepository
+     * @param \App\Repositories\Repos\Orders\CurrencyRepository $currencyRepository
      */
     public function __construct(private CurrencyRepository $currencyRepository) {}
 
@@ -35,10 +35,6 @@ class CurrencyService
         );
     }
 
-    public function getCurrencyById(string $id, array $columns = ['*']): ?object
-    {
-        return $this->currencyRepository->getByIdUsingRepositoryBaseTrait($id, $columns);
-    }
 
     public function searchBy(string $field, mixed $value, array $columns = ['*']): ?object
     {
@@ -55,33 +51,33 @@ class CurrencyService
         return $this->currencyRepository->updateUsingRepositoryBaseTrait($id, $data, $columns);
     }
 
-    public function updateGroup(array $data, array $conditions = [], array $columns = ['*']): Collection
-    {
-        return $this->currencyRepository->updateGroupUsingRepositoryBaseTrait($data, $conditions, $columns);
-    }
-
     public function delete(string $id, bool $force = false)
     {
         return $this->currencyRepository->deleteUsingRepositoryBaseTrait($id, $force);
     }
 
-    public function deleteBulk(array $conditions, bool $force = false)
+    public function getActive()
     {
-        return $this->currencyRepository->deleteBulkUsingRepositoryBaseTrait($conditions, $force);
+        return $this->currencyRepository->getActive();
+    }
+    
+    public function getBase()
+    {
+        return $this->currencyRepository->getBase();
+    }
+    public function convertTo(string $targetCurrencyCode, float $amount)
+    {
+        $targetCurrency = $this->currencyRepository->findByField('code', $targetCurrencyCode);
+
+        if (!$targetCurrency) {
+            throw new \Exception("Target Currency not found");
+        }
+
+        return $this->currencyRepository->convertTo($targetCurrency, $amount);
     }
 
-    public function softDeleted(string $id)
+    public function convert(string $fromCode, string $toCode, float $amount): float
     {
-        return $this->currencyRepository->softDeletedUsingRepositoryBaseTrait($id);
-    }
-
-    public function restore(string $id, array $columns = ['*'])
-    {
-        return $this->currencyRepository->restoreUsingRepositoryBaseTrait($id, $columns);
-    }
-
-    public function restoreBulk(array $conditions = [], array $columns = ['*'])
-    {
-        return $this->currencyRepository->restoreBulkUsingRepositoryBaseTrait($conditions, $columns);
+        return $this->currencyRepository->convert($fromCode, $toCode, $amount);
     }
 }

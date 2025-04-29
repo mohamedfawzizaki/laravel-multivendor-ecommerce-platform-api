@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Public\Products;
 
 use Exception;
+use App\Models\Products\Brand;
 use Illuminate\Http\JsonResponse;
 use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +12,7 @@ use App\Http\Requests\PaginateRequest;
 use App\Services\Products\BrandService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BrandController extends Controller
 {
@@ -70,36 +71,39 @@ class BrandController extends Controller
         }
     }
 
-    public function search(string $brandName): JsonResponse
+    public function search(string $query): JsonResponse
     {
         try {
-            // Validate input parameters.
-            $validator = Validator::make(['name' => strtolower($brandName)], [
-                'name' => 'required|string|exists:brands,name',
-            ], [
-                'name' => 'the selected brand is invalid or is not found'
+            // Validate the incoming request
+            $validator = Validator::make(['query' => $query], [
+                'query' => 'required|string', // The search value must be a string
             ]);
 
             if ($validator->fails()) {
-                Log::warning("Brand retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
+                return ApiResponse::error('Invalid request parameters.', 400);
+            }
+            // Validate the incoming request
+            $value = $validator->validated()['query'];
 
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
+            $result = Brand::whereAny([
+                'name',
+                'slug',
+                'description',
+                'website_url',
+            ], 'like', '%' . $value . '%')->get();
+
+            // Check if the result is empty
+            if ($result->isEmpty()) {
+                return ApiResponse::error('No matching brands found.', 404);
             }
 
-            $validated = $validator->validated();
-            
-            $brand = $this->brandService->searchBy('name', $validated['name']);
-
-            return ApiResponse::success($brand, 'Brand retrieved successfully.');
+            return ApiResponse::success($result, 'brands found.');
+        } catch (ModelNotFoundException $e) {
+            Log::warning("brands search failed: {$e->getMessage()}", ['exception' => $e]);
+            return ApiResponse::error('brands not found.', 404);
         } catch (Exception $e) {
-            Log::error("Error retrieving brand: {$e->getMessage()}", ['exception' => $e]);
-            return ApiResponse::error($e->getMessage(), 500);
+            Log::error("Error searching brands: {$e->getMessage()}", ['exception' => $e]);
+            return ApiResponse::error('An error occurred while searching for brands.', 500);
         }
     }
 }

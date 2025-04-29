@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\Brand;
+use App\Models\Products\Brand;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
@@ -17,14 +17,14 @@ class BrandRepository extends MainBaseRepository implements RepositoryProperties
     public array $defaultIDsForPivot = [];
     public array $fillable = [
         'name',
-        // 'slug',
+        'slug',
         'description',
         'logo_url',
         'website_url',
     ];
     public array $availableColumns = [
         'name',
-        // 'slug',
+        'slug',
         'description',
         'logo_url',
         'website_url',

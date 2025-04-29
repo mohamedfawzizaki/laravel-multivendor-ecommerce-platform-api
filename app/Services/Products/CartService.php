@@ -2,6 +2,7 @@
 
 namespace App\Services\Products;
 
+use App\Models\Cart;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -69,5 +70,12 @@ class CartService
     public function restore(string $id, array $columns = ['*'])
     {
         return $this->cartRepository->restoreUsingRepositoryBaseTrait($id, $columns);
+    }
+
+    public function clearCart(?string $userId = null, ?string $sessionId = null): void
+    {
+        Cart::when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when($sessionId, fn($q) => $q->where('session_id', $sessionId))
+            ->delete();
     }
 }

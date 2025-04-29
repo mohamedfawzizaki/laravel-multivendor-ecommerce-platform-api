@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Services\Products;
+namespace App\Services\Orders;
 
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Repositories\Repos\Products\OrderItemRepository;
+use App\Repositories\Repos\Orders\OrderItemRepository;
 
 class OrderItemService
 {
     /**
      * Constructor to inject the OrderItemRepository dependency.
      *
-     * @param \App\Repositories\Repos\Products\OrderItemRepository $orderItemRepository
+     * @param \App\Repositories\Repos\Orders\OrderItemRepository $orderItemRepository
      */
     public function __construct(private OrderItemRepository $orderItemRepository) {}
 

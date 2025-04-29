@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api\Public\Products;
 
-use App\Http\Controllers\Controller;
-use App\Services\Products\ProductService;
+use Exception;
 use Illuminate\Http\Request;
+use App\Models\Products\Product;
 use Illuminate\Http\JsonResponse;
 use App\Http\Responses\ApiResponse;
-use Exception;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
+use App\Services\Products\ProductService;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends Controller
 {
@@ -70,33 +72,41 @@ class ProductController extends Controller
         }
     }
 
-    public function search(string $name): JsonResponse
+    public function search(string $query): JsonResponse
     {
         try {
-            $validator = Validator::make(['name'=>$name], [
-                'name' => 'sometimes|string',
+            // Validate the incoming request
+            $validator = Validator::make(['query' => $query], [
+                'query' => 'required|string', // The search value must be a string
             ]);
 
             if ($validator->fails()) {
-                Log::warning("Product retrieval validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
+                return ApiResponse::error('Invalid request parameters.', 400);
+            }
+            // Validate the incoming request
+            $value = $validator->validated()['query'];
 
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
+            $result = Product::whereAny([
+                'name',
+                'slug',
+                'description',
+                'base_price',
+                'base_compare_price',
+                'status',
+            ], 'like', '%' . $value . '%')->get();
+
+            // Check if the result is empty
+            if ($result->isEmpty()) {
+                return ApiResponse::error('No matching products found.', 404);
             }
 
-            $validated = $validator->validated();
-
-            $product = $this->productService->searchBy('name', $validated['name']);
-
-            return ApiResponse::success($product, 'Product retrieved successfully.');
+            return ApiResponse::success($result, 'products found.');
+        } catch (ModelNotFoundException $e) {
+            Log::warning("products search failed: {$e->getMessage()}", ['exception' => $e]);
+            return ApiResponse::error('products not found.', 404);
         } catch (Exception $e) {
-            Log::error("Error retrieving product: {$e->getMessage()}", ['exception' => $e]);
-            return ApiResponse::error($e->getMessage(), 500);
+            Log::error("Error searching products: {$e->getMessage()}", ['exception' => $e]);
+            return ApiResponse::error('An error occurred while searching for products.', 500);
         }
     }
 }

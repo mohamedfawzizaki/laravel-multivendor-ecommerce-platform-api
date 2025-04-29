@@ -18,7 +18,7 @@ use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class VendorController extends Controller
 {
-    
+
     /**
      * Constructor to inject the VendorService dependency.
      *

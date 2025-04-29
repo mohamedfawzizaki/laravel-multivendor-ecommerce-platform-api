@@ -94,18 +94,13 @@ class BrandService
 
     public function getPath($url, $path)
     {
-        // Extract file path from URL
-        $relativePath = str_replace(Storage::url($path), '', $url);
+        // Ensure only the path after /storage/ is extracted
+        $relativePath = str_replace('/storage/', '', parse_url($url, PHP_URL_PATH));
 
-        // Full path in storage
-        $fullPath = $path . '/' . ltrim($relativePath, '/');
+        // Return full storage path
+        $fullPath = $relativePath;
 
-        // Check if the file exists before deleting
-        if (Storage::disk('public')->exists($fullPath)) {
-            return $fullPath;
-        }
-
-        return null;
+        return Storage::disk('public')->exists($fullPath) ? $fullPath : null;
     }
 
     public function deleteFile($path)

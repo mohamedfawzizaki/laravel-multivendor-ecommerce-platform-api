@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api\Admin\Products;
 
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\Products\Category;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\StoreCategoryRequest;
+use App\Models\Products\CategoryHierarchy;
 use App\Services\Products\CategoryService;
+use App\Http\Requests\Products\StoreCategoryRequest;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class CategoryController extends Controller
@@ -22,15 +25,40 @@ class CategoryController extends Controller
      */
     public function __construct(protected CategoryService $categoryService) {}
 
-    public function store(StoreCategoryRequest $request): JsonResponse
+    public function store(StoreCategoryRequest $request, ?string $parentId = null): JsonResponse
     {
+        DB::beginTransaction();
+    
         try {
             $validated = $request->validated();
-
+    
+            // Create the category
             $category = $this->categoryService->create($validated);
+    
+            // If a parent ID is provided, create the hierarchy relation
+            if ($parentId) {
+                $parentCategory = Category::find($parentId);
+    
+                if (!$parentCategory) {
+                    DB::rollBack(); // Rollback before returning error
+                    return ApiResponse::error('Parent category not found', 404);
+                }
+    
+                CategoryHierarchy::create([
+                    'parent_id' => $parentId,
+                    'child_id' => $category->id,
+                ]);
+            }
+    
+            DB::commit();
             return ApiResponse::success($category, 'Category created successfully.');
         } catch (Exception $e) {
-            Log::error("Error creating category: {$e->getMessage()}", ['exception' => $e]);
+            DB::rollBack();
+    
+            Log::error("Error creating category: {$e->getMessage()}", [
+                'exception' => $e,
+            ]);
+    
             return ApiResponse::error($e->getMessage(), 500);
         }
     }

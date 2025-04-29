@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Repos\Products;
 
-use App\Models\Product;
+use App\Models\Products\Product;
 use App\Repositories\RepositoryPropertiesInterface;
 use App\Repositories\EloquentBased\MainBaseRepository;
 
 class ProductRepository extends MainBaseRepository implements RepositoryPropertiesInterface
 {
     // public array $relationships = ['category', 'brand'];
-    public array $relationships = [];   
+    public array $relationships = [];
     public array $relationshipMap = [
         // 'category_id' => 'category',
         // 'brand_id' => 'brand',
@@ -17,10 +17,54 @@ class ProductRepository extends MainBaseRepository implements RepositoryProperti
     public bool $hasPivot = false;
     public array $pivotWith = [];
     public array $defaultIDsForPivot = [];
-    public array $fillable = ['vendor_id', 'brand_id', 'category_id', 'status_id', 'name', 'description'];
-    public array $availableColumns = ['id', 'vendor_id', 'brand_id', 'category_id', 'status_id', 'name', 'description'];
-    public array $availableConditionColumns = ['id', 'vendor_id', 'brand_id', 'category_id', 'status_id', 'name', 'description'];
-    public array $availableColumnsForMassUpdate = ['brand_id', 'category_id', 'status_id', 'description'];
+    public array $fillable = [
+        'vendor_id',
+        'brand_id',
+        'category_id',
+        'name',
+        'slug',
+        'description',
+        'base_price',
+        'base_compare_price',
+        'status',
+        'currency_code'
+    ];
+    public array $availableColumns = [
+        'id',
+        'vendor_id',
+        'brand_id',
+        'category_id',
+        'name',
+        'slug',
+        'description',
+        'base_price',
+        'base_compare_price',
+        'status',
+        'currency_code'
+    ];
+    public array $availableConditionColumns = [
+        'id',
+        'vendor_id',
+        'brand_id',
+        'category_id',
+        'name',
+        'slug',
+        'description',
+        'base_price',
+        'base_compare_price',
+        'status',
+        'currency_code'
+    ];
+    public array $availableColumnsForMassUpdate = [
+        // 'vendor_id',
+        'brand_id',
+        'category_id',
+        'description',
+        'base_price',
+        'base_compare_price',
+        'status',
+        'currency_code'
+    ];
 
     /**
      * ProductRepository constructor.

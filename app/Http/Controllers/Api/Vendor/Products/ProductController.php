@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Api\Vendor\Products;
 
-use App\Http\Controllers\Controller;
-use App\Services\Products\ProductService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use App\Http\Responses\ApiResponse;
-use Exception;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Services\Products\ProductService;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\Products\StoreProductRequest;
+use App\Http\Requests\Products\UpdateProductRequest;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
 
 class ProductController extends Controller
@@ -28,7 +30,18 @@ class ProductController extends Controller
             $validated = $request->validated();
             $validated['vendor_id'] = $request->user()->id;
 
-            $product = $this->productService->create($validated);
+            $product = $this->productService->create([
+                'vendor_id' => $validated['vendor_id'],
+                'brand_id' => $validated['brand_id'],
+                'category_id' => $validated['category_id'],
+                'name' => $validated['name'],
+                'slug' => $validated['slug'],
+                'base_price' => $validated['base_price'],
+                'base_compare_price' => $validated['base_compare_price'],
+                'description' => $validated['description'],
+                'status' => $validated['status'],
+                'currency_code' => $validated['currency_code'],
+            ]);
 
             return ApiResponse::success($product, 'Product created successfully.');
         } catch (Exception $e) {
@@ -83,53 +96,6 @@ class ProductController extends Controller
         }
     }
 
-    public function updateBulk(Request $request): JsonResponse
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'brand_id' => 'sometimes|string|exists:brands,id',
-                'category_id' => 'sometimes|string|exists:categories,id',
-                'status_id' => 'sometimes|string|exists:product_statuses,id',
-                'description' => 'sometimes|string',
-
-                'conditions'  => 'sometimes|array',
-                'columns'     => 'sometimes|array',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Products updating validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            };
-            
-            $validated = $validator->validated();
-
-            $conditions = $validator->validated()['conditions'] ?? [];
-
-            $conditions[] = "vendor_id:=:{$request->user()->id}";
-
-            $columns = $validator->validated()['columns'] ?? ['*'];
-
-            // Filter only valid product fields (excluding 'columns' , 'conditions')
-            $data = array_filter($validated, function ($key) {
-                return !in_array($key, ['columns', 'conditions']); // Exclude 'columns' and 'conditions' key and conditions key
-            }, ARRAY_FILTER_USE_KEY);
-
-            $products = $this->productService->updateGroup($data, $conditions, $columns);
-
-            return ApiResponse::success($products, 'Product updated successfully.');
-        } catch (Exception $e) {
-            Log::error("Error updating product: {$e->getMessage()}", ['exception' => $e]);
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
     public function delete(ValidateColumnAndConditionRequest $request, string $id)
     {
         try {
@@ -158,26 +124,6 @@ class ProductController extends Controller
         }
     }
 
-    public function deleteBulk(ValidateColumnAndConditionRequest $request)
-    {
-        try {
-            $conditions = $request->validated()['conditions'] ?? [];
-            $conditions[] = "vendor_id:=:{$request->user()->id}";
-            
-            $forceDelete = $request->validated()['force'] ?? false;
-
-            $deletedProducts = $this->productService->deleteBulk($conditions, $forceDelete);
-
-            return $forceDelete ?
-                ApiResponse::success($deletedProducts, 'Products permenantly deleted successfully.') :
-                ApiResponse::success($deletedProducts, 'Products soft deleted successfully.');
-        } catch (Exception $e) {
-            Log::error("Error deleting products: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
     public function isSoftDeleted(string $id)
     {
         try {
@@ -197,10 +143,10 @@ class ProductController extends Controller
         try {
             // check if the vendor has this product:
             $product = $this->productService->getAllProducts(
-                onlyTrashed:true,
-                conditions:["id:=:$id"]
+                onlyTrashed: true,
+                conditions: ["id:=:$id"]
             )->first();
-            
+
             if (!$product) {
                 return ApiResponse::error('Product not found');
             }
@@ -214,21 +160,6 @@ class ProductController extends Controller
             return ApiResponse::success($product, 'Product is restored');
         } catch (Exception $e) {
             Log::error("Error restoring soft deleted product: {$e->getMessage()}", ['exception' => $e]);
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
-    public function restoreBulk(ValidateColumnAndConditionRequest $request)
-    {
-        try {
-            $conditions = $request->validated()['conditions'] ?? [];
-            $conditions[] = "vendor_id:=:{$request->user()->id}";
-
-            $products = $this->productService->restoreBulk($conditions);
-
-            return ApiResponse::success($products, 'Products is restored');
-        } catch (Exception $e) {
-            Log::error("Error restoring products: {$e->getMessage()}", ['exception' => $e]);
             return ApiResponse::error($e->getMessage(), 500);
         }
     }

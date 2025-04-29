@@ -10,10 +10,10 @@ use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaginateRequest;
-use Illuminate\Support\Facades\Validator;
 use App\Services\Products\ProductReviewService;
-use App\Http\Requests\StoreProductReviewRequest;
 use App\Http\Requests\ValidateColumnAndConditionRequest;
+use App\Http\Requests\Products\StoreProductReviewRequest;
+use App\Http\Requests\Products\UpdateProductReviewRequest;
 
 class ProductReviewController extends Controller
 {
@@ -117,7 +117,7 @@ class ProductReviewController extends Controller
         }
     }
 
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateProductReviewRequest $request, string $id): JsonResponse
     {
         try {
             // check if the vendor has this product:
@@ -131,24 +131,7 @@ class ProductReviewController extends Controller
                 return ApiResponse::error('User can only update his product review');
             }
 
-            $validator = Validator::make($request->all(), [
-                'review'            => 'sometimes|string|min:5',
-                'rating'            => 'sometimes|integer|between:1,5',
-                // 'verified_purchase' => 'sometimes|boolean',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning("Product review updating validation failed.", [
-                    'errors' => $validator->errors(),
-                ]);
-
-                return ApiResponse::error(
-                    'Invalid request parameters.',
-                    422,
-                    $validator->errors()
-                );
-            }
-            $validatedData = $validator->validated();
+            $validatedData = $request->validated();
 
             $productReview = $this->productReviewService->update($id, $validatedData);
 
@@ -175,7 +158,7 @@ class ProductReviewController extends Controller
 
             $product = $this->productReviewService->delete($id, false);
 
-            return ApiResponse::success($product, 'Product review soft deleted successfully.');
+            return ApiResponse::success([], 'Product review soft deleted successfully.');
         } catch (Exception $e) {
             Log::error("Error deleting product review: {$e->getMessage()}", ['exception' => $e]);
             return ApiResponse::error($e->getMessage(), 500);

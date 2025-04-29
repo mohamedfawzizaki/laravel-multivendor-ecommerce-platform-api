@@ -2,346 +2,238 @@
 
 namespace App\Http\Controllers\Api\Public;
 
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\Models\Cart;
+use Illuminate\Support\Str;
+use App\Models\Products\Product;
 use Illuminate\Support\Facades\DB;
 use App\Http\Responses\ApiResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PaginateRequest;
-use App\Services\Products\CartService;
-use App\Http\Requests\StoreCartRequest;
-use App\Services\Products\ProductVariantService;
-use App\Http\Requests\ValidateColumnAndConditionRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Products\ProductVariation;
+use App\Http\Requests\CartAndWishlist\StoreCartRequest;
+use App\Http\Requests\CartAndWishlist\UpdateCartRequest;
+use App\Models\ProductsWarehousesManagement\WarehouseInventory;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        // Make sure guests have a session_id
+        if (!session()->has('session_id')) {
+            session(['session_id' => (string) Str::uuid()]);
+        }
+    }
+
     /**
-     * Constructor to inject the CartService dependency.
-     *
-     * @param CartService $cartService The service responsible for cart-related operations.
+     * Display all cart items for the current user/session.
      */
-    public function __construct(protected CartService $cartService, protected ProductVariantService $productVariantService) {}
-
-    public function index(PaginateRequest $request): JsonResponse
+    public function index()
     {
-        try {
-            $validated = $request->validated();
+        $query = Cart::query();
 
-            $paginate     = $validated['paginate']     ?? false;
-            $withTrashed  = $validated['with_trashed'] ?? false;
-            $onlyTrashed  = $validated['only_trashed'] ?? false;
-            $conditions   = $validated['conditions']   ?? [];
-            $columns      = $validated['columns']      ?? ['*'];
-            $perPage      = $validated['per_page']     ?? 15;
-            $pageName     = $validated['pageName']     ?? 'page';
-            $page         = $validated['page']         ?? 1;
-
-            // Auto-inject user_id or session_id into the condition
-            if ($request->user()?->id) {
-                $conditions[] = 'user_id:=:' . $request->user()->id;
-            } elseif ($request->hasSession()) {
-                $conditions[] = 'session_id:=:' . $request->session()->getId();
-            } else {
-                return ApiResponse::error('Unauthorized access to cart.', 401);
-            }
-
-            $carts = $paginate
-                ? $this->cartService->getAllCarts(
-                    perPage: $perPage,
-                    columns: $columns,
-                    pageName: $pageName,
-                    page: $page,
-                    withTrashed: $withTrashed,
-                    onlyTrashed: $onlyTrashed,
-                    conditions: $conditions
-                )
-                : $this->cartService->getAllCarts(
-                    columns: $columns,
-                    withTrashed: $withTrashed,
-                    onlyTrashed: $onlyTrashed,
-                    conditions: $conditions
-                );
-
-            return ApiResponse::success($carts, 'Carts retrieved successfully.');
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), 500);
+        if (Auth::check()) {
+            $query->where('user_id', Auth::user()->id);
+        } else {
+            $query->where('session_id', session('session_id'));
         }
+
+        $cartItems = $query->whereNull('deleted_at')->get();
+
+        return ApiResponse::success($cartItems);
     }
 
-    public function show(ValidateColumnAndConditionRequest $request, string $id): JsonResponse
+    public function show(string $id)
     {
-        try {
-            $columns = $request->validated()['columns'] ?? ['*'];
+        $cartItem = Cart::with(['product', 'variation'])
+            ->where(function ($query) {
+                if (Auth::check()) {
+                    $query->where('user_id', Auth::id());
+                } else {
+                    $query->where('session_id', session('session_id'));
+                }
+            })
+            ->find($id);
 
-            $cart = $this->cartService->getCartById($id, $columns);
-
-            if (!$cart) {
-                return ApiResponse::error('Cart not found.', 404);
-            }
-
-            // Ownership check (either user or guest via session)
-            $userId = $request->user()?->id;
-            $sessionId = $request->hasSession() ? $request->session()?->getId() : null;
-
-            if (
-                ($userId && $cart->user_id !== $userId) ||
-                ($sessionId && $cart->session_id !== $sessionId)
-            ) {
-                return ApiResponse::error('Unauthorized access to this cart.', 403);
-            }
-
-            return ApiResponse::success($cart, 'Cart retrieved successfully.');
-        } catch (Exception $e) {
-            Log::error("Error retrieving cart: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
+        if (!$cartItem) {
+            return ApiResponse::error('Cart item not found or not accessible', 404);
         }
+
+        return ApiResponse::success($cartItem);
     }
 
-    public function store(StoreCartRequest $request): JsonResponse
+    /**
+     * Add a new item to the cart.
+     */
+    public function store(StoreCartRequest $request)
     {
-        try {
-            $validated = $request->validated();
+        return DB::transaction(function () use ($request) {
+            $data = $request->validated();
+            // $expirationDays = config('cart.expiration_days', 30);
+            $expirationDays = 30;
 
-            $userId = $request->user()?->id;
-            $sessionId = $request->hasSession() ? $request->session()?->getId() : null;
-
-            // Ensure we associate cart either with user or guest session (not both or neither)
-            if (!$userId && !$sessionId) {
-                return ApiResponse::error('User or session must be available to create a cart item.', 400);
+            // Verify product exists
+            $product = Product::find($data['product_id']);
+            if (!$product) {
+                return ApiResponse::error('Product not found', 404);
             }
 
-            // Fetch the price, ensuring the variant exists
-            $variantQuery = DB::table('product_variants')
-                ->where('product_id', $validated['product_id'])
-                ->where('id', $validated['variant_id'] ?? -1); // Ensure variant exists
-            $variant = $variantQuery->first();
-
-            if (!$variant) {
-                return ApiResponse::error('The selected product variant does not exist or is invalid.', 404);
-            }
-
-            $price = $variant->price;
-
-            if ($variant->stock < $validated['quantity']) {
-                return ApiResponse::error("Only {$variant->stock} items available in stock", 422);
-            }
-
-            // Prepare the cart data
-            $cartData = [
-                'user_id'    => $userId,
-                'session_id' => $userId ? null : $sessionId, // session_id used only for guests
-                'product_id' => $validated['product_id'],
-                'variant_id' => $validated['variant_id'],
-                'quantity'   => $validated['quantity'] ?? 1,
-                'price'      => $price,
-                'currency'   => $validated['currency'] ?? 'USD',
-                'notes'      => $validated['notes'] ?? null,
-                'expires_at' => now()->addDays(30), // or make this dynamic
-            ];
-
-            // Begin transaction to ensure atomicity
-            DB::beginTransaction();
-
-            // Use a service or model method to upsert based on (user/session + product + variant)
-            $cart = $this->cartService->create($cartData);
-
-            // Commit transaction
-            DB::commit();
-
-            return ApiResponse::success($cart, 'Cart created successfully.');
-        } catch (Exception $e) {
-            // Rollback transaction in case of any error
-            DB::rollBack();
-
-            // Log the exception for debugging
-            Log::error("Error creating cart: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
-        }
-    }
-
-    public function update(Request $request, string $id): JsonResponse
-    {
-        try {
-            // Validate the request data
-            $validated = $request->validate([
-                'product_id'  => 'sometimes|exists:products,id',
-                'variant_id'  => 'sometimes|exists:product_variants,id',
-                'quantity'    => 'sometimes|integer|min:1',
-                'currency'    => 'sometimes|string|max:3',
-                'notes'       => 'sometimes|string',
-            ]);
-
-            // Find the existing cart item
-            $cartItem = $this->cartService->getCartById($id);
-
-            if (!$cartItem) {
-                return ApiResponse::error('Cart item not found.', 404);
-            }
-
-            $userId = $request->user()?->id;
-            $sessionId = $request->hasSession() ? $request->session()?->getId() : null;
-
-            // 🛡 Ensure the user or session owns this cart item
-            if (
-                ($cartItem->user_id && $cartItem->user_id !== $userId) ||
-                ($cartItem->session_id && $cartItem->session_id !== $sessionId)
-            ) {
-                return ApiResponse::error('You are not authorized to update this cart item.', 403);
-            }
-
-            // Optional variant lookup
-            $variant = null;
-            if (isset($validated['variant_id']) || isset($validated['product_id'])) {
-                $variant = DB::table('product_variants')
-                    ->where('product_id', $validated['product_id'] ?? $cartItem->product_id)
-                    ->where('id', $validated['variant_id'] ?? $cartItem->variant_id)
-                    ->first();
-
-                if (!$variant) {
-                    return ApiResponse::error('The selected product variant does not exist or is invalid.', 404);
+            // Handle variation if provided
+            $variation = null;
+            if (isset($data['variation_id'])) {
+                $variation = ProductVariation::find($data['variation_id']);
+                if (!$variation) {
+                    return ApiResponse::error('Product variation not found', 404);
+                }
+                
+                // Verify variation belongs to product
+                if ($variation->product_id != $product->id) {
+                    return ApiResponse::error('This variation does not belong to the specified product', 422);
                 }
             }
+            // Check warehouse inventory
+            $itemInWarehouse = $variation ?
+                WarehouseInventory::where('variation_id', $data['variation_id'])
+                ->first() :
+                WarehouseInventory::where('product_id', $data['product_id'])
+                ->whereNull('variation_id')
+                ->first();
 
-            // Stock validation
-            if ($variant && isset($validated['quantity']) && $variant->stock < $validated['quantity']) {
-                return ApiResponse::error('Not enough stock available for the selected variant.', 400);
+            if (!$itemInWarehouse) {
+                return ApiResponse::error('Requested item is not available in stock.', 422);
             }
 
-            // Merge fallback values
+            $availableQuantity = $itemInWarehouse->quantity_on_hand;
+
+            if ($availableQuantity < $data['quantity']) {
+                return ApiResponse::error('Requested quantity is not available in stock, available : '.$availableQuantity, 422);
+            }
+
             $cartData = [
-                'product_id'  => $validated['product_id'] ?? $cartItem->product_id,
-                'variant_id'  => $validated['variant_id'] ?? $cartItem->variant_id,
-                'quantity'    => $validated['quantity'] ?? $cartItem->quantity,
-                'price'       => $variant ? $variant->price : $cartItem->price,
-                'currency'    => $validated['currency'] ?? $cartItem->currency,
-                'notes'       => $validated['notes'] ?? $cartItem->notes,
-                'expires_at'  => now()->addDays(30),
+                'product_id' => $product->id,
+                'variation_id' => $variation?->id,
+                'quantity' => $data['quantity'],
+                'price' => $variation ? $variation->price : $product->base_price,
+                'currency_code' => $product->currency_code ?? 'USD',
+                'notes' => $data['notes'] ?? null,
+                'expires_at' => now()->addDays($expirationDays),
             ];
 
-            // Begin transaction to ensure atomicity
-            DB::beginTransaction();
+            // Handle user/session
+            if (Auth::check()) {
+                $cartData['user_id'] = Auth::id();
+            } else {
+                $sessionId = session('session_id');
+                if (!$sessionId) {
+                    $sessionId = Str::uuid()->toString();
+                    session(['session_id' => $sessionId]);
+                }
+                $cartData['session_id'] = $sessionId;
+            }
 
-            // Update the cart item
-            $cartItem->update($cartData);
+            // Check for existing cart item
+            $existing = Cart::where(function ($query) use ($cartData) {
+                if (isset($cartData['user_id'])) {
+                    $query->where('user_id', $cartData['user_id']);
+                } else {
+                    $query->where('session_id', $cartData['session_id']);
+                }
+            })
+                ->where('product_id', $cartData['product_id'])
+                ->where('variation_id', $cartData['variation_id'])
+                ->first();
 
-            // Commit transaction
-            DB::commit();
+            if ($existing) {
+                $newTotalQuantity = $existing->quantity + $cartData['quantity'];
 
-            return ApiResponse::success($cartItem, 'Cart item updated successfully.');
-        } catch (Exception $e) {
-            // Rollback transaction in case of any error
-            DB::rollBack();
+                if ($availableQuantity < $newTotalQuantity) {
+                    return ApiResponse::error('Not enough stock for the updated quantity, available : '.$availableQuantity, 422);
+                }
 
-            // Log the exception for debugging
-            Log::error("Error updating cart: {$e->getMessage()}", ['exception' => $e]);
+                $existing->quantity = $newTotalQuantity;
+                $existing->save();
 
-            return ApiResponse::error($e->getMessage(), 500);
-        }
+                return ApiResponse::success($existing, 'Cart item updated', 200);
+            }
+
+            $cart = Cart::create($cartData);
+
+            return ApiResponse::success($cart, 'Cart item added', 201);
+        });
     }
 
-
-    public function delete(ValidateColumnAndConditionRequest $request, string $id)
+    /**
+     * Update an existing cart item (quantity, notes).
+     */
+    public function update(UpdateCartRequest $request, $id)
     {
-        try {
-            $forceDelete = $request->validated()['force'] ?? false;
+        $cart = $this->findCartItem($id);
 
-            // Get cart item
-            $cartItem = $this->cartService->getCartById($id);
+        $cart->update($request->validated());
 
-            if (!$cartItem) {
-                return ApiResponse::error('Cart item not found.', 404);
-            }
-
-            $userId = $request->user()?->id;
-            $sessionId = $request->hasSession() ? $request->session()?->getId() : null;
-
-            // 🛡 Ensure the user or session owns this cart item
-            if (
-                ($cartItem->user_id && $cartItem->user_id !== $userId) ||
-                ($cartItem->session_id && $cartItem->session_id !== $sessionId)
-            ) {
-                return ApiResponse::error('You are not authorized to delete this cart item.', 403);
-            }
-
-            $deleted = $this->cartService->delete($id, $forceDelete);
-
-            // Optionally log audit
-            Log::info('Cart item deleted', [
-                'cart_id'    => $id,
-                'force'      => $forceDelete,
-                'user_id'    => $userId,
-                'session_id' => $sessionId,
-            ]);
-
-            return ApiResponse::success([
-                'deleted' => true,
-                'type' => $forceDelete ? 'force' : 'soft',
-            ], $forceDelete ? 'Cart permanently deleted successfully.' : 'Cart soft deleted successfully.');
-            
-        } catch (Exception $e) {
-            Log::error("Error deleting cart: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
-        }
+        return ApiResponse::success($cart, 'Cart item updated', 200);
     }
 
-    public function isSoftDeleted(string $id)
+    /**
+     * Soft delete (remove) an item from the cart.
+     */
+    public function destroy($id)
     {
-        try {
-            $isDeleted = $this->cartService->softDeleted($id);
+        $cart = $this->findCartItem($id);
 
-            if ($isDeleted === null) {
-                return ApiResponse::error('Cart not found.', 404);
-            }
-
-            return ApiResponse::success([
-                'soft_deleted' => (bool) $isDeleted,
-            ], $isDeleted ? 'Cart is soft deleted' : 'Cart is not soft deleted');
-        } catch (Exception $e) {
-            Log::error("Error checking soft deleted cart: {$e->getMessage()}", ['exception' => $e]);
-
-            return ApiResponse::error($e->getMessage(), 500);
+        if (!$cart) {
+            return ApiResponse::error('cart item not found', 404);
         }
+        
+        $cart->delete();
+
+        return ApiResponse::success(message:'Cart item deleted.');
     }
 
-    public function restore(ValidateColumnAndConditionRequest $request, string $id)
+    /**
+     * 
+     * Restore a previously deleted cart item.
+     */
+    public function restore($id)
     {
-        try {
-            $columns = $request->validated()['columns'] ?? ['*'];
+        $cart = Cart::withTrashed()->find($id);
 
-
-            // Get cart item
-            $cartItem = $this->cartService->getAllCarts(conditions:["id:=:" . $id], withTrashed:true)->first();
-
-            if (!$cartItem) {
-                return ApiResponse::error('Cart item not found.', 404);
-            }
-
-            $userId = $request->user()?->id;
-            $sessionId = $request->hasSession() ? $request->session()?->getId() : null;
-
-            // 🛡 Ensure the user or session owns this cart item
-            if (
-                ($cartItem->user_id && $cartItem->user_id !== $userId) ||
-                ($cartItem->session_id && $cartItem->session_id !== $sessionId)
-            ) {
-                return ApiResponse::error('You are not authorized to restore this cart item.', 403);
-            }
-
-            
-            $cart = $this->cartService->restore($id, $columns);
-
-            return ApiResponse::success($cart, 'Cart is restored');
-        } catch (Exception $e) {
-            // Log the exception for debugging.
-            Log::error("Error restoring soft deleted cart: {$e->getMessage()}", ['exception' => $e]);
-
-            // Return an error response.
-            return ApiResponse::error($e->getMessage(), 500);
+        if (!$cart) {
+            return ApiResponse::error('cart item not found', 404);
         }
+
+        if ($this->ownsCart($cart)) {
+            $cart->restore();
+            return ApiResponse::success($cart, 'Cart item restored.');
+        }
+
+        abort(403, 'Unauthorized.');
+    }
+
+    /**
+     * Helper to find cart item (only own items).
+     */
+    protected function findCartItem($id)
+    {
+        $query = Cart::query();
+
+        if (Auth::check()) {
+            $query->where('user_id', Auth::user()->id);
+        } else {
+            $query->where('session_id', session('session_id'));
+        }
+
+        return $query->find($id);
+    }
+
+    /**
+     * Helper to check if user owns the cart item.
+     */
+    protected function ownsCart(Cart $cart)
+    {
+        if (Auth::check()) {
+            return $cart->user_id === Auth::user()->id;
+        }
+
+        return $cart->session_id === session('session_id');
     }
 }
