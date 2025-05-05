@@ -5,12 +5,25 @@ namespace App\Services\Orders;
 use Exception;
 use App\Models\User;
 use App\Models\Orders\Order;
+use App\Models\Payments\Payment;
 use Illuminate\Support\Facades\DB;
 use App\Models\Orders\OrderPayment;
 use App\Exceptions\PaymentProcessingException;
 
 class PaymentService
 {
+    public function initializePayment(Order $order): Payment
+    {
+        return Payment::create([
+            'user_id' => $order->user_id,
+            'order_id' => $order->id,
+            'amount' => 0, // Updated later
+            'currency' => 'USD',
+            'payment_status' => 'initializing',
+            'payment_method' => 'unset'
+        ]);
+    }
+    
     public function processOrderPayment(Order $order, string $paymentMethod, array $paymentData): OrderPayment
     {
         return DB::transaction(function () use ($order, $paymentMethod, $paymentData) {

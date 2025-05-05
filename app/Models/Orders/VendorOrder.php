@@ -20,8 +20,11 @@ class VendorOrder extends Model
         'vendor_order_number',
         'subtotal',
         'tax',
+        'commission_amount',
         'total_price',
         'status',
+        'fulfillment_type',
+        'vendor_notes'
     ];
 
     protected $casts = [
@@ -49,5 +52,10 @@ class VendorOrder extends Model
     public function vendor()
     {
         return $this->belongsTo(User::class, 'vendor_id');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(related: OrderItem::class);
     }
 }

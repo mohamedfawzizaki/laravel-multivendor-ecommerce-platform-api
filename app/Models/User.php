@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Cart;
 use App\Models\City;
+use App\Models\Orders\Order;
 use App\Models\Role;
 use App\Models\Phone;
 use App\Models\Status;
@@ -145,5 +146,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function shipments()
     {
         return $this->hasMany(Shipment::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

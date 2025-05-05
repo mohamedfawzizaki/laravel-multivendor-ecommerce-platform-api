@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id(); // BIGINT UNSIGNED AUTO_INCREMENT
             $table->char('user_id', 36)->nullable()->comment('UUID format for registered users');
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->char('session_id', 36)->nullable()->comment('UUID format for guest sessions');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('variation_id')->nullable()->constrained('product_variations')->onDelete('set null');
@@ -29,8 +30,6 @@ return new class extends Migration
             $table->softDeletes(); // Adds deleted_at
             
             $table->timestamps();
-            // Foreign key constraints
-            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             // Indexes
             $table->index('user_id', 'idx_cart_user');
             $table->index('session_id', 'idx_cart_session');

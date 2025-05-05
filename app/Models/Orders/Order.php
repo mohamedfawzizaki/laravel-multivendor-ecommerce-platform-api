@@ -48,7 +48,7 @@ class Order extends Model
         return 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(6));
     }
 
-    protected $with = ['orderItems', 'vendorOrders', 'payments'];//, 'user'];
+    protected $with = ['orderItems', 'vendorOrders', 'taxes'];//, 'user'];
     // Relationships
     public function user()
     {
@@ -63,6 +63,11 @@ class Order extends Model
         return $this->hasMany(VendorOrder::class);
     }
 
+    public function taxes()
+    {
+        return $this->hasMany(related: OrderTax::class);
+    }
+
     /**
      * Get all the order items for this order.
      */
@@ -72,10 +77,6 @@ class Order extends Model
     }
     
 
-    public function payments()
-    {
-        return $this->hasMany(OrderPayment::class);
-    }
 
     public function shipments()
     {

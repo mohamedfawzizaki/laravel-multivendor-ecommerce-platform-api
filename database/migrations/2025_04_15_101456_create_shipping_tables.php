@@ -12,6 +12,34 @@ return new class extends Migration
 
     public function up(): void
     {
+        /**
+         * Table: shipping_addresses
+         * 
+         * Table Description:
+         * Stores validated shipping addresses for users and orders. Maintains address history
+         * with soft deletes and supports international address formats.
+         * 
+         * Workflow Role:
+         * - Primary address storage for order fulfillment
+         * - Manages default addresses for user preferences
+         * - Enables address validation against city database
+         * 
+         * Key Workflow Processes:
+         * - Address validation during checkout
+         * - Default address selection
+         * - Historical address preservation
+         * 
+         * Columns:
+         * - Relationships: user_id (users.uuid), city_id (cities.id)
+         * - Address Details: address_line1, address_line2, postal_code
+         * - Recipient Info: recipient_name, recipient_phone, company_name
+         * - Preferences: is_default
+         * - Timestamps: created_at, updated_at, deleted_at
+         * 
+         * Note:
+         * - city_id restriction prevents deletion of referenced cities
+         * - Composite indexes optimize regional shipping queries
+         */
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
@@ -31,6 +59,36 @@ return new class extends Migration
             $table->index(['city_id']);
         });
 
+        /**
+         * Table: shipping_carriers
+         * 
+         * Table Description:
+         * Master list of available shipping carriers. Supports both platform-wide and
+         * vendor-specific carrier configurations.
+         * 
+         * Workflow Role:
+         * - Central carrier configuration repository
+         * - Enables carrier API integrations
+         * - Manages carrier service level definitions
+         * 
+         * Key Workflow Processes:
+         * - Carrier service setup and maintenance
+         * - Tracking URL management
+         * - Carrier availability toggling
+         * 
+         * Columns:
+         * - Relationships: vendor_id (users.uuid)
+         * - Identification: code, name
+         * - Contact Info: customer_service_phone/email, website_url
+         * - Configuration: tracking_url_format, service_levels (JSON)
+         * - Status: is_active
+         * - Timestamps: created_at, updated_at, deleted_at
+         * 
+         * Note:
+         * - Nullable vendor_id indicates platform-wide carriers
+         * - Unique constraints prevent duplicate carrier entries
+         * - JSON service_levels stores available shipping tiers
+         */
         Schema::create('shipping_carriers', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('vendor_id')->nullable()->constrained('users')->onDelete('cascade');
@@ -49,6 +107,126 @@ return new class extends Migration
             $table->unique(['vendor_id', 'name']);
         });
 
+        /**
+         * Table: shipping_methods
+         * 
+         * Table Description:
+         * Configurable shipping options available for vendors. Supports complex pricing
+         * models and carrier integrations.
+         * 
+         * Workflow Role:
+         * - Defines available shipping options at checkout
+         * - Calculates shipping costs based on multiple factors
+         * - Manages shipping rule exceptions
+         * 
+         * Key Workflow Processes:
+         * - Real-time shipping cost calculation
+         * - Order eligibility validation
+         * - Carrier API rate negotiation
+         * 
+         * Columns:
+         * - Relationships: vendor_id (users.uuid), carrier_id, created/updated_by
+         * - Identification: name, code, external_id
+         * - Pricing: calculation_type, base_price, rate_table (JSON)
+         * - Delivery: min/max_delivery_days, weekend_delivery
+         * - Constraints: supported_zones, excluded_products (JSON)
+         * - Fees: vendor_fee, platform_fee, tax_rate
+         * - Status: is_active, is_default, is_integrated
+         * - Timestamps: created_at, updated_at, deleted_at
+         * 
+         * Note:
+         * - JSON fields enable complex configuration storage
+         * - Audit fields track method creation/modification
+         * - Indexes optimize checkout shipping option queries
+         */
+        Schema::create('shipping_methods', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('vendor_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('carrier_id')->nullable()->constrained('shipping_carriers')->onDelete('set null');
+
+            // Method identification
+            $table->string('name', 100);
+            $table->string('code', 50)->comment('Internal reference code');
+            $table->string('external_id')->nullable()->comment('Carrier API identifier');
+
+            // Pricing configuration
+            $table->enum('calculation_type', [
+                'flat_rate',
+                'weight_based',
+                'price_based',
+                'carrier_api',
+                'free'
+            ])->default('flat_rate')->index();
+
+            $table->decimal('base_price', 10, 2);
+            $table->decimal('min_order_amount', 10, 2)->nullable()->comment('Minimum cart value for availability');
+            $table->decimal('max_order_weight', 10, 3)->nullable();
+            $table->json('rate_table')->nullable()->comment('JSON structure for weight/price-based rates');
+
+            // Delivery details
+            $table->unsignedSmallInteger('min_delivery_days');
+            $table->unsignedSmallInteger('max_delivery_days');
+            $table->boolean('weekend_delivery')->default(false);
+            $table->boolean('cash_on_delivery')->default(false);
+
+            // Service constraints
+            $table->json('supported_zones')->nullable()->comment('JSON array of supported regions/countries');
+            $table->json('excluded_products')->nullable()->comment('JSON array of product IDs');
+            $table->json('carrier_config')->nullable()->comment('Carrier-specific settings');
+
+            // Status & visibility
+            $table->boolean('is_active')->default(true)->index();
+            $table->boolean('is_default')->default(false);
+            $table->boolean('is_integrated')->default(false)->comment('API-based carrier integration');
+
+            // Commission & fees
+            $table->decimal('vendor_fee', 10, 2)->default(0);
+            $table->decimal('platform_fee', 10, 2)->default(0);
+            $table->decimal('tax_rate', 5, 2)->default(0);
+
+            // Audit fields
+            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignUuid('updated_by')->nullable()->constrained('users')->onDelete('set null');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            // Indexes & Constraints
+            $table->unique(['vendor_id', 'code']);
+            $table->index(['carrier_id', 'is_active']);
+        });
+
+        /**
+         * Table: shipments
+         * 
+         * Table Description:
+         * Tracks physical package movement from warehouse to customer. Manages
+         * carrier interactions and delivery proof.
+         * 
+         * Workflow Role:
+         * - Central shipment lifecycle tracking
+         * - Carrier communication hub
+         * - Delivery exception handling
+         * 
+         * Key Workflow Processes:
+         * - Label generation and tracking
+         * - Shipping cost reconciliation
+         * - Delivery status updates via API/webhooks
+         * 
+         * Columns:
+         * - Relationships: vendor_order_id, carrier_id, shipping_address_id
+         * - Tracking: tracking_number, service_level
+         * - Costs: shipping_cost, insurance_cost
+         * - Package Details: package_weight
+         * - Status Timeline: status, [event timestamps]
+         * - Delivery Estimates: estimated_delivery_date
+         * - Timestamps: created_at, updated_at, deleted_at
+         * 
+         * Note:
+         * - Multiple timestamps track shipment milestones
+         * - Indexes optimize tracking lookup and status reports
+         * - Restricted deletes preserve shipping history
+         */
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
@@ -92,6 +270,34 @@ return new class extends Migration
             $table->index('estimated_delivery_date');
         });
 
+        /**
+         * Table: shipment_events
+         * 
+         * Table Description:
+         * Audit trail of shipment status changes and tracking updates. Provides
+         * detailed delivery history for customer support.
+         * 
+         * Workflow Role:
+         * - Immutable record of shipment progress
+         * - Data source for tracking timelines
+         * - Evidence for delivery disputes
+         * 
+         * Key Workflow Processes:
+         * - Automated tracking update logging
+         * - Exception event recording
+         * - Delivery confirmation storage
+         * 
+         * Columns:
+         * - Relationships: shipment_id
+         * - Event Details: status, description, location
+         * - Timing: occurred_at
+         * - Timestamps: created_at, updated_at
+         * 
+         * Note:
+         * - occurred_at preserves original event timing
+         * - Composite index enables chronological event queries
+         * - Description field captures carrier-specific messages
+         */
         Schema::create('shipment_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shipment_id')->constrained('shipments')->onDelete('cascade');
@@ -113,6 +319,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('shipment_events');
         Schema::dropIfExists('shipments');
+        Schema::dropIfExists('shipping_methods');
         Schema::dropIfExists('shipping_carriers');
         Schema::dropIfExists('shipping_addresses');
     }

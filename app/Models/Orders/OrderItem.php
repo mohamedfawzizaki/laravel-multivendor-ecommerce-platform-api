@@ -15,11 +15,18 @@ class OrderItem extends Model
     protected $table = 'order_items';
 
     protected $fillable = [
+        'order_id',
         'vendor_order_id',
         'product_id',
         'variation_id',
         'quantity',
         'price',
+        'subtotal',
+        'is_digital',
+        'download_url',
+        'download_expiry',
+        'is_returnable',
+        'return_by_date',
     ];
 
     protected $casts = [

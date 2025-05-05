@@ -7,13 +7,15 @@ use StripePaymentGateway;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use PHPUnit\Framework\TestCase;
+use App\Models\Invoices\Invoice;
 use App\Services\PaymentService;
 use App\Contracts\PaymentGateway;
 use App\Listeners\LogMessageSent;
-use App\Models\Orders\OrderPayment;
+use App\Observers\InvoiceObserver;
 use App\Listeners\LogMessageSending;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Payments\OrderPayment;
 use Illuminate\Support\Facades\Event;
 use App\Observers\OrderPaymentObserver;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +23,11 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Response;
 use App\Repositories\RepositoryInterface;
+use App\Models\Vendors\VendorPaymentAccount;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate;
 use App\Repositories\Eloquent\UserRepository;
+use App\Observers\VendorPaymentAccountObserver;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -64,7 +68,8 @@ class AppServiceProvider extends ServiceProvider
 
 
         OrderPayment::observe(OrderPaymentObserver::class);
-
+        VendorPaymentAccount::observe(VendorPaymentAccountObserver::class);
+        Invoice::observe(InvoiceObserver::class);
 
 
 

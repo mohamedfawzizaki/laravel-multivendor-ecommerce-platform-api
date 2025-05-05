@@ -2,8 +2,10 @@
 
 
 use Illuminate\Http\Request;
+use App\Models\Orders\TaxRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Api\Admin\RoleController;
 
 use App\Http\Controllers\Api\Admin\UserController;
@@ -12,35 +14,32 @@ use App\Http\Controllers\Api\Admin\PhoneController;
 
 use App\Http\Controllers\Api\Public\CartController;
 
+
 use App\Http\Controllers\Api\Admin\StatusController;
-
-
 use App\Http\Controllers\Api\Admin\VendorController;
+
 use App\Http\Controllers\Api\Public\WishlistController;
 
 use App\Http\Controllers\Api\Admin\PermissionController;
-
 use App\Http\Controllers\Api\Public\Orders\OrderController;
+
 use App\Http\Controllers\Api\Admin\RolePermissionController;
-
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseController;
-use App\Http\Controllers\Api\Admin\Shipping\ShippingCarrierController as AdminShippingCarrierController;
-use App\Http\Controllers\Api\vendor\Shipping\ShippingCarrierController as VendorShippingCarrierController;
 use App\Http\Controllers\Api\Public\Shipping\ShippingAddressController;
-
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseZoneController;
+
 use App\Http\Controllers\Api\Admin\Products\CategoryHierarchyController;
 use App\Http\Controllers\Api\Vendor\Products\BrandAndCategoryController;
-
 use App\Http\Controllers\Api\Vendor\Products\ProductInventoryController;
 
 use App\Http\Controllers\Api\Admin\Address\CityController as AdminCityController;
+
 use App\Http\Controllers\Api\Public\Address\CityController as PublicCityController;
-
 use App\Http\Controllers\Api\Admin\Products\BrandController as AdminBrandController;
-use App\Http\Controllers\Api\Public\Products\BrandController as PublicBrandController;
 
+use App\Http\Controllers\Api\Public\Products\BrandController as PublicBrandController;
 use App\Http\Controllers\Api\Admin\Address\CountryController as AdminCountryController;
+
 use App\Http\Controllers\Api\Admin\Orders\CurrencyController as AdminCurrencyController;
 use App\Http\Controllers\Api\Admin\Products\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Public\Address\CountryController as PublicCountryController;
@@ -59,8 +58,10 @@ use App\Http\Controllers\Api\Public\Products\ProductReviewController as PublicPr
 use App\Http\Controllers\Api\Public\Products\ProductStatusController as PublicProductStatusController;
 use App\Http\Controllers\Api\Vendor\Products\ProductReviewController as VendorProductReviewController;
 use App\Http\Controllers\Api\Vendor\ProductsWarehousesManagement\ManageProductsInWarehousesController;
+use App\Http\Controllers\Api\Admin\Shipping\ShippingCarrierController as AdminShippingCarrierController;
 use App\Http\Controllers\Api\Public\Products\ProductDiscountController as PublicProductDiscountController;
 use App\Http\Controllers\Api\Vendor\Products\ProductDiscountController as VendorProductDiscountController;
+use App\Http\Controllers\Api\vendor\Shipping\ShippingCarrierController as VendorShippingCarrierController;
 use App\Http\Controllers\Api\Public\Products\ProductvariationController as PublicProductvariationController;
 use App\Http\Controllers\Api\Vendor\Products\ProductvariationController as VendorProductvariationController;
 
@@ -457,25 +458,44 @@ Route::middleware(['auth:sanctum'])
 Route::middleware(['auth:sanctum'])
     ->prefix('public/orders')
     ->group(function () {
-
-        Route::get('checkout', [OrderController::class, 'getCheckout']);
-        Route::get('/', [OrderController::class, 'index']);
-        // Route::get('{orderId}', [OrderController::class, 'show']);
         Route::post('/', [OrderController::class, 'store']);
-        // Route::patch('{orderId}', [OrderController::class, 'update']);
+        Route::get('customers/all', [OrderController::class, 'index']);
+        Route::get('{orderId}', [OrderController::class, 'show']);
 
-        // Route::get('statuses/all', [OrderController::class, 'ordersStatuses']);
-        // Route::get('{orderId}/statuses', [OrderController::class, 'updateOrderStatus']);
+        Route::put('{orderId}/cancel', [OrderController::class, 'cancel']);
+        Route::put('{orderId}/process', [OrderController::class, 'process']);
 
 
-        // Route::get('all/items', [OrderItemController::class, 'index']);
-        // Route::get('{orderId}/items', [OrderItemController::class, 'show']);
-        // Route::get('{orderId}/items/{itemId}', [OrderItemController::class, 'show']);
 
-        // Route::post('{orderId}/items', [OrderItemController::class, 'store']);
-        // Route::patch('{orderId}/items/{itemId}', [OrderItemController::class, 'update']);
-        // Route::delete('{orderId}/items/{itemId}', [OrderItemController::class, 'delete']);
+
+
+        Route::post('{orderId}/payments', [OrderController::class, 'pay']);
+        Route::get('{orderId}/payments', [OrderController::class, 'getAllPaymentDetailsOfAnOrder']);
+        Route::get('{orderId}/payments/{paymentId}', [OrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
     });
+
+Route::middleware(['auth:sanctum'])
+    ->prefix('vendor/orders')
+    ->group(function () {
+
+        Route::post('/', [OrderController::class, 'store']);
+        Route::get('all', [OrderController::class, 'index']);
+        Route::get('{orderId}', [OrderController::class, 'show']);
+
+        Route::post('{orderId}/payments', [OrderController::class, 'pay']);
+        Route::get('{orderId}/payments', [OrderController::class, 'getAllPaymentDetailsOfAnOrder']);
+        Route::get('{orderId}/payments/{paymentId}', [OrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
+
+        Route::put('{orderId}/update-status', [OrderController::class, 'updateStatus']);
+    });
+
+
+
+
+
+
+
+
 
 Route::middleware(['auth:sanctum'])
     ->prefix('public/shipping')
@@ -539,19 +559,16 @@ Route::middleware(['auth:sanctum']) // role : vendor
 
 Route::get('test', function (Request $request) {
 
-    $user = Auth::user();
+    $taxRule = TaxRule::create([
+        'name' => 'GTA',
+        'rate' => 10.00,
+        'is_inclusive' => true,
+        'tax_id' => '13 ',
+        'tax_type' => 'GTA',
+    ]);
+    // $taxRules = TaxRule::get();
 
-    $cartItems = $user->cartItems;
-    // with(['product', 'variation'])->get()
-    // $ids = [];
-    // foreach ($cartItems as $cartItem) {
-    //     $ids[] = $cartItem->id; 
-    // }
-
-    $subTotal = $cartItems->sum(function ($item) {
-        return $item->price * $item->quantity;
-    });
-    return $cartItems;
+    return $taxRule;
     // return $subTotal;
 
 })->middleware('auth:sanctum');
