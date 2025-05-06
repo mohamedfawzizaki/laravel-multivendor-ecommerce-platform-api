@@ -133,6 +133,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index(['vendor_id', 'status']);
+            // $table->unique(['vendor_id', 'order_id']);
         });
 
         /**

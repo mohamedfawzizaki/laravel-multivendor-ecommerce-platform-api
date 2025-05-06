@@ -44,7 +44,7 @@ class OrderController extends Controller
         if ($orders->isEmpty()) {
             return ApiResponse::error('No orders found', 404);
         }
-        
+
         return ApiResponse::success($orders, 'Order retreived successfully');
     }
 
@@ -53,20 +53,17 @@ class OrderController extends Controller
         $order = Order::with([
             'vendorOrders.orderItems.product',
             'vendorOrders.orderItems.variation',
-        ])->find($orderId);
+        ])
+        ->where('user_id', Auth::id())
+        ->find($orderId);
 
         if (!$order) {
             return ApiResponse::error('Order not found', 404);
         }
 
-        $user = Auth::user();
-
-        if ($order->user_id != $user->id) {
-            return ApiResponse::error('You do not have permission to cancel this order', 403);
-        }
-
         return ApiResponse::success($order, 'Order retreived successfully');
     }
+
     public function store(Request $request)
     {
         $user = Auth::user();

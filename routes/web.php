@@ -7,5 +7,5 @@ use App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationContr
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return 'from web routes';
 });

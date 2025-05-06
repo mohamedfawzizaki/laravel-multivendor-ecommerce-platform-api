@@ -84,7 +84,7 @@ class CartController extends Controller
                 if (!$variation) {
                     return ApiResponse::error('Product variation not found', 404);
                 }
-                
+
                 // Verify variation belongs to product
                 if ($variation->product_id != $product->id) {
                     return ApiResponse::error('This variation does not belong to the specified product', 422);
@@ -105,7 +105,7 @@ class CartController extends Controller
             $availableQuantity = $itemInWarehouse->quantity_on_hand;
 
             if ($availableQuantity < $data['quantity']) {
-                return ApiResponse::error('Requested quantity is not available in stock, available : '.$availableQuantity, 422);
+                return ApiResponse::error('Requested quantity is not available in stock, available : ' . $availableQuantity, 422);
             }
 
             $cartData = [
@@ -142,17 +142,44 @@ class CartController extends Controller
                 ->where('variation_id', $cartData['variation_id'])
                 ->first();
 
+
             if ($existing) {
                 $newTotalQuantity = $existing->quantity + $cartData['quantity'];
 
                 if ($availableQuantity < $newTotalQuantity) {
-                    return ApiResponse::error('Not enough stock for the updated quantity, available : '.$availableQuantity, 422);
+                    return ApiResponse::error('Not enough stock for the updated quantity, available : ' . $availableQuantity, 422);
                 }
 
                 $existing->quantity = $newTotalQuantity;
                 $existing->save();
 
                 return ApiResponse::success($existing, 'Cart item updated', 200);
+            }
+
+            // Check for existing cart item in the trash
+            $existingInTrashed = Cart::withTrashed()->where(function ($query) use ($cartData) {
+                if (isset($cartData['user_id'])) {
+                    $query->where('user_id', $cartData['user_id']);
+                } else {
+                    $query->where('session_id', $cartData['session_id']);
+                }
+            })
+                ->where('product_id', $cartData['product_id'])
+                ->where('variation_id', $cartData['variation_id'])
+                ->first();
+
+            if ($existingInTrashed && $existingInTrashed->restore()) {
+                
+                $newTotalQuantity = $existingInTrashed->quantity + $cartData['quantity'];
+
+                if ($availableQuantity < $newTotalQuantity) {
+                    return ApiResponse::error('Not enough stock for the updated quantity, available : ' . $availableQuantity, 422);
+                }
+
+                $existingInTrashed->quantity = $newTotalQuantity;
+                $existingInTrashed->save();
+
+                return ApiResponse::success($existingInTrashed, 'Cart item updated', 200);
             }
 
             $cart = Cart::create($cartData);
@@ -183,10 +210,10 @@ class CartController extends Controller
         if (!$cart) {
             return ApiResponse::error('cart item not found', 404);
         }
-        
+
         $cart->delete();
 
-        return ApiResponse::success(message:'Cart item deleted.');
+        return ApiResponse::success(message: 'Cart item deleted.');
     }
 
     /**

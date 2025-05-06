@@ -3,64 +3,96 @@
 namespace App\Http\Controllers\Api\Vendor\Orders;
 
 use Illuminate\Support\Str;
+use App\Models\Orders\Order;
 use Illuminate\Http\Request;
+use App\Models\Orders\OrderItem;
 use App\Models\Shipping\Shipment;
 use App\Models\Orders\VendorOrder;
 use Illuminate\Support\Facades\DB;
+use App\Http\Responses\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class VendorOrderController extends Controller
+class OrderController extends Controller
 {
-    /**
-     * Display a listing of vendor's orders.
-     */
-    public function index(Request $request)
+    public function index()
     {
         $vendorId = Auth::id();
 
-        $orders = VendorOrder::where('vendor_id', $vendorId)
-            ->when($request->status, function ($query) use ($request) {
-                $query->where('status', $request->status);
-            })
+        $orders = VendorOrder::with(['orderItems.product', 'orderItems.variation'])
+            ->where('vendor_id', $vendorId)
             ->latest()
-            ->paginate(20);
+            ->get();
 
-        return view('vendor.orders.index', compact('orders'));
+        if ($orders->isEmpty()) {
+            return ApiResponse::error('No orders found', 404);
+        }
+
+        return ApiResponse::success($orders, 'Orders retreived successfully');
     }
 
-    /**
-     * Display the specified order details.
-     */
     public function show($id)
     {
         $vendorId = Auth::id();
 
         $order = VendorOrder::with(['orderItems.product', 'orderItems.variation'])
             ->where('vendor_id', $vendorId)
-            ->findOrFail($id);
+            ->find($id);
 
-        return view('vendor.orders.show', compact('order'));
+        if (!$order) {
+            return ApiResponse::error('Order not found', 404);
+        }
+
+        return ApiResponse::success($order, 'Order retreived successfully');
     }
 
-    /**
-     * Update the vendor order status (e.g., mark as shipped).
-     */
     public function updateStatus(Request $request, $id)
+    
     {
         $vendorId = Auth::id();
 
-        $order = VendorOrder::where('vendor_id', $vendorId)->findOrFail($id);
+        $order = VendorOrder::where('vendor_id', $vendorId)->find($id);
 
-        $request->validate([
+        if (!$order) {
+            return ApiResponse::error('Order not found', 404);
+        }
+
+        $validator = Validator::make($request->all(), [
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled,refunded',
         ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error('Invalid status', 422, $validator->errors());
+        }
 
         $order->status = $request->status;
         $order->save();
 
-        return redirect()->back()->with('success', 'Order status updated successfully.');
+        return ApiResponse::success($order, 'Order status updated successfully.');
     }
+
+    public function delete($id)
+    {
+        $vendorId = Auth::id();
+
+        $order = VendorOrder::where('vendor_id', $vendorId)->find($id);
+
+        if (!$order) {
+            return ApiResponse::error('Order not found', 404);
+        }
+
+        $order->delete();
+
+        return ApiResponse::success([], 'Order deleted successfully.');
+    }
+
+
+
+
+
+    
+
 
     /**
      * Create a shipment record for a vendor order.

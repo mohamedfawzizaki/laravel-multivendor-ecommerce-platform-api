@@ -21,25 +21,29 @@ use App\Http\Controllers\Api\Admin\VendorController;
 use App\Http\Controllers\Api\Public\WishlistController;
 
 use App\Http\Controllers\Api\Admin\PermissionController;
-use App\Http\Controllers\Api\Public\Orders\OrderController;
-
 use App\Http\Controllers\Api\Admin\RolePermissionController;
+use App\Http\Controllers\Api\Vendor\Orders\OrderItemController as VendorOrderItemController;
+use App\Http\Controllers\Api\Public\Orders\OrderItemController as PublicOrderItemController;
+
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseController;
 use App\Http\Controllers\Api\Public\Shipping\ShippingAddressController;
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseZoneController;
-
 use App\Http\Controllers\Api\Admin\Products\CategoryHierarchyController;
+
 use App\Http\Controllers\Api\Vendor\Products\BrandAndCategoryController;
 use App\Http\Controllers\Api\Vendor\Products\ProductInventoryController;
-
 use App\Http\Controllers\Api\Admin\Address\CityController as AdminCityController;
 
 use App\Http\Controllers\Api\Public\Address\CityController as PublicCityController;
+
 use App\Http\Controllers\Api\Admin\Products\BrandController as AdminBrandController;
+use App\Http\Controllers\Api\Public\Orders\OrderController as PublicOrderController;
+use App\Http\Controllers\Api\Vendor\Orders\OrderController as VendorOrderController;
+use App\Http\Controllers\Api\Admin\Orders\OrderController as AdminOrderController;
 
 use App\Http\Controllers\Api\Public\Products\BrandController as PublicBrandController;
-use App\Http\Controllers\Api\Admin\Address\CountryController as AdminCountryController;
 
+use App\Http\Controllers\Api\Admin\Address\CountryController as AdminCountryController;
 use App\Http\Controllers\Api\Admin\Orders\CurrencyController as AdminCurrencyController;
 use App\Http\Controllers\Api\Admin\Products\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Public\Address\CountryController as PublicCountryController;
@@ -458,37 +462,72 @@ Route::middleware(['auth:sanctum'])
 Route::middleware(['auth:sanctum'])
     ->prefix('public/orders')
     ->group(function () {
-        Route::post('/', [OrderController::class, 'store']);
-        Route::get('customers/all', [OrderController::class, 'index']);
-        Route::get('{orderId}', [OrderController::class, 'show']);
+        # orders
+        Route::post('/', [PublicOrderController::class, 'store']);
+        Route::get('all', [PublicOrderController::class, 'index']);
+        Route::get('{orderId}', [PublicOrderController::class, 'show']);
 
-        Route::put('{orderId}/cancel', [OrderController::class, 'cancel']);
-        Route::put('{orderId}/process', [OrderController::class, 'process']);
+        Route::put('{orderId}/process', [PublicOrderController::class, 'process']);
+        Route::put('{orderId}/cancel', [PublicOrderController::class, 'cancel']);
+
+        # items
+        Route::get('{orderId}/items', [PublicOrderItemController::class, 'index']);
+        Route::get('{orderId}/items/{itemId}', [PublicOrderItemController::class, 'show']);
 
 
 
 
-
-        Route::post('{orderId}/payments', [OrderController::class, 'pay']);
-        Route::get('{orderId}/payments', [OrderController::class, 'getAllPaymentDetailsOfAnOrder']);
-        Route::get('{orderId}/payments/{paymentId}', [OrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
+        Route::post('{orderId}/payments', [PublicOrderController::class, 'pay']);
+        Route::get('{orderId}/payments', [PublicOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
+        Route::get('{orderId}/payments/{paymentId}', [PublicOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
     });
 
 Route::middleware(['auth:sanctum'])
     ->prefix('vendor/orders')
     ->group(function () {
 
-        Route::post('/', [OrderController::class, 'store']);
-        Route::get('all', [OrderController::class, 'index']);
-        Route::get('{orderId}', [OrderController::class, 'show']);
+        Route::get('all', [VendorOrderController::class, 'index']);
+        Route::get('{orderId}', [VendorOrderController::class, 'show']);
+        Route::put('{orderId}', [VendorOrderController::class, 'updateStatus']);
+        Route::delete('{orderId}', [VendorOrderController::class, 'delete']);
 
-        Route::post('{orderId}/payments', [OrderController::class, 'pay']);
-        Route::get('{orderId}/payments', [OrderController::class, 'getAllPaymentDetailsOfAnOrder']);
-        Route::get('{orderId}/payments/{paymentId}', [OrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
+        Route::get('{vendorOrderId}/items', [VendorOrderItemController::class, 'index']);
+        Route::get('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'show']);
+        Route::put('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'updateStatus']);
+        Route::delete('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'delete']);
 
-        Route::put('{orderId}/update-status', [OrderController::class, 'updateStatus']);
+
+
+
+
+        Route::post('{orderId}/payments', [VendorOrderController::class, 'pay']);
+        Route::get('{orderId}/payments', [VendorOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
+        Route::get('{orderId}/payments/{paymentId}', [VendorOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
     });
 
+Route::middleware(['auth:sanctum'])
+    ->prefix('admin/orders')
+    ->group(function () {
+        # orders
+        Route::get('', [AdminOrderController::class, 'index']);
+        Route::get('{orderId}', [AdminOrderController::class, 'show']);
+        Route::delete('{orderId}', [AdminOrderController::class, 'delete']);
+
+        # vendors' orders
+        Route::get('vendor-orders/all', [AdminOrderController::class, 'allVendorsSubOrders']);
+        Route::get('vendor-orders/{vendorId}', [AdminOrderController::class, 'allSubOrdersForVendor']);
+        Route::get('vendor-orders/{vendorId}/{orderId}', [AdminOrderController::class, 'specificSubOrderForVendor']);
+
+
+
+
+        
+
+
+        Route::post('{orderId}/payments', [VendorOrderController::class, 'pay']);
+        Route::get('{orderId}/payments', [VendorOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
+        Route::get('{orderId}/payments/{paymentId}', [VendorOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
+    });
 
 
 
