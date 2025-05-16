@@ -52,4 +52,17 @@ class OrderController extends Controller
 
         return ApiResponse::success([], 'Order deleted successfully.');
     }
+
+    public function restore($id)
+    {
+        $order = Order::withTrashed()->find($id);
+
+        if (!$order) {
+            return ApiResponse::error('Order not found', 404);
+        }
+
+        $order->restore();
+
+        return ApiResponse::success($order, 'Order restored successfully.');
+    }
 }

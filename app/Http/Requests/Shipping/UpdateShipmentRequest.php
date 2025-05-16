@@ -20,18 +20,12 @@ class UpdateShipmentRequest extends FormRequest
         return [
             'carrier_id'          => 'sometimes|exists:shipping_carriers,id',
             'shipping_address_id' => 'sometimes|exists:shipping_addresses,id',
-            'tracking_number'     => 'sometimes|string|max:100|unique:shipments,tracking_number,' . $this->shipment,
             'shipping_cost'       => 'sometimes|numeric|min:0',
             'insurance_cost'      => 'sometimes|numeric|min:0',
             'package_weight'      => 'nullable|numeric|min:0',
             'service_level'       => 'nullable|string|max:50',
-            'status'              => 'sometimes|in:label_created,pending,in_transit,out_for_delivery,delivered,exception,returned,cancelled',
+            'status'              => 'sometimes|in:label_created,shipped,pending,in_transit,out_for_delivery,delivered,exception,returned,cancelled',
             'estimated_delivery_date' => 'nullable|date',
-            'label_created_at'    => 'nullable|date',
-            'shipped_at'          => 'nullable|date',
-            'out_for_delivery_at' => 'nullable|date',
-            'delivered_at'        => 'nullable|date',
-            'last_tracking_update_at' => 'nullable|date',
         ];
     }
 

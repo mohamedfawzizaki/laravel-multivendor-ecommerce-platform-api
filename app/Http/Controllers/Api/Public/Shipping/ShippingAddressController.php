@@ -13,13 +13,20 @@ class ShippingAddressController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->role->name === 'admin') {
-            $addresses = ShippingAddress::get();
-        } else {
-            $addresses = ShippingAddress::where('user_id', Auth::id())->get();
-        }
-        
+        $addresses = ShippingAddress::where('user_id', Auth::id())->get();
+
         return ApiResponse::success($addresses, "my shipping addresses retreived successfully");
+    }
+
+    public function show(string $id)
+    {
+        $shippingAddress = ShippingAddress::where('user_id', Auth::id())->find($id);
+
+        if (!$shippingAddress) {
+            return ApiResponse::error('shipping address not found', 404);
+        }
+
+        return ApiResponse::success($shippingAddress, 'shipping address retreived successfully');
     }
 
     public function store(StoreShippingAddressRequest $request)
@@ -32,31 +39,12 @@ class ShippingAddressController extends Controller
         return ApiResponse::success($address, 'Shipping address created', 201);
     }
 
-    public function show(string $id)
-    {
-        $shippingAddress = ShippingAddress::find($id);
-
-        if (!$shippingAddress) {
-            return ApiResponse::error('shipping address not found', 404);
-        }
-        
-        if (!$this->authorize($shippingAddress)) {
-            return ApiResponse::error(message: 'You do not own this shipping address', status: 403);
-        }
-
-        return ApiResponse::success($shippingAddress, 'shipping address retreived successfully');
-    }
-
     public function update(UpdateShippingAddressRequest $request, string $id)
     {
-        $shippingAddress = ShippingAddress::find($id);
+        $shippingAddress = ShippingAddress::where('user_id', Auth::id())->find($id);
 
         if (!$shippingAddress) {
             return ApiResponse::error('shipping address not found', 404);
-        }
-        
-        if (!$this->authorize($shippingAddress)) {
-            return ApiResponse::error(message: 'You do not own this shipping address', status: 403);
         }
 
         $shippingAddress->update($request->validated());
@@ -66,14 +54,10 @@ class ShippingAddressController extends Controller
 
     public function destroy(string $id)
     {
-        $shippingAddress = ShippingAddress::find($id);
+        $shippingAddress = ShippingAddress::where('user_id', Auth::id())->find($id);
 
         if (!$shippingAddress) {
             return ApiResponse::error('shipping address not found', 404);
-        }
-        
-        if (!$this->authorize($shippingAddress)) {
-            return ApiResponse::error(message: 'You do not own this shipping address', status: 403);
         }
 
         $shippingAddress->delete();
@@ -83,14 +67,10 @@ class ShippingAddressController extends Controller
 
     public function restore(string $id)
     {
-        $shippingAddress = ShippingAddress::withTrashed()->find($id);
+        $shippingAddress = ShippingAddress::withTrashed()->where('user_id', Auth::id())->find($id);
 
         if (!$shippingAddress) {
             return ApiResponse::error('shipping address not found', 404);
-        }
-
-        if (!$this->authorize($shippingAddress)) {
-            return ApiResponse::error(message: 'You do not own this shipping address', status: 403);
         }
 
         $shippingAddress->restore();

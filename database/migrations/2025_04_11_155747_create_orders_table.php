@@ -51,6 +51,8 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2)->comment('Amount before taxes/fees');
             $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('total_price', 10, 2);
+            $table->string('currency_code', 10)->default('USD');
+            $table->foreign('currency_code')->references('code')->on('currencies'); // Centralized currency rates/pricing
             // Status tracking
             $table->enum('status', [
                 'pending',

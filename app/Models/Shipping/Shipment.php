@@ -3,6 +3,7 @@
 namespace App\Models\Shipping;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\Orders\Order;
 use App\Enums\ShipmentStatus;
 use App\Models\Shipping\ShipmentEvent;
@@ -16,18 +17,10 @@ class Shipment extends Model
 {
     use HasFactory, SoftDeletes;
 
-    // Status constants
-    const STATUS_LABEL_CREATED = 'label_created';
-    const STATUS_PENDING = 'pending';
-    const STATUS_IN_TRANSIT = 'in_transit';
-    const STATUS_OUT_FOR_DELIVERY = 'out_for_delivery';
-    const STATUS_DELIVERED = 'delivered';
-    const STATUS_EXCEPTION = 'exception';
-    const STATUS_RETURNED = 'returned';
-    const STATUS_CANCELLED = 'cancelled';
-
     protected $fillable = [
         'user_id',
+        'order_id',
+        'vendor_id', 
         'vendor_order_id',
         'carrier_id',
         'shipping_address_id',
@@ -37,7 +30,9 @@ class Shipment extends Model
         'package_weight',
         'service_level',
         'status',
-        'estimated_delivery_date'
+        'estimated_delivery_date',
+        'out_for_delivery_at',
+        'shipped_at'
     ];
 
     protected $casts = [
@@ -50,9 +45,6 @@ class Shipment extends Model
         'out_for_delivery_at' => 'datetime',
         'delivered_at' => 'datetime',
         'last_tracking_update_at' => 'datetime',
-
-        'status' => ShipmentStatus::class,
-
     ];
 
     // Relationships
@@ -81,82 +73,10 @@ class Shipment extends Model
         return $this->hasMany(ShipmentEvent::class)->orderBy('occurred_at', 'desc');
     }
 
-    // Scopes
-    public function scopeDelivered($query)
+
+    public static function generateUniqueTrackingNumber()
     {
-        return $query->where('status', self::STATUS_DELIVERED);
+        return 'STUN-' . date('Ymd') . '-' . strtoupper(Str::random(6));
     }
 
-    public function scopeInTransit($query)
-    {
-        return $query->where('status', self::STATUS_IN_TRANSIT);
-    }
-
-    // Status helpers
-    public function markAsLabelCreated()
-    {
-        $this->update([
-            'status' => self::STATUS_LABEL_CREATED,
-            'label_created_at' => now()
-        ]);
-    }
-
-    public function markAsInTransit()
-    {
-        $this->update([
-            'status' => self::STATUS_IN_TRANSIT,
-            'shipped_at' => now(),
-            'last_tracking_update_at' => now()
-        ]);
-    }
-
-    public function markAsDelivered()
-    {
-        $this->update([
-            'status' => self::STATUS_DELIVERED,
-            'delivered_at' => now(),
-            'last_tracking_update_at' => now()
-        ]);
-    }
-
-    // Helpers
-    public function getTrackingUrlAttribute()
-    {
-        return $this->carrier->getTrackingUrl($this->tracking_number);
-    }
-
-    public function getTotalShippingCostAttribute()
-    {
-        return $this->shipping_cost + $this->insurance_cost;
-    }
-
-    public function addEvent($status, $description = null, $location = null)
-    {
-        return $this->events()->create([
-            'status' => $status,
-            'description' => $description,
-            'location' => $location,
-            'occurred_at' => now()
-        ]);
-    }
-
-    public function updateFromCarrier($status, $eventData = [])
-    {
-        $this->update([
-            'status' => $status,
-            'last_tracking_update_at' => now()
-        ]);
-
-        $this->addEvent($status, $eventData['description'] ?? null, $eventData['location'] ?? null);
-
-        // Update timestamps based on status
-        switch ($status) {
-            case self::STATUS_OUT_FOR_DELIVERY:
-                $this->update(['out_for_delivery_at' => now()]);
-                break;
-            case self::STATUS_DELIVERED:
-                $this->markAsDelivered();
-                break;
-        }
-    }
 }

@@ -23,6 +23,7 @@ class Order extends Model
         'subtotal',
         'tax',
         'total_price',
+        'currency_code',
         'status'
     ];
 

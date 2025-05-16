@@ -67,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
         // });
 
 
-        OrderPayment::observe(OrderPaymentObserver::class);
+        // OrderPayment::observe(OrderPaymentObserver::class);
         VendorPaymentAccount::observe(VendorPaymentAccountObserver::class);
         Invoice::observe(InvoiceObserver::class);
 

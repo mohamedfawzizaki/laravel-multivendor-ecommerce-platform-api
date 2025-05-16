@@ -42,6 +42,7 @@ class OrderService
                 'subtotal' => 0,
                 'tax' => 0,
                 'total_price' => 0,
+                'currency_code'=>
                 'status' => 'pending'
             ]);
 

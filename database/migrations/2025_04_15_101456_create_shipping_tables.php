@@ -230,7 +230,7 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-            // $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignUuid('vendor_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('vendor_order_id')->constrained('vendor_orders')->onDelete('cascade');
             $table->foreignId('carrier_id')->constrained('shipping_carriers')->onDelete('restrict');
@@ -245,6 +245,7 @@ return new class extends Migration
             $table->enum('status', [
                 'label_created',
                 'pending',
+                'shipped',
                 'in_transit',
                 'out_for_delivery',
                 'delivered',
@@ -263,7 +264,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             // Indexes
-            $table->index('vendor_order_id');
+            $table->unique('vendor_order_id');
             $table->index('status');
             $table->index('tracking_number');
             $table->index(['user_id', 'status']);

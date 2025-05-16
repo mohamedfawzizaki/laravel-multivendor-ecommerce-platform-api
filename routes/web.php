@@ -7,5 +7,5 @@ use App\Http\Controllers\Api\Auth\EmailVerification\CustomEmailVerificationContr
 
 
 Route::get('/', function () {
-    return 'from web routes';
-});
+    return 'unatherized Access';
+})->name('login');

@@ -58,4 +58,5 @@ class VendorOrder extends Model
     {
         return $this->hasMany(related: OrderItem::class);
     }
+
 }

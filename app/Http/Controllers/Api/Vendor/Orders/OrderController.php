@@ -32,30 +32,30 @@ class OrderController extends Controller
         return ApiResponse::success($orders, 'Orders retreived successfully');
     }
 
-    public function show($id)
+    public function show($vendorOrderId)
     {
         $vendorId = Auth::id();
 
-        $order = VendorOrder::with(['orderItems.product', 'orderItems.variation'])
+        $vendorOrder = VendorOrder::with(['orderItems.product', 'orderItems.variation'])
             ->where('vendor_id', $vendorId)
-            ->find($id);
+            ->find($vendorOrderId);
 
-        if (!$order) {
-            return ApiResponse::error('Order not found', 404);
+        if (!$vendorOrder) {
+            return ApiResponse::error('Vendor Order not found', 404);
         }
 
-        return ApiResponse::success($order, 'Order retreived successfully');
+        return ApiResponse::success($vendorOrder, 'Vendor Order retreived successfully');
     }
 
-    public function updateStatus(Request $request, $id)
-    
+    public function updateStatus(Request $request, $vendorOrderId)
+
     {
         $vendorId = Auth::id();
 
-        $order = VendorOrder::where('vendor_id', $vendorId)->find($id);
+        $vendorOrder = VendorOrder::where('vendor_id', $vendorId)->find($vendorOrderId);
 
-        if (!$order) {
-            return ApiResponse::error('Order not found', 404);
+        if (!$vendorOrder) {
+            return ApiResponse::error('Vendor Order not found', 404);
         }
 
         $validator = Validator::make($request->all(), [
@@ -66,10 +66,10 @@ class OrderController extends Controller
             return ApiResponse::error('Invalid status', 422, $validator->errors());
         }
 
-        $order->status = $request->status;
-        $order->save();
+        $vendorOrder->status = $request->status;
+        $vendorOrder->save();
 
-        return ApiResponse::success($order, 'Order status updated successfully.');
+        return ApiResponse::success($vendorOrder, 'Vendor Order status updated successfully.');
     }
 
     public function delete($id)
@@ -91,7 +91,17 @@ class OrderController extends Controller
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

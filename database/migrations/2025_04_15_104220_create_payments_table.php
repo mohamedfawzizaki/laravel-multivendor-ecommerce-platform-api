@@ -54,6 +54,7 @@ return new class extends Migration
                 'pending',
                 'authorized',
                 'captured',
+                'paid',
                 'partially_refunded',
                 'fully_refunded',
                 'failed',

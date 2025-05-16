@@ -22,29 +22,29 @@ use App\Http\Controllers\Api\Public\WishlistController;
 
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RolePermissionController;
-use App\Http\Controllers\Api\Vendor\Orders\OrderItemController as VendorOrderItemController;
-use App\Http\Controllers\Api\Public\Orders\OrderItemController as PublicOrderItemController;
-
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseController;
-use App\Http\Controllers\Api\Public\Shipping\ShippingAddressController;
 use App\Http\Controllers\Api\Vendor\Warehouses\WarehouseZoneController;
-use App\Http\Controllers\Api\Admin\Products\CategoryHierarchyController;
 
+use App\Http\Controllers\Api\Admin\Products\CategoryHierarchyController;
 use App\Http\Controllers\Api\Vendor\Products\BrandAndCategoryController;
 use App\Http\Controllers\Api\Vendor\Products\ProductInventoryController;
-use App\Http\Controllers\Api\Admin\Address\CityController as AdminCityController;
+use App\Http\Controllers\Api\Vendor\Shipping\ShippingShipmentController;
+use App\Http\Controllers\Api\Admin\Orders\TaxController as AdminTaxController;
 
+use App\Http\Controllers\Api\Admin\Address\CityController as AdminCityController;
+use App\Http\Controllers\Api\Admin\Orders\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Public\Address\CityController as PublicCityController;
 
 use App\Http\Controllers\Api\Admin\Products\BrandController as AdminBrandController;
+
 use App\Http\Controllers\Api\Public\Orders\OrderController as PublicOrderController;
 use App\Http\Controllers\Api\Vendor\Orders\OrderController as VendorOrderController;
-use App\Http\Controllers\Api\Admin\Orders\OrderController as AdminOrderController;
-
 use App\Http\Controllers\Api\Public\Products\BrandController as PublicBrandController;
-
 use App\Http\Controllers\Api\Admin\Address\CountryController as AdminCountryController;
+
 use App\Http\Controllers\Api\Admin\Orders\CurrencyController as AdminCurrencyController;
+
+use App\Http\Controllers\Api\Admin\Orders\SubOrderController as AdminSubOrderController;
 use App\Http\Controllers\Api\Admin\Products\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Public\Address\CountryController as PublicCountryController;
 use App\Http\Controllers\Api\Admin\Products\CategoryController as AdminCategoryController;
@@ -52,7 +52,9 @@ use App\Http\Controllers\Api\Public\Orders\CurrencyController as PublicCurrencyC
 use App\Http\Controllers\Api\Public\Products\ProductController as PublicProductController;
 use App\Http\Controllers\Api\Vendor\Products\ProductController as VendorProductController;
 use App\Http\Controllers\Api\Admin\Address\ContinentController as AdminContinentController;
+use App\Http\Controllers\Api\Public\Orders\OrderItemController as PublicOrderItemController;
 use App\Http\Controllers\Api\Public\Products\CategoryController as PublicCategoryController;
+use App\Http\Controllers\Api\Vendor\Orders\OrderItemController as VendorOrderItemController;
 use App\Http\Controllers\Api\Public\Address\ContinentController as PublicContinentController;
 use App\Http\Controllers\Api\Vendor\ProductsWarehousesManagement\InventoryLocationController;
 use App\Http\Controllers\Api\Public\Products\ProductMediaController as PublicProductMediaController;
@@ -64,7 +66,9 @@ use App\Http\Controllers\Api\Vendor\Products\ProductReviewController as VendorPr
 use App\Http\Controllers\Api\Vendor\ProductsWarehousesManagement\ManageProductsInWarehousesController;
 use App\Http\Controllers\Api\Admin\Shipping\ShippingCarrierController as AdminShippingCarrierController;
 use App\Http\Controllers\Api\Public\Products\ProductDiscountController as PublicProductDiscountController;
+use App\Http\Controllers\Api\Public\Shipping\ShippingAddressController as PublicShippingAddressController;
 use App\Http\Controllers\Api\Vendor\Products\ProductDiscountController as VendorProductDiscountController;
+use App\Http\Controllers\Api\Vendor\Shipping\ShippingAddressController as VendorShippingAddressController;
 use App\Http\Controllers\Api\vendor\Shipping\ShippingCarrierController as VendorShippingCarrierController;
 use App\Http\Controllers\Api\Public\Products\ProductvariationController as PublicProductvariationController;
 use App\Http\Controllers\Api\Vendor\Products\ProductvariationController as VendorProductvariationController;
@@ -464,73 +468,55 @@ Route::middleware(['auth:sanctum'])
     ->group(function () {
         # orders
         Route::post('/', [PublicOrderController::class, 'store']);
-        Route::get('all', [PublicOrderController::class, 'index']);
+        Route::get('/', [PublicOrderController::class, 'index']);
         Route::get('{orderId}', [PublicOrderController::class, 'show']);
-
         Route::put('{orderId}/process', [PublicOrderController::class, 'process']);
         Route::put('{orderId}/cancel', [PublicOrderController::class, 'cancel']);
-
         # items
         Route::get('{orderId}/items', [PublicOrderItemController::class, 'index']);
         Route::get('{orderId}/items/{itemId}', [PublicOrderItemController::class, 'show']);
-
-
-
-
-        Route::post('{orderId}/payments', [PublicOrderController::class, 'pay']);
-        Route::get('{orderId}/payments', [PublicOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
-        Route::get('{orderId}/payments/{paymentId}', [PublicOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
     });
 
 Route::middleware(['auth:sanctum'])
     ->prefix('vendor/orders')
     ->group(function () {
-
-        Route::get('all', [VendorOrderController::class, 'index']);
-        Route::get('{orderId}', [VendorOrderController::class, 'show']);
-        Route::put('{orderId}', [VendorOrderController::class, 'updateStatus']);
-        Route::delete('{orderId}', [VendorOrderController::class, 'delete']);
-
+        # vendor orders
+        Route::get('/', [VendorOrderController::class, 'index']);
+        Route::get('{vendorOrderId}', [VendorOrderController::class, 'show']);
+        Route::put('{vendorOrderId}', [VendorOrderController::class, 'updateStatus']);
+        Route::delete('{vendorOrderId}', [VendorOrderController::class, 'delete']);
+        # items
         Route::get('{vendorOrderId}/items', [VendorOrderItemController::class, 'index']);
         Route::get('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'show']);
         Route::put('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'updateStatus']);
         Route::delete('{vendorOrderId}/items/{itemId}', [VendorOrderItemController::class, 'delete']);
-
-
-
-
-
-        Route::post('{orderId}/payments', [VendorOrderController::class, 'pay']);
-        Route::get('{orderId}/payments', [VendorOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
-        Route::get('{orderId}/payments/{paymentId}', [VendorOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
     });
 
 Route::middleware(['auth:sanctum'])
     ->prefix('admin/orders')
     ->group(function () {
         # orders
-        Route::get('', [AdminOrderController::class, 'index']);
+        Route::get('/', [AdminOrderController::class, 'index']);
         Route::get('{orderId}', [AdminOrderController::class, 'show']);
         Route::delete('{orderId}', [AdminOrderController::class, 'delete']);
+        Route::post('{orderId}/restore', [AdminOrderController::class, 'restore']);
 
         # vendors' orders
-        Route::get('vendor-orders/all', [AdminOrderController::class, 'allVendorsSubOrders']);
-        Route::get('vendor-orders/{vendorId}', [AdminOrderController::class, 'allSubOrdersForVendor']);
-        Route::get('vendor-orders/{vendorId}/{orderId}', [AdminOrderController::class, 'specificSubOrderForVendor']);
-
-
-
-
-        
-
-
-        Route::post('{orderId}/payments', [VendorOrderController::class, 'pay']);
-        Route::get('{orderId}/payments', [VendorOrderController::class, 'getAllPaymentDetailsOfAnOrder']);
-        Route::get('{orderId}/payments/{paymentId}', [VendorOrderController::class, 'getSpecificPaymentDetailsoOfAnOrder']);
+        Route::get('vendor-orders/all', [AdminSubOrderController::class, 'allVendorsSubOrders']);
+        Route::get('vendor-orders/{vendorId}', [AdminSubOrderController::class, 'allSubOrdersForVendor']);
+        Route::get('vendor-orders/{vendorId}/{vendorOrderId}', [AdminSubOrderController::class, 'specificSubOrderForVendor']);
     });
 
 
-
+Route::middleware(['auth:sanctum'])
+    ->prefix('admin/taxes')
+    ->group(function () {
+        Route::get('/', [AdminTaxController::class, 'index']);
+        Route::get('{tax}', [AdminTaxController::class, 'show']);
+        Route::post('/', [AdminTaxController::class, 'store']);
+        Route::put('{tax}', [AdminTaxController::class, 'update']);
+        Route::delete('{tax}', [AdminTaxController::class, 'delete']);
+    });
 
 
 
@@ -539,12 +525,12 @@ Route::middleware(['auth:sanctum'])
 Route::middleware(['auth:sanctum'])
     ->prefix('public/shipping')
     ->group(function () {
-        Route::get('addresses', [ShippingAddressController::class, 'index']);
-        Route::get('addresses/{address}', [ShippingAddressController::class, 'show']);
-        Route::post('addresses', [ShippingAddressController::class, 'store']);
-        Route::put('addresses/{address}', [ShippingAddressController::class, 'update']);
-        Route::delete('addresses/{address}', [ShippingAddressController::class, 'destroy']);
-        Route::post('addresses/{address}/restore', [ShippingAddressController::class, 'restore']);
+        Route::get('addresses', [PublicShippingAddressController::class, 'index']);
+        Route::get('addresses/{address}', [PublicShippingAddressController::class, 'show']);
+        Route::post('addresses', [PublicShippingAddressController::class, 'store']);
+        Route::put('addresses/{address}', [PublicShippingAddressController::class, 'update']);
+        Route::delete('addresses/{address}', [PublicShippingAddressController::class, 'destroy']);
+        Route::post('addresses/{address}/restore', [PublicShippingAddressController::class, 'restore']);
     });
 
 Route::middleware(['auth:sanctum']) // role : admin
@@ -561,12 +547,29 @@ Route::middleware(['auth:sanctum']) // role : admin
 Route::middleware(['auth:sanctum']) // role : vendor
     ->prefix('vendor/shipping')
     ->group(function () {
+        Route::get('addresses/{address}', [VendorShippingAddressController::class, 'show']);
+        Route::get('addresses/users/{user}', [VendorShippingAddressController::class, 'shippingAddressesOfAnUser']);
+        Route::get('addresses/{address}/users/{user}', [VendorShippingAddressController::class, 'aShippingAddressOfAnUser']);
+        
         Route::get('carriers', [VendorShippingCarrierController::class, 'index']);
         Route::get('carriers/{carrier}', [VendorShippingCarrierController::class, 'show']);
         Route::post('carriers', [VendorShippingCarrierController::class, 'store']);
         Route::put('carriers/{carrier}', [VendorShippingCarrierController::class, 'update']);
         Route::delete('carriers/{carrier}', [VendorShippingCarrierController::class, 'destroy']);
         Route::post('carriers/{carrier}/restore', [VendorShippingCarrierController::class, 'restore']);
+
+        Route::get('shipments', [ShippingShipmentController::class, 'allShipmentsOfAVendor']);
+        Route::get('shipments/orders/{vendorOrder}', [ShippingShipmentController::class, 'allShipmentsOfAVendorOrder']);
+        Route::get('shipments/{shipment}', [ShippingShipmentController::class, 'specificShipment']);
+        Route::get('shipments/users/{user}', [ShippingShipmentController::class, 'allShipmentsOfAnUser']);
+        Route::get('shipments/{shipment}/users/{user}', [ShippingShipmentController::class, 'specificShipmentOfAnUser']);
+
+        
+
+        Route::post('shipments', [ShippingShipmentController::class, 'store']);
+        Route::put('shipments/{shipment}', [ShippingShipmentController::class, 'update']);
+        Route::delete('shipments/{shipment}', [ShippingShipmentController::class, 'delete']);
+        Route::post('shipments/{shipment}/restore', [ShippingShipmentController::class, 'restore']);
     });
 
 // Route::middleware(['auth:sanctum'])

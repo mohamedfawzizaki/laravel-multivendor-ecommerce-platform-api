@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('pending_balance', 12, 2)->default(0);
             $table->timestamps();
         });
-        
+
         /**
          * 
          * Table: vendor_payment_accounts
@@ -68,7 +68,7 @@ return new class extends Migration
 
             $table->decimal('available_balance', 12, 2)->default(0);
             $table->decimal('pending_balance', 12, 2)->default(0);
-            
+
             // Encrypted Account Details
             $table->json('account_details')->comment('AES-256-GCM encrypted payment details');
             $table->string('encryption_version', 20)->default('v1');

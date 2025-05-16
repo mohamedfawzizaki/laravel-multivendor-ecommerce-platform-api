@@ -2,12 +2,10 @@
 
 namespace App\Models\Payments;
 
-use App\Models\User;
+use App\Models\Currency;
 use App\Models\Orders\Order;
-use App\Models\Orders\VendorOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Payment extends Model
@@ -18,6 +16,7 @@ class Payment extends Model
     public const STATUS_PENDING = 'pending';
     public const STATUS_AUTHORIZED = 'authorized';
     public const STATUS_CAPTURED = 'captured';
+    public const STATUS_PAID = 'paid';
     public const STATUS_PARTIALLY_REFUNDED = 'partially_refunded';
     public const STATUS_FULLY_REFUNDED = 'fully_refunded';
     public const STATUS_FAILED = 'failed';
@@ -32,85 +31,93 @@ class Payment extends Model
     public const METHOD_BANK_TRANSFER = 'bank_transfer';
     public const METHOD_DIGITAL_WALLET = 'digital_wallet';
     public const METHOD_CRYPTO = 'crypto';
-    public const METHOD_COD = 'cash_on_delivery';
+    public const METHOD_CASH_ON_DELIVERY = 'cash_on_delivery';
     public const METHOD_INSTALLMENT = 'installment';
 
+    protected $table = 'payments';
+
     protected $fillable = [
-        'user_id',
         'order_id',
-        'vendor_order_id',
         'amount',
-        'currency',
-        'base_amount',
-        'exchange_rate',
+        'currency_code',
         'payment_status',
         'payment_method',
-        'payment_method_details',
         'payment_gateway',
+        'transaction_id',
         'gateway_reference',
+        'payment_method_details',
         'fraud_score',
+        'paid_at',
         'captured_at',
         'refunded_at',
         'failed_at'
     ];
 
     protected $casts = [
-        'amount' => 'decimal:12',
-        'base_amount' => 'decimal:12',
-        'exchange_rate' => 'decimal:6',
-        'payment_method_details' => 'array',
-        'fraud_score' => 'integer',
+        'amount' => 'decimal:2',
+        'paid_at' => 'datetime',
         'captured_at' => 'datetime',
         'refunded_at' => 'datetime',
-        'failed_at' => 'datetime'
+        'failed_at' => 'datetime',
+        'payment_method_details' => 'array',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $dates = [
+        'paid_at',
+        'captured_at',
+        'refunded_at',
+        'failed_at',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
-    public function order(): BelongsTo
+    /**
+     * Relationships
+     */
+    public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function vendorOrder(): BelongsTo
+    public function currency()
     {
-        return $this->belongsTo(VendorOrder::class);
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
     }
 
-    public function markAsAuthorized(string $gatewayReference): bool
+    /**
+     * Get available payment status options
+     */
+    public static function getPaymentStatusOptions(): array
     {
-        return $this->update([
-            'payment_status' => self::STATUS_AUTHORIZED,
-            'gateway_reference' => $gatewayReference
-        ]);
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_AUTHORIZED,
+            self::STATUS_CAPTURED,
+            self::STATUS_PAID,
+            self::STATUS_PARTIALLY_REFUNDED,
+            self::STATUS_FULLY_REFUNDED,
+            self::STATUS_FAILED,
+            self::STATUS_VOIDED,
+            self::STATUS_DISPUTED,
+            self::STATUS_CHARGEBACK,
+        ];
     }
 
-    public function markAsCaptured(): bool
+    /**
+     * Get available payment method options
+     */
+    public static function getPaymentMethodOptions(): array
     {
-        return $this->update([
-            'payment_status' => self::STATUS_CAPTURED,
-            'captured_at' => now()
-        ]);
-    }
-
-    public function markAsFailed(string $reason): bool
-    {
-        return $this->update([
-            'payment_status' => self::STATUS_FAILED,
-            'failed_at' => now()
-        ]);
-    }
-
-    public function isCaptured(): bool
-    {
-        return $this->payment_status === self::STATUS_CAPTURED;
-    }
-
-    public function getFormattedAmountAttribute()//: string
-    {
-        // return currency_format($this->amount, $this->currency);
+        return [
+            self::METHOD_CREDIT_CARD,
+            self::METHOD_DEBIT_CARD,
+            self::METHOD_PAYPAL,
+            self::METHOD_BANK_TRANSFER,
+            self::METHOD_DIGITAL_WALLET,
+            self::METHOD_CRYPTO,
+            self::METHOD_CASH_ON_DELIVERY,
+            self::METHOD_INSTALLMENT,
+        ];
     }
 }
