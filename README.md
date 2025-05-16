@@ -17,8 +17,8 @@ A robust and scalable RESTful API built with Laravel for powering a multi-vendor
 ## 🧱 Tech Stack
 
 - **Backend:** Laravel 10+
-- **Database:** MySQL / PostgreSQL
-- **Auth:** Sanctum / Passport
+- **Database:** MySQL
+- **Auth:** Sanctum
 - **Caching:** Redis / Laravel Cache
 - **Queue:** Laravel Queues (Redis, DB, or other drivers)
 - **Testing:** PHPUnit / Pest
